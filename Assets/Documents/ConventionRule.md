@@ -1,6 +1,6 @@
-# 📏 Convention Rules — Wonder Match
+# 📏 Convention Rules — Pirate Tiles
 
-> Quy tắc đặt tên, coding convention, và quy ước Unity cho dự án Wonder Match.  
+> Quy tắc đặt tên, coding convention, và quy ước Unity cho dự án Pirate Tiles.  
 > Tất cả thành viên trong team **BẮT BUỘC** tuân thủ các quy tắc dưới đây.
 
 ---
@@ -11,86 +11,50 @@
 
 | Loại | Convention | Ví dụ |
 |---|---|---|
-| **Class / Struct** | PascalCase | `CardModel`, `StackController`, `GameConfigSO` |
-| **Interface** | I + PascalCase | `IGameEvent`, `IPowerUp` |
-| **Enum** | PascalCase | `CardType`, `GamePhase` |
-| **Enum Value** | PascalCase | `CardType.CardA`, `GamePhase.Playing` |
+| **Class / Struct** | PascalCase | `TileModel`, `StackController`, `GameConfigSO` |
+| **Interface** | I + PascalCase | `IState`, `IPowerUp` |
+| **Enum** | PascalCase | `TileType`, `GamePhase` |
+| **Enum Value** | PascalCase | `TileType.Sword`, `GamePhase.Playing` |
 | **Public Method** | PascalCase | `FindMatch()`, `UpdateSelectableStatus()` |
-| **Private Method** | PascalCase | `HandleCardClick()`, `SyncViewWithModel()` |
+| **Private Method** | PascalCase | `HandleTileClick()`, `SyncViewWithModel()` |
 | **Public Property** | PascalCase | `CurrentHearts`, `IsSelectable` |
-| **Private Field** | _camelCase (underscore prefix) | `_cards`, `_stackModel`, `_isProcessing` |
+| **Private Field** | _camelCase (underscore prefix) | `_tiles`, `_stackModel`, `_isProcessing` |
 | **[SerializeField] private** | _camelCase (underscore prefix) | `_spriteRenderer`, `_timerText` |
 | **Public Field** (tránh dùng) | camelCase | `maxHearts`, `healTime` |
-| **Local Variable** | camelCase | `cardCount`, `matchIndex`, `targetPos` |
-| **Parameter** | camelCase | `cardType`, `duration`, `onComplete` |
+| **Local Variable** | camelCase | `tileCount`, `matchIndex`, `targetPos` |
+| **Parameter** | camelCase | `tileType`, `duration`, `onComplete` |
 | **Constant** | PascalCase hoặc UPPER_SNAKE | `MaxStackSize`, `DEFAULT_HEAL_TIME` |
-| **Event** | On + PascalCase | `OnCardClicked`, `OnMatchFound` |
+| **Event Channel SO** | PascalCase + `Channel` | `TileSelectedChannel`, `GameWonChannel` |
 | **Boolean** | Is/Has/Can/Should prefix | `IsSelectable`, `HasHearts`, `CanInteract` |
 
-### 1.2 Ví dụ áp dụng
-
-```csharp
-public class BoardController : MonoBehaviour {
-    // === SerializeField ===
-    [SerializeField] private BoardView _boardView;
-    [SerializeField] private CardDatabaseSO _cardDatabase;
-
-    // === Private fields ===
-    private BoardModel _boardModel;
-    private GameStateModel _gameState;
-    private bool _isInitialized;
-
-    // === Public properties ===
-    public bool IsCleared => _boardModel.RemainingCards <= 0;
-    public int CardCount => _boardModel.Cards.Count;
-
-    // === Public methods ===
-    public void Initialize(LevelModel level) {
-        _boardModel = new BoardModel(level.Cards);
-        _boardView.SpawnCards(_boardModel.Cards);
-        _isInitialized = true;
-    }
-
-    // === Private methods ===
-    private void HandleCardClicked(CardView cardView) {
-        if (!_gameState.CanInteract) return;
-        CardModel cardModel = GetModelForView(cardView);
-        // ...
-    }
-
-    // === Events ===
-    public event Action<CardModel> OnCardSelected;
-}
-```
-
-### 1.3 Unity Assets & Files
+### 1.2 Unity Assets & Files
 
 | Loại | Convention | Ví dụ |
 |---|---|---|
-| **Scene** | PascalCase | `InGame.unity`, `GameMode.unity` |
-| **Prefab** | PascalCase | `Card.prefab`, `WinPanel.prefab` |
-| **ScriptableObject Asset** | PascalCase + Suffix | `BICH_CardData.asset`, `Level01_Config.asset` |
-| **Sprite** | snake_case hoặc PascalCase | `card_heart_A.png`, `btn_play.png` |
-| **Audio Clip** | snake_case | `sfx_match.wav`, `bgm_main.mp3` |
-| **Material** | PascalCase + `_Mat` | `Card_Mat`, `Dissolve_Mat` |
-| **Shader** | PascalCase | `CardDissolve.shader` |
-| **Animation Clip** | PascalCase + Action | `CardFlip.anim`, `PanelSlideIn.anim` |
-| **Folder** | PascalCase | `Scripts/`, `Models/`, `CardData/` |
+| **Scene** | PascalCase | `InGame.unity`, `StartScreen.unity` |
+| **Prefab** | PascalCase | `Tile.prefab`, `WinPanel.prefab` |
+| **ScriptableObject Asset** | PascalCase + Suffix | `Pirate_TileData.asset`, `Level01_Config.asset` |
+| **Event Channel Asset** | PascalCase + `Channel` | `TileSelectedChannel.asset`, `GameWonChannel.asset` |
+| **Sprite** | snake_case hoặc PascalCase | `tile_sword.png`, `btn_play.png` |
+| **Audio Clip** | snake_case | `sfx_match.wav`, `bgm_pirate.mp3` |
+| **Material** | PascalCase + `_Mat` | `Tile_Mat`, `Dissolve_Mat` |
+| **Folder** | PascalCase | `Scripts/`, `Models/`, `EventChannels/` |
 
-### 1.4 MVC Suffix Convention
+### 1.3 MVC + Event Channel Suffix Convention
 
 | Layer | Suffix bắt buộc | Ví dụ |
 |---|---|---|
-| **Model** | `Model` | `CardModel`, `BoardModel`, `StackModel` |
-| **View** | `View` | `CardView`, `BoardView`, `TimerView` |
+| **Model** | `Model` | `TileModel`, `BoardModel`, `StackModel` |
+| **View** | `View` | `TileView`, `BoardView`, `TimerView` |
 | **Controller** | `Controller` | `BoardController`, `GameController` |
 | **Service** | `Service` | `AudioService`, `SaveService` |
-| **ScriptableObject** | `SO` | `CardDatabaseSO`, `GameConfigSO` |
-| **Event** | `Event` | `CardSelectedEvent`, `GameWonEvent` |
+| **ScriptableObject** | `SO` | `TileDatabaseSO`, `GameConfigSO` |
+| **Event Channel SO** | `ChannelSO` | `VoidEventChannelSO`, `TileSelectedChannelSO` |
+| **Event Data** | `EventData` | `TileSelectedEventData`, `PowerUpUsedEventData` |
 
 ---
 
-## 2. Coding Convention — Quy Tắc Viết Code
+## 2. Coding Convention
 
 ### 2.1 File Structure — Thứ tự trong class
 
@@ -104,6 +68,9 @@ public class ExampleController : MonoBehaviour {
     [SerializeField] private ExampleView _view;
     [SerializeField] private ExampleSO _config;
 
+    [Header("Event Channels")]
+    [SerializeField] private VoidEventChannelSO _someChannel;
+
     // 3. PRIVATE FIELDS
     private ExampleModel _model;
     private bool _isInitialized;
@@ -111,35 +78,33 @@ public class ExampleController : MonoBehaviour {
     // 4. PUBLIC PROPERTIES
     public bool IsReady => _isInitialized;
 
-    // 5. EVENTS
+    // 5. EVENTS (C# events cho View→Controller)
     public event Action<int> OnValueChanged;
 
-    // 6. UNITY LIFECYCLE (theo thứ tự gọi)
+    // 6. UNITY LIFECYCLE
     private void Awake() { }
-    private void OnEnable() { }
+    private void OnEnable() { /* Subscribe Event Channels */ }
     private void Start() { }
     private void Update() { }
-    private void OnDisable() { }
-    private void OnDestroy() { }
+    private void OnDisable() { /* Unsubscribe Event Channels */ }
+    private void OnDestroy() { /* Kill DOTween */ }
 
     // 7. PUBLIC METHODS
     public void Initialize() { }
-    public void DoSomething() { }
 
     // 8. PRIVATE METHODS
     private void HandleEvent() { }
-    private void UpdateView() { }
 
     // 9. COROUTINES (nếu có)
     private IEnumerator WaitAndDo() { }
 }
 ```
 
-### 2.2 Braces Style — K&R (mở ngoặc cùng dòng)
+### 2.2 Braces Style — K&R
 
 ```csharp
-// ✅ ĐÚNG — K&R style (theo codebase hiện tại)
-public class CardModel {
+// ✅ ĐÚNG — K&R style
+public class TileModel {
     public void DoSomething() {
         if (condition) {
             // ...
@@ -148,335 +113,154 @@ public class CardModel {
         }
     }
 }
-
-// ❌ SAI — Allman style (KHÔNG dùng)
-public class CardModel
-{
-    public void DoSomething()
-    {
-        if (condition)
-        {
-        }
-    }
-}
 ```
 
 ### 2.3 Quy tắc chung
 
 ```
-1. ✅ Mỗi file chỉ chứa 1 class/interface/enum (trừ inner class nhỏ)
-2. ✅ Mỗi class tối đa 300 dòng — nếu dài hơn → tách
-3. ✅ Mỗi method tối đa 30 dòng — nếu dài hơn → extract method
-4. ✅ Dùng `var` khi kiểu rõ ràng: var card = new CardModel();
-5. ✅ Dùng explicit type khi không rõ: List<CardModel> cards = GetCards();
-6. ✅ Nullable: dùng null check pattern (card?.DoSomething())
-7. ✅ String interpolation: $"Level {levelIndex}"
-8. ❌ KHÔNG dùng magic numbers — khai báo const/config
-9. ❌ KHÔNG dùng Debug.Log trong production — dùng #if UNITY_EDITOR hoặc Logger
-10. ❌ KHÔNG public fields (trừ struct data) — dùng property
+1. ✅ Mỗi file chỉ chứa 1 class/interface/enum
+2. ✅ Mỗi class tối đa 300 dòng
+3. ✅ Mỗi method tối đa 30 dòng
+4. ✅ Dùng var khi kiểu rõ ràng
+5. ✅ String interpolation: $"Level {levelIndex}"
+6. ❌ KHÔNG magic numbers — dùng const/config
+7. ❌ KHÔNG Debug.Log trong production — dùng #if UNITY_EDITOR
+8. ❌ KHÔNG public fields — dùng property
+9. ✅ Luôn khai báo access modifier rõ ràng
 ```
 
-### 2.4 Access Modifier
-
-```
-📌 QUY TẮC: Luôn khai báo access modifier rõ ràng
-
-✅ private void HandleClick() { }
-❌ void HandleClick() { }           // Implicit private — khó đọc
-
-📌 THỨ TỰ ƯU TIÊN: private > protected > internal > public
-   → Cho scope nhỏ nhất có thể
-   → Chỉ public khi THỰC SỰ cần truy cập từ bên ngoài
-```
-
-### 2.5 Comment & Documentation
+### 2.4 Import Order
 
 ```csharp
-// ✅ Dùng XML doc cho public API
-/// <summary>
-/// Tìm vị trí chèn bài vào stack, ưu tiên chèn cạnh bài cùng loại.
-/// </summary>
-/// <param name="cardType">Loại bài cần chèn</param>
-/// <returns>Index vị trí chèn (0-based)</returns>
-public int GetInsertIndex(CardType cardType) { ... }
+// 1. System namespaces
+using System;
+using System.Collections.Generic;
 
-// ✅ Dùng comment ngắn cho logic phức tạp
-// Fisher-Yates shuffle — O(n), in-place
-private void ShuffleList<T>(List<T> list) { ... }
+// 2. Unity namespaces
+using UnityEngine;
+using UnityEngine.UI;
 
-// ❌ KHÔNG comment điều hiển nhiên
-int count = 0; // Khai báo biến count ← THỪA
+// 3. Third-party
+using DG.Tweening;
+using TMPro;
+
+// 4. Project namespaces
+using PirateTiles.Models;
+using PirateTiles.Events;
 ```
 
 ---
 
-## 3. Unity Convention — Quy Tắc Unity
+## 3. Unity Convention
 
 ### 3.1 MonoBehaviour Guidelines
 
 ```
-1. ✅ Dùng [SerializeField] private thay vì public cho Inspector
-2. ✅ Dùng [Header("Section")] để nhóm fields trong Inspector
-3. ✅ Subscribe events trong OnEnable, Unsubscribe trong OnDisable
+1. ✅ Dùng [SerializeField] private thay vì public
+2. ✅ Dùng [Header("Section")] để nhóm fields
+3. ✅ Subscribe Event Channels trong OnEnable, Unsubscribe trong OnDisable
 4. ✅ Kill DOTween trong OnDestroy
-5. ❌ KHÔNG dùng Awake cho logic phức tạp — dùng Initialize() method
+5. ❌ KHÔNG dùng Find/FindWithTag trong runtime
 6. ❌ KHÔNG dùng Update nếu có thể — dùng event-driven
-7. ❌ KHÔNG dùng Find/FindWithTag trong runtime — inject dependencies
 ```
 
-### 3.2 Singleton Pattern (chỉ cho Service)
-
-```csharp
-// ✅ Chuẩn Singleton cho Service
-public class AudioService : MonoBehaviour {
-    public static AudioService Instance { get; private set; }
-
-    private void Awake() {
-        if (Instance == null) {
-            Instance = this;
-            DontDestroyOnLoad(gameObject);
-        } else {
-            Destroy(gameObject);
-            return;
-        }
-        InitializeService();
-    }
-
-    private void OnDestroy() {
-        if (Instance == this) {
-            Instance = null;
-        }
-    }
-}
-```
-
-### 3.3 Prefab & Scene Hierarchy
+### 3.2 Scene Hierarchy
 
 ```
-📌 THỨ TỰ HIERARCHY TRONG SCENE:
-
 Scene Root
-├── --- MANAGERS ---         ← Separator (empty GO)
+├── --- MANAGERS ---
 │   ├── GameController
 │   ├── BoardController
-│   ├── StackController
 │   └── ...Controllers
 ├── --- ENVIRONMENT ---
 │   ├── Camera
 │   └── Background
 ├── --- GAMEPLAY ---
-│   ├── BoardView
-│   │   └── [Cards]
-│   └── StackView
-│       └── [Slots]
+│   ├── BoardView → [Tiles]
+│   └── StackView → [Slots]
 ├── --- UI ---
 │   └── Canvas
-│       ├── HUD (hearts, coins, timer, power-ups)
+│       ├── HUD
 │       ├── WinPanel
 │       ├── LosePanel
 │       └── SettingPanel
-└── --- DEBUG ---             ← Chỉ trong Editor
-    └── DebugCanvas
-
-📌 Dùng "--- NAME ---" separator để dễ đọc hierarchy
-```
-
-### 3.4 Tag & Layer
-
-| Tag | Dùng cho |
-|---|---|
-| `Card` | Tất cả CardView GameObjects |
-| `Player` | Player root objects |
-| `PlayerA` / `PlayerB` | Phân biệt player |
-
-| Layer | Dùng cho |
-|---|---|
-| `Default` | Mặc định |
-| `Card` | Cards (cho physics raycast nếu cần) |
-| `UI` | Tất cả UI elements |
-| `Ignore Raycast` | Background, decorations |
-
-### 3.5 Prefab Rules
-
-```
-1. ✅ Prefab name = Class name (Card.prefab → CardView component)
-2. ✅ Prefab root phải có component chính (CardView trên root GO)
-3. ✅ Nested prefab cho UI panels phức tạp
-4. ❌ KHÔNG sửa prefab instance trong scene — sửa prefab gốc
-5. ❌ KHÔNG đặt prefab quá nhiều tầng lồng (max 3 levels)
+└── --- DEBUG ---
 ```
 
 ---
 
-## 4. Git Convention — Quy Tắc Git
+## 4. Git Convention
 
 ### 4.1 Branch Naming
 
 | Loại | Format | Ví dụ |
 |---|---|---|
-| **Feature** | `feature/tên-ngắn` | `feature/stack-system`, `feature/power-ups` |
-| **Bugfix** | `fix/mô-tả-bug` | `fix/magic-leak`, `fix/timer-reset` |
-| **Refactor** | `refactor/mô-tả` | `refactor/board-model`, `refactor/event-bus` |
-| **Release** | `release/version` | `release/1.0.0` |
+| **Feature** | `feature/tên-ngắn` | `feature/stack-system`, `feature/event-channels` |
+| **Bugfix** | `fix/mô-tả` | `fix/tile-overlap`, `fix/channel-null` |
+| **Refactor** | `refactor/mô-tả` | `refactor/board-model` |
 
 ### 4.2 Commit Message
 
 ```
 Format: <type>(<scope>): <description>
 
-Types:
-  feat     — Tính năng mới
-  fix      — Sửa bug
-  refactor — Tái cấu trúc không thay đổi behavior
-  test     — Thêm/sửa test
-  docs     — Tài liệu
-  style    — Format code (không thay đổi logic)
-  chore    — Build, config, dependencies
-
 Ví dụ:
   feat(board): implement overlap detection in BoardModel
-  fix(stack): fix smart insert index when no same type exists
+  feat(events): create TileSelectedChannelSO
+  fix(stack): fix smart insert index
   test(stack): add unit tests for StackModel.FindMatch
-  refactor(events): migrate from static events to EventBus
-  docs: update Architecture document with EventBus section
-```
-
-### 4.3 Pull Request Rules
-
-```
-1. ✅ Mỗi PR đi kèm:
-   - Mô tả ngắn gọn thay đổi
-   - Screenshots/recordings nếu thay đổi visual
-   - Danh sách task đã hoàn thành (tham chiếu _03.TaskBreakdown)
-   - Tests đã pass
-
-2. ✅ PR size:
-   - Ideal: < 300 dòng thay đổi
-   - Max: 500 dòng
-   - Nếu lớn hơn → tách thành nhiều PR
-
-3. ✅ Review:
-   - Dev khác phải review trước khi merge
-   - Tối thiểu 1 approval
 ```
 
 ---
 
-## 5. MVC-Specific Rules — Quy Tắc MVC
+## 5. MVC-Specific Rules
 
 ### 5.1 Model Rules
 
 ```
-✅ DO:
-  - Pure C# class (không MonoBehaviour)
-  - Chứa data + business logic
-  - Raise events khi state thay đổi (optional)
-  - Unit testable
-
-❌ DON'T:
-  - Reference UnityEngine.UI, UnityEngine.SceneManagement
-  - Reference bất kỳ View hoặc Controller nào
-  - Gọi DOTween, animation, rendering
-  - Dùng Find, GetComponent, Instantiate
+✅ Pure C# class (không MonoBehaviour)
+✅ Chứa data + business logic
+✅ Unit testable
+❌ KHÔNG reference UnityEngine.UI
+❌ KHÔNG reference View hoặc Controller
+❌ KHÔNG gọi DOTween, animation
 ```
 
 ### 5.2 View Rules
 
 ```
-✅ DO:
-  - MonoBehaviour, quản lý visual
-  - Expose public methods cho Controller gọi
-  - Raise UI events (button click, input)
-  - Handle animation, VFX, shader
-
-❌ DON'T:
-  - Chứa business logic (match-3, overlap, win/lose)
-  - Trực tiếp thay đổi Model
-  - Reference chéo View khác (dùng Controller/EventBus)
-  - Quyết định game flow (chỉ hiển thị)
+✅ MonoBehaviour, quản lý visual
+✅ Expose public methods cho Controller gọi
+✅ Handle animation, VFX, shader
+❌ KHÔNG chứa business logic
+❌ KHÔNG trực tiếp thay đổi Model
 ```
 
 ### 5.3 Controller Rules
 
 ```
-✅ DO:
-  - MonoBehaviour, kết nối Model ↔ View
-  - Xử lý input → cập nhật Model → cập nhật View
-  - Subscribe/Publish EventBus
-  - Quản lý lifecycle (init, cleanup)
-
-❌ DON'T:
-  - Chứa rendering, animation (delegate cho View)
-  - Chứa dữ liệu state (delegate cho Model)
-  - Trực tiếp gọi Controller khác (dùng EventBus)
-  - Quá 300 dòng (tách nếu cần)
+✅ MonoBehaviour, kết nối Model ↔ View
+✅ Subscribe/Raise Event Channel SO
+✅ Quản lý lifecycle
+❌ KHÔNG chứa rendering, animation
+❌ KHÔNG chứa dữ liệu state (delegate cho Model)
+❌ KHÔNG gọi trực tiếp Controller khác → dùng Event Channel
 ```
 
-### 5.4 Kiểm tra quy tắc — Quick Checklist
-
-Trước khi commit, tự hỏi:
+### 5.4 Event Channel Rules
 
 ```
-□ Model có import UnityEngine.UI không? → ❌ Sai
-□ View có chứa if/else game logic không? → ❌ Sai
-□ Controller có hơn 300 dòng không? → ⚠️ Cần tách
-□ Có dùng Find/FindWithTag trong runtime không? → ❌ Sai
-□ Event có được Unsubscribe trong OnDisable không? → ✅ Phải có
-□ DOTween có .SetAutoKill(true) không? → ✅ Phải có
-□ Field có access modifier rõ ràng không? → ✅ Phải có
-□ Magic number có được thay bằng const/config không? → ✅ Phải có
+✅ ScriptableObject asset
+✅ Wire qua [SerializeField] trong Inspector
+✅ Subscribe trong OnEnable, Unsubscribe trong OnDisable
+✅ Dùng named method (không anonymous lambda)
+❌ KHÔNG tạo Event Channel bằng code tại runtime
+❌ KHÔNG dùng static reference đến Event Channel
 ```
 
 ---
 
-## 6. Folder & File Organization
-
-### 6.1 Quy tắc đặt file
-
-```
-📌 File name = Class name (1 file = 1 class)
-   CardModel.cs → chứa class CardModel
-   BoardView.cs → chứa class BoardView
-
-📌 File nằm đúng thư mục layer:
-   Models/CardModel.cs       ✅
-   Controllers/CardModel.cs  ❌ (Model không ở Controllers)
-
-📌 Thư mục con khi > 5 files cùng domain:
-   Views/
-   ├── Card/
-   │   ├── CardView.cs
-   │   └── CardVFXView.cs
-   ├── UI/
-   │   ├── WinPanelView.cs
-   │   └── LosePanelView.cs
-   └── ...
-```
-
-### 6.2 Import Order
-
-```csharp
-// 1. System namespaces
-using System;
-using System.Collections.Generic;
-using System.Linq;
-
-// 2. Unity namespaces
-using UnityEngine;
-using UnityEngine.UI;
-
-// 3. Third-party namespaces
-using DG.Tweening;
-using TMPro;
-
-// 4. Project namespaces (nếu dùng)
-using WonderMatch.Models;
-using WonderMatch.Events;
-```
-
----
-
-## Tóm Tắt Nhanh — Cheat Sheet
+## Tóm Tắt — Cheat Sheet
 
 ```
 ╔══════════════════════════════════════════════════════╗
@@ -484,9 +268,9 @@ using WonderMatch.Events;
 ║  Class/Method/Property → PascalCase                  ║
 ║  Private field         → _camelCase                  ║
 ║  Local/Param           → camelCase                   ║
-║  Constant              → PascalCase / UPPER_SNAKE    ║
 ║  Boolean               → Is/Has/Can prefix           ║
 ║  MVC Suffix            → Model/View/Controller       ║
+║  Event Channel         → ChannelSO suffix            ║
 ╠══════════════════════════════════════════════════════╣
 ║  CODING                                              ║
 ║  Braces                → K&R (same line)             ║
@@ -495,15 +279,12 @@ using WonderMatch.Events;
 ║  Max class length      → 300 lines                   ║
 ║  Max method length     → 30 lines                    ║
 ╠══════════════════════════════════════════════════════╣
-║  MVC                                                 ║
+║  MVC + EVENT CHANNEL                                 ║
 ║  Model                 → Pure C#, no MonoBehaviour   ║
 ║  View                  → MonoBehaviour, visual only  ║
 ║  Controller            → MonoBehaviour, M↔V bridge   ║
-║  Communication         → EventBus (typed, generic)   ║
-╠══════════════════════════════════════════════════════╣
-║  GIT                                                 ║
-║  Branch                → feature/fix/refactor/...    ║
-║  Commit                → type(scope): description    ║
-║  PR                    → < 300 lines, 1 approval     ║
+║  Communication         → Event Channel SO            ║
+║  Subscribe             → OnEnable                    ║
+║  Unsubscribe           → OnDisable                   ║
 ╚══════════════════════════════════════════════════════╝
 ```
