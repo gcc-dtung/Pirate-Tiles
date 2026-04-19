@@ -13,44 +13,52 @@
 |---|---|---|
 | **Class / Struct** | PascalCase | `TileModel`, `StackController`, `GameConfigSO` |
 | **Interface** | I + PascalCase | `IState`, `IPowerUp` |
-| **Enum** | PascalCase | `TileType`, `GamePhase` |
-| **Enum Value** | PascalCase | `TileType.Sword`, `GamePhase.Playing` |
+| **Enum** | PascalCase | `CardType`, `GamePhase` |
+| **Enum Value** | PascalCase | `CardType.Sword`, `GamePhase.Playing` |
 | **Public Method** | PascalCase | `FindMatch()`, `UpdateSelectableStatus()` |
 | **Private Method** | PascalCase | `HandleTileClick()`, `SyncViewWithModel()` |
 | **Public Property** | PascalCase | `CurrentHearts`, `IsSelectable` |
-| **Private Field** | _camelCase (underscore prefix) | `_tiles`, `_stackModel`, `_isProcessing` |
-| **[SerializeField] private** | _camelCase (underscore prefix) | `_spriteRenderer`, `_timerText` |
-| **Public Field** (tránh dùng) | camelCase | `maxHearts`, `healTime` |
+| **Private Field** | _camelCase | `_tiles`, `_stackModel`, `_isProcessing` |
+| **[SerializeField] private** | _camelCase | `_spriteRenderer`, `_timerText` |
 | **Local Variable** | camelCase | `tileCount`, `matchIndex`, `targetPos` |
 | **Parameter** | camelCase | `tileType`, `duration`, `onComplete` |
 | **Constant** | PascalCase hoặc UPPER_SNAKE | `MaxStackSize`, `DEFAULT_HEAL_TIME` |
-| **Event Channel SO** | PascalCase + `Channel` | `TileSelectedChannel`, `GameWonChannel` |
 | **Boolean** | Is/Has/Can/Should prefix | `IsSelectable`, `HasHearts`, `CanInteract` |
 
-### 1.2 Unity Assets & Files
+### 1.2 Event System Naming
+
+| Loại | Convention | Ví dụ |
+|---|---|---|
+| **EventBus Event Struct** | PascalCase + `Event` | `GamePhaseChangedEvent`, `TileStateChangedEvent` |
+| **Event Channel SO Class** | PascalCase + `ChannelSO` | `VoidEventChannelSO`, `TileSelectedChannelSO` |
+| **Event Channel SO Asset** | PascalCase + `Channel` | `TileSelectedChannel.asset`, `GameWonChannel.asset` |
+| **Event Data Struct** | PascalCase + `EventData` | `TileSelectedEventData`, `PowerUpUsedEventData` |
+| **EventBinding Field** | _camelCase + `Binding` | `_phaseBinding`, `_tileStateBinding` |
+
+### 1.3 Unity Assets & Files
 
 | Loại | Convention | Ví dụ |
 |---|---|---|
 | **Scene** | PascalCase | `InGame.unity`, `StartScreen.unity` |
 | **Prefab** | PascalCase | `Tile.prefab`, `WinPanel.prefab` |
 | **ScriptableObject Asset** | PascalCase + Suffix | `Pirate_TileData.asset`, `Level01_Config.asset` |
-| **Event Channel Asset** | PascalCase + `Channel` | `TileSelectedChannel.asset`, `GameWonChannel.asset` |
 | **Sprite** | snake_case hoặc PascalCase | `tile_sword.png`, `btn_play.png` |
 | **Audio Clip** | snake_case | `sfx_match.wav`, `bgm_pirate.mp3` |
 | **Material** | PascalCase + `_Mat` | `Tile_Mat`, `Dissolve_Mat` |
 | **Folder** | PascalCase | `Scripts/`, `Models/`, `EventChannels/` |
 
-### 1.3 MVC + Event Channel Suffix Convention
+### 1.4 MVC + Event Suffix Convention
 
 | Layer | Suffix bắt buộc | Ví dụ |
 |---|---|---|
-| **Model** | `Model` | `TileModel`, `BoardModel`, `StackModel` |
-| **View** | `View` | `TileView`, `BoardView`, `TimerView` |
+| **Model** | `Model` | `TileModel`, `BoardModel` |
+| **View** | `View` | `TileView`, `BoardView` |
 | **Controller** | `Controller` | `BoardController`, `GameController` |
 | **Service** | `Service` | `AudioService`, `SaveService` |
 | **ScriptableObject** | `SO` | `TileDatabaseSO`, `GameConfigSO` |
 | **Event Channel SO** | `ChannelSO` | `VoidEventChannelSO`, `TileSelectedChannelSO` |
-| **Event Data** | `EventData` | `TileSelectedEventData`, `PowerUpUsedEventData` |
+| **EventBus Event** | `Event` | `GamePhaseChangedEvent`, `TileStateChangedEvent` |
+| **Event Data** | `EventData` | `TileSelectedEventData` |
 
 ---
 
@@ -66,44 +74,45 @@ public class ExampleController : MonoBehaviour {
     // 2. SERIALIZED FIELDS (Inspector)
     [Header("References")]
     [SerializeField] private ExampleView _view;
-    [SerializeField] private ExampleSO _config;
 
     [Header("Event Channels")]
     [SerializeField] private VoidEventChannelSO _someChannel;
 
     // 3. PRIVATE FIELDS
     private ExampleModel _model;
-    private bool _isInitialized;
+    private EventBinding<GamePhaseChangedEvent> _phaseBinding;
 
     // 4. PUBLIC PROPERTIES
     public bool IsReady => _isInitialized;
 
-    // 5. EVENTS (C# events cho View→Controller)
-    public event Action<int> OnValueChanged;
-
-    // 6. UNITY LIFECYCLE
+    // 5. UNITY LIFECYCLE
     private void Awake() { }
-    private void OnEnable() { /* Subscribe Event Channels */ }
+    private void OnEnable() {
+        // Subscribe Event Channels
+        // Register EventBus bindings
+    }
     private void Start() { }
-    private void Update() { }
-    private void OnDisable() { /* Unsubscribe Event Channels */ }
+    private void OnDisable() {
+        // Unsubscribe Event Channels
+        // Deregister EventBus bindings
+    }
     private void OnDestroy() { /* Kill DOTween */ }
 
-    // 7. PUBLIC METHODS
+    // 6. PUBLIC METHODS
     public void Initialize() { }
 
-    // 8. PRIVATE METHODS
+    // 7. PRIVATE METHODS
     private void HandleEvent() { }
 
-    // 9. COROUTINES (nếu có)
-    private IEnumerator WaitAndDo() { }
+    // 8. EVENT HANDLERS
+    private void OnPhaseChanged(GamePhaseChangedEvent e) { }
+    private void OnGameWon() { }
 }
 ```
 
 ### 2.2 Braces Style — K&R
 
 ```csharp
-// ✅ ĐÚNG — K&R style
 public class TileModel {
     public void DoSomething() {
         if (condition) {
@@ -118,7 +127,7 @@ public class TileModel {
 ### 2.3 Quy tắc chung
 
 ```
-1. ✅ Mỗi file chỉ chứa 1 class/interface/enum
+1. ✅ Mỗi file chỉ chứa 1 class/interface/enum (trừ EventListener đi kèm ChannelSO)
 2. ✅ Mỗi class tối đa 300 dòng
 3. ✅ Mỗi method tối đa 30 dòng
 4. ✅ Dùng var khi kiểu rõ ràng
@@ -127,26 +136,7 @@ public class TileModel {
 7. ❌ KHÔNG Debug.Log trong production — dùng #if UNITY_EDITOR
 8. ❌ KHÔNG public fields — dùng property
 9. ✅ Luôn khai báo access modifier rõ ràng
-```
-
-### 2.4 Import Order
-
-```csharp
-// 1. System namespaces
-using System;
-using System.Collections.Generic;
-
-// 2. Unity namespaces
-using UnityEngine;
-using UnityEngine.UI;
-
-// 3. Third-party
-using DG.Tweening;
-using TMPro;
-
-// 4. Project namespaces
-using PirateTiles.Models;
-using PirateTiles.Events;
+10. ✅ Event payload luôn dùng struct
 ```
 
 ---
@@ -159,103 +149,40 @@ using PirateTiles.Events;
 1. ✅ Dùng [SerializeField] private thay vì public
 2. ✅ Dùng [Header("Section")] để nhóm fields
 3. ✅ Subscribe Event Channels trong OnEnable, Unsubscribe trong OnDisable
-4. ✅ Kill DOTween trong OnDestroy
-5. ❌ KHÔNG dùng Find/FindWithTag trong runtime
-6. ❌ KHÔNG dùng Update nếu có thể — dùng event-driven
-```
-
-### 3.2 Scene Hierarchy
-
-```
-Scene Root
-├── --- MANAGERS ---
-│   ├── GameController
-│   ├── BoardController
-│   └── ...Controllers
-├── --- ENVIRONMENT ---
-│   ├── Camera
-│   └── Background
-├── --- GAMEPLAY ---
-│   ├── BoardView → [Tiles]
-│   └── StackView → [Slots]
-├── --- UI ---
-│   └── Canvas
-│       ├── HUD
-│       ├── WinPanel
-│       ├── LosePanel
-│       └── SettingPanel
-└── --- DEBUG ---
+4. ✅ Register EventBus bindings trong OnEnable, Deregister trong OnDisable
+5. ✅ Lưu EventBinding vào field để deregister
+6. ✅ Kill DOTween trong OnDestroy
+7. ❌ KHÔNG dùng Find/FindWithTag trong runtime
+8. ❌ KHÔNG dùng Update nếu có thể — dùng event-driven
 ```
 
 ---
 
-## 4. Git Convention
+## 4. Event System Rules
 
-### 4.1 Branch Naming
-
-| Loại | Format | Ví dụ |
-|---|---|---|
-| **Feature** | `feature/tên-ngắn` | `feature/stack-system`, `feature/event-channels` |
-| **Bugfix** | `fix/mô-tả` | `fix/tile-overlap`, `fix/channel-null` |
-| **Refactor** | `refactor/mô-tả` | `refactor/board-model` |
-
-### 4.2 Commit Message
-
-```
-Format: <type>(<scope>): <description>
-
-Ví dụ:
-  feat(board): implement overlap detection in BoardModel
-  feat(events): create TileSelectedChannelSO
-  fix(stack): fix smart insert index
-  test(stack): add unit tests for StackModel.FindMatch
-```
-
----
-
-## 5. MVC-Specific Rules
-
-### 5.1 Model Rules
-
-```
-✅ Pure C# class (không MonoBehaviour)
-✅ Chứa data + business logic
-✅ Unit testable
-❌ KHÔNG reference UnityEngine.UI
-❌ KHÔNG reference View hoặc Controller
-❌ KHÔNG gọi DOTween, animation
-```
-
-### 5.2 View Rules
-
-```
-✅ MonoBehaviour, quản lý visual
-✅ Expose public methods cho Controller gọi
-✅ Handle animation, VFX, shader
-❌ KHÔNG chứa business logic
-❌ KHÔNG trực tiếp thay đổi Model
-```
-
-### 5.3 Controller Rules
-
-```
-✅ MonoBehaviour, kết nối Model ↔ View
-✅ Subscribe/Raise Event Channel SO
-✅ Quản lý lifecycle
-❌ KHÔNG chứa rendering, animation
-❌ KHÔNG chứa dữ liệu state (delegate cho Model)
-❌ KHÔNG gọi trực tiếp Controller khác → dùng Event Channel
-```
-
-### 5.4 Event Channel Rules
+### 4.1 Event Channel SO Rules
 
 ```
 ✅ ScriptableObject asset
 ✅ Wire qua [SerializeField] trong Inspector
 ✅ Subscribe trong OnEnable, Unsubscribe trong OnDisable
 ✅ Dùng named method (không anonymous lambda)
+✅ Payload dùng struct (EventData suffix)
 ❌ KHÔNG tạo Event Channel bằng code tại runtime
 ❌ KHÔNG dùng static reference đến Event Channel
+```
+
+### 4.2 EventBus Rules
+
+```
+✅ Event struct implement IEvent
+✅ Payload luôn là struct (tránh GC allocation)
+✅ Lưu EventBinding vào private field
+✅ Register trong OnEnable, Deregister trong OnDisable
+✅ Dùng cho sự kiện nội bộ, system-level, pure C# context
+❌ KHÔNG dùng EventBus cho sự kiện cross-layer cần Inspector debug
+❌ KHÔNG quên Deregister → gây memory leak
+❌ KHÔNG tạo binding inline mà không lưu reference
 ```
 
 ---
@@ -271,6 +198,8 @@ Ví dụ:
 ║  Boolean               → Is/Has/Can prefix           ║
 ║  MVC Suffix            → Model/View/Controller       ║
 ║  Event Channel         → ChannelSO suffix            ║
+║  EventBus Event        → Event suffix                ║
+║  Event Data            → EventData suffix            ║
 ╠══════════════════════════════════════════════════════╣
 ║  CODING                                              ║
 ║  Braces                → K&R (same line)             ║
@@ -278,13 +207,15 @@ Ví dụ:
 ║  Fields in Inspector   → [SerializeField] private    ║
 ║  Max class length      → 300 lines                   ║
 ║  Max method length     → 30 lines                    ║
+║  Event payload         → Always struct               ║
 ╠══════════════════════════════════════════════════════╣
-║  MVC + EVENT CHANNEL                                 ║
-║  Model                 → Pure C#, no MonoBehaviour   ║
+║  HYBRID EVENT SYSTEM                                 ║
+║  EventBus              → Internal, system-level      ║
+║  Event Channel SO      → Cross-layer, Inspector      ║
+║  Model                 → Pure C#, can use EventBus   ║
 ║  View                  → MonoBehaviour, visual only  ║
-║  Controller            → MonoBehaviour, M↔V bridge   ║
-║  Communication         → Event Channel SO            ║
-║  Subscribe             → OnEnable                    ║
-║  Unsubscribe           → OnDisable                   ║
+║  Controller            → M↔V bridge, uses BOTH       ║
+║  Subscribe/Register    → OnEnable                    ║
+║  Unsubscribe/Deregister → OnDisable                  ║
 ╚══════════════════════════════════════════════════════╝
 ```

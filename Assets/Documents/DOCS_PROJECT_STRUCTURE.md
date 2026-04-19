@@ -3,7 +3,7 @@
 > **Dự án:** Pirate Tiles — Game giải đố xếp bài Match-3 Tile trên mobile  
 > **Engine:** Unity 6 (C#)  
 > **Thư viện bên ngoài:** DOTween, TextMesh Pro  
-> **Kiến trúc:** MVC + Event Channel (ScriptableObject-based)  
+> **Kiến trúc:** MVC + Hybrid Event System (EventBus + Event Channel SO)  
 > **Theme:** 🏴‍☠️ Cướp biển (Pirate)
 
 ---
@@ -15,7 +15,7 @@
 3. [Hệ thống Scene](#3-hệ-thống-scene)
 4. [Kiến trúc mã nguồn](#4-kiến-trúc-mã-nguồn)
 5. [Luồng hoạt động chính](#5-luồng-hoạt-động-chính)
-6. [Hệ thống Event Channel](#6-hệ-thống-event-channel)
+6. [Hệ thống Event — Hybrid](#6-hệ-thống-event--hybrid)
 7. [Hệ thống lưu trữ dữ liệu](#7-hệ-thống-lưu-trữ-dữ-liệu)
 8. [Sơ đồ quan hệ giữa các thành phần](#8-sơ-đồ-quan-hệ-giữa-các-thành-phần)
 
@@ -35,10 +35,6 @@
 | **Hearts System** | Mạng sống, tự hồi phục theo thời gian |
 | **Coins System** | Tiền tệ trong game |
 | **Timer** | Đếm ngược mỗi màn chơi |
-| **Star Rating** | Đánh giá sao cho mỗi màn |
-| **Level Map** | Bản đồ hải tặc chọn màn |
-| **Level Editor** | Công cụ thiết kế màn chơi |
-| **Collectible Cards** | Lá bài đặc biệt thu thập |
 
 ---
 
@@ -47,122 +43,51 @@
 ```
 Pirate-Tiles/
 ├── Assets/
-│   ├── _PirateTiles/                  # ⭐ Mã nguồn chính
+│   ├── _Project/                       # ⭐ Mã nguồn chính
 │   │   ├── Scripts/
 │   │   │   ├── Models/                # 🟦 Model Layer (Pure C#)
-│   │   │   │   ├── TileModel.cs
-│   │   │   │   ├── BoardModel.cs
-│   │   │   │   ├── StackModel.cs
-│   │   │   │   ├── LevelModel.cs
-│   │   │   │   ├── PowerUpModel.cs
-│   │   │   │   ├── HeartsModel.cs
-│   │   │   │   ├── CoinsModel.cs
-│   │   │   │   ├── TileHistoryModel.cs
-│   │   │   │   └── GameStateModel.cs
 │   │   │   │
 │   │   │   ├── Views/                 # 🟩 View Layer (MonoBehaviour)
-│   │   │   │   ├── Tile/
-│   │   │   │   │   ├── TileView.cs
-│   │   │   │   │   └── TileVFXView.cs
-│   │   │   │   ├── Board/
-│   │   │   │   │   └── BoardView.cs
-│   │   │   │   ├── Stack/
-│   │   │   │   │   └── StackView.cs
-│   │   │   │   ├── UI/
-│   │   │   │   │   ├── WinPanelView.cs
-│   │   │   │   │   ├── LosePanelView.cs
-│   │   │   │   │   ├── SettingPanelView.cs
-│   │   │   │   │   ├── HeartsView.cs
-│   │   │   │   │   ├── CoinsView.cs
-│   │   │   │   │   ├── PowerUpBarView.cs
-│   │   │   │   │   ├── TimerView.cs
-│   │   │   │   │   ├── MapView.cs
-│   │   │   │   │   ├── LoadingView.cs
-│   │   │   │   │   ├── OutOfHeartPanelView.cs
-│   │   │   │   │   └── SpendCoinsPanelView.cs
-│   │   │   │   └── Tutorial/
-│   │   │   │       └── TutorialView.cs
 │   │   │   │
 │   │   │   ├── Controllers/           # 🟧 Controller Layer
-│   │   │   │   ├── GameController.cs
-│   │   │   │   ├── BoardController.cs
-│   │   │   │   ├── StackController.cs
-│   │   │   │   ├── PowerUpController.cs
-│   │   │   │   ├── TimerController.cs
-│   │   │   │   ├── LevelController.cs
-│   │   │   │   ├── HeartsController.cs
-│   │   │   │   ├── CoinsController.cs
-│   │   │   │   ├── TutorialController.cs
-│   │   │   │   └── AudioController.cs
 │   │   │   │
 │   │   │   ├── Services/              # 🟪 Singleton Services
-│   │   │   │   ├── AudioService.cs
-│   │   │   │   ├── SaveService.cs
-│   │   │   │   └── SceneService.cs
 │   │   │   │
-│   │   │   ├── Data/                  # 🟫 Enums, Event Channels, SO
+│   │   │   ├── Data/                  # 🟫 Data Layer
 │   │   │   │   ├── Enums/
-│   │   │   │   │   ├── TileType.cs
-│   │   │   │   │   ├── TileState.cs
-│   │   │   │   │   ├── PowerType.cs
-│   │   │   │   │   ├── SoundEffect.cs
-│   │   │   │   │   └── GamePhase.cs
-│   │   │   │   ├── EventChannels/
-│   │   │   │   │   ├── VoidEventChannelSO.cs
+│   │   │   │   ├── Constants/
+│   │   │   │   ├── EventBus/          # ⚡ EventBus (Static Generic)
+│   │   │   │   │   ├── EventBus.cs
+│   │   │   │   │   ├── EventBinding.cs
+│   │   │   │   │   ├── IEvent.cs
+│   │   │   │   │   ├── EventBusUtil.cs
+│   │   │   │   │   ├── PredefinedAssemblyUtil.cs
+│   │   │   │   │   └── Events/        # Event struct definitions
+│   │   │   │   │       ├── GameEvents.cs
+│   │   │   │   │       ├── TileEvents.cs
+│   │   │   │   │       └── AudioEvents.cs
+│   │   │   │   ├── EventChannels/     # 📡 Event Channel SO
 │   │   │   │   │   ├── EventChannelSO.cs
-│   │   │   │   │   ├── TileSelectedChannelSO.cs
+│   │   │   │   │   ├── EventListener.cs
+│   │   │   │   │   ├── VoidEventChannelSO.cs
 │   │   │   │   │   ├── BoolEventChannelSO.cs
-│   │   │   │   │   └── IntEventChannelSO.cs
-│   │   │   │   ├── EventData/
+│   │   │   │   │   ├── IntEventChannelSO.cs
+│   │   │   │   │   └── TileSelectedChannelSO.cs
+│   │   │   │   ├── EventData/         # 📦 Struct payloads
 │   │   │   │   │   ├── TileSelectedEventData.cs
 │   │   │   │   │   └── PowerUpUsedEventData.cs
-│   │   │   │   ├── ScriptableObjects/
-│   │   │   │   │   ├── TileDatabaseSO.cs
-│   │   │   │   │   ├── LevelConfigSO.cs
-│   │   │   │   │   ├── GameConfigSO.cs
-│   │   │   │   │   └── AudioConfigSO.cs
-│   │   │   │   └── SaveKeys.cs
+│   │   │   │   └── ScriptableObjects/
 │   │   │   │
-│   │   │   ├── Utils/                 # 🔧 Tiện ích
-│   │   │   │   ├── Extensions/
-│   │   │   │   │   └── DOTweenExtensions.cs
-│   │   │   │   └── Helpers/
-│   │   │   │       └── ShuffleHelper.cs
-│   │   │   │
-│   │   │   ├── Editor/               # 🛠️ Editor tools
-│   │   │   │   ├── LevelEditorWindow.cs
-│   │   │   │   └── TileLevelEditor.cs
-│   │   │   │
-│   │   │   └── Tests/
-│   │   │       ├── EditMode/
-│   │   │       └── PlayMode/
+│   │   │   ├── Utils/
+│   │   │   └── Editor/
 │   │   │
 │   │   ├── Scenes/
-│   │   │   ├── StartScreen.unity
-│   │   │   ├── InGame.unity
-│   │   │   ├── Loading.unity
-│   │   │   ├── Map.unity
-│   │   │   └── Tutorial.unity
-│   │   │
 │   │   ├── Prefabs/
-│   │   │   ├── Tile.prefab
-│   │   │   ├── UI/
-│   │   │   └── Managers/
-│   │   │
-│   │   ├── Resources/
-│   │   │   ├── TileData/              # TileDatabaseSO assets
-│   │   │   ├── LevelConfigs/
-│   │   │   ├── LevelPrefabs/
-│   │   │   ├── EventChannels/         # ⭐ Event Channel SO assets
-│   │   │   └── GameConfig.asset
-│   │   │
-│   │   ├── Art/
-│   │   ├── Audio/
-│   │   ├── Materials/
-│   │   └── Shaders/
+│   │   └── Resources/
+│   │       ├── EventChannels/         # ⭐ Event Channel SO assets
+│   │       └── ...
 │   │
-│   ├── Plugins/                       # DOTween, TextMesh Pro
-│   ├── TextMesh Pro/
+│   ├── Plugins/
 │   └── Documents/                     # 📄 Tài liệu dự án
 │
 ├── Packages/
@@ -178,7 +103,7 @@ graph LR
     A[StartScreen] --> B{Lần đầu chơi?}
     B -->|Có| C[Tutorial]
     B -->|Không| D[Map]
-    C -->|Skip / Hoàn thành| D
+    C -->|Hoàn thành| D
     D -->|Chọn Level| E[Loading]
     E --> F[InGame]
     F -->|Thắng / Thua| D
@@ -192,79 +117,56 @@ graph LR
 | `Loading` | Loading screen async |
 | `InGame` | Scene gameplay chính |
 
-### Cơ chế chuyển Scene
-
-`SceneService` (Singleton, DontDestroyOnLoad):
-1. Kill tất cả DOTween animation
-2. Reset `Time.timeScale = 1`
-3. Load scene `Loading` trước
-4. Load async scene đích
-
 ---
 
 ## 4. Kiến trúc mã nguồn
 
-### 4.1 Data Layer — Enums, Event Channels, ScriptableObjects
+### 4.1 Data Layer
 
 | File/Folder | Nội dung |
 |---|---|
-| `TileType` | Enum 13 loại tile pirate + 4 special |
-| `TileState` | Enum: `InBoard`, `InStack` |
-| `PowerType` | Enum: `Undo`, `Magic`, `Shuffle`, `AddOneCell` |
-| `SaveKeys` | Hằng số key cho PlayerPrefs |
-| `EventChannels/` | Base + typed Event Channel ScriptableObjects |
-| `EventData/` | Data structs cho Event Channels |
-| `TileDatabaseSO` | Mảng TileData (TileType + Sprite) |
-| `LevelConfigSO` | Cấu hình level |
-| `GameConfigSO` | Cấu hình game chung |
+| `Enums/` | CardType, CardState, PowerType, GamePhase, SoundEffect |
+| `Constants/` | SaveKeys |
+| `EventBus/` | Static generic EventBus infrastructure + event structs |
+| `EventChannels/` | ScriptableObject-based event channels |
+| `EventData/` | Struct payloads cho Event Channels |
+| `ScriptableObjects/` | TileDatabaseSO, LevelConfigSO, GameConfigSO, AudioConfigSO |
 
 ### 4.2 Model Layer — Pure C#
 
 | Model | Trách nhiệm |
 |---|---|
-| `TileModel` | Dữ liệu 1 tile: type, state, position, layer, selectable |
-| `BoardModel` | Quản lý tất cả tiles, overlap detection, shuffle, win check |
-| `StackModel` | Khay chứa: smart insert, match-3, full check |
-| `GameStateModel` | Game phase, processing flags, CanInteract |
-| `TileHistoryModel` | Lịch sử chọn tile (stack pattern) cho Undo |
+| `TileModel` | Dữ liệu 1 tile |
+| `BoardModel` | Quản lý tất cả tiles, overlap detection |
+| `StackModel` | Khay chứa: smart insert, match-3 |
+| `GameStateModel` | Game phase, CanInteract |
 | `PowerUpModel` | Đếm lượt power-up |
-| `HeartsModel` | Mạng sống, heal timer, offline recovery |
+| `HeartsModel` | Mạng sống, heal timer |
 | `CoinsModel` | Tiền tệ |
 
 ### 4.3 View Layer — MonoBehaviour
 
 | View | Trách nhiệm |
 |---|---|
-| `TileView` | Render sprite, dim/brighten, animation di chuyển, dissolve |
-| `BoardView` | Spawn/despawn tiles, sync selectable visual |
-| `StackView` | Render stack, animation add/remove/arrange |
-| `WinPanelView` | UI thắng + animation |
-| `LosePanelView` | UI thua + animation |
-| `TimerView` | Countdown display |
-| `PowerUpBarView` | 4 nút power-up |
-| `HeartsView` | Hearts display + heal countdown |
-| `CoinsView` | Coins display |
-| `MapView` | Bản đồ hải tặc, stars, lock/unlock |
+| `TileView` | Render sprite, animation |
+| `BoardView` | Spawn/despawn tiles |
+| `StackView` | Render stack, animation |
+| UI Views | WinPanel, LosePanel, Timer, Hearts, Coins, PowerUp, Map |
 
 ### 4.4 Controller Layer
 
 | Controller | Trách nhiệm |
 |---|---|
-| `GameController` | Điều phối trung tâm — game phase, win/lose flow |
-| `BoardController` | Click tile, overlap check, sync view, raise TileSelectedChannel |
-| `StackController` | Nhận tile via channel, match detection, remove, arrange |
-| `PowerUpController` | Xử lý 4 power-ups |
-| `TimerController` | Countdown, raise TimerExpiredChannel |
-| `LevelController` | Load level, unlock progress |
-| `HeartsController` | Hearts logic, heal timer |
-| `CoinsController` | Earn/spend coins |
-| `AudioController` | Subscribe channels → play sounds |
+| `GameController` | Điều phối trung tâm, dùng cả EventBus + Event Channel |
+| `BoardController` | Click tile, raise TileSelectedChannel, listen EventBus |
+| `StackController` | Nhận tile via channel, match detection |
+| `AudioController` | Subscribe cả hai hệ thống → play sounds |
 
 ### 4.5 Services Layer
 
 | Service | Trách nhiệm |
 |---|---|
-| `AudioService` | Singleton — BGM, SFX qua AudioMixer |
+| `AudioService` | Singleton — BGM, SFX |
 | `SaveService` | Singleton — PlayerPrefs wrapper |
 | `SceneService` | Singleton — Async scene loading |
 
@@ -272,63 +174,55 @@ graph LR
 
 ## 5. Luồng hoạt động chính
 
-### 5.1 Gameplay Loop
-
 ```mermaid
 graph TD
     A[Scene: InGame] --> B[LevelController: Load level]
     B --> C[BoardView: Spawn tiles]
-    C --> D[Shuffle intro animation]
-    D --> E[Timer bắt đầu đếm ngược]
+    C --> D[Timer bắt đầu]
 
-    E --> F[Player click tile]
+    D --> F[Player click tile]
     F --> G{Tile selectable?}
     G -->|No| F
-    G -->|Yes| H[BoardController → TileSelectedChannel.RaiseEvent]
+    G -->|Yes| H["BoardController → TileSelectedChannel + EventBus"]
     H --> I[StackController receives via channel]
     I --> J[Smart Insert + Animation]
     J --> K[CheckMatch]
 
     K --> L{3 tiles match?}
-    L -->|Yes| M[FadeOut → TilesMatchedChannel.RaiseEvent]
+    L -->|Yes| M["FadeOut → TilesMatchedChannel"]
     M --> N{Board cleared?}
-    N -->|Yes| O[GameWonChannel.RaiseEvent]
+    N -->|Yes| O["GameWonChannel + GamePhaseChangedEvent"]
     N -->|No| F
 
     L -->|No| P{Stack full?}
-    P -->|Yes| Q[StackFullChannel.RaiseEvent → Lose]
+    P -->|Yes| Q["StackFullChannel → Lose"]
     P -->|No| F
-
-    E --> R{Timer hết?}
-    R -->|Yes| S[TimerExpiredChannel.RaiseEvent → Lose]
-```
-
-### 5.2 Power-up Flow
-
-```mermaid
-graph LR
-    A[Player nhấn Power-up] --> B{count > 0?}
-    B -->|Yes| C[Thực thi Power-up]
-    B -->|No| D[SpendCoinsRequestChannel.RaiseEvent]
-    D --> E{Đủ 100 coins?}
-    E -->|Yes| F[Trừ coins + Reset count]
-    E -->|No| G[Không cho dùng]
-    C --> H[count-- + SaveData]
 ```
 
 ---
 
-## 6. Hệ thống Event Channel
+## 6. Hệ thống Event — Hybrid
 
-Dự án sử dụng **Event Channel (ScriptableObject-based)** thay vì static EventBus. Mỗi event là một SO asset, wire qua `[SerializeField]` trong Inspector.
+Dự án sử dụng **2 hệ thống event** song song:
 
-### Bảng Event Channels
+### 6.1 EventBus Events (Static Generic — Internal/System-Level)
+
+| Event | Payload | Mô tả |
+|---|---|---|
+| `GamePhaseChangedEvent` | PreviousPhase, NewPhase | Game phase transition |
+| `TileStateChangedEvent` | TileId, PreviousState, NewState | Tile state internal |
+| `BoardModelUpdatedEvent` | RemainingTiles, SelectableTiles | Board model sync |
+| `SceneLoadRequestedEvent` | SceneName, UseLoadingScreen | Scene load request |
+| `SaveDataChangedEvent` | Key | Save data notification |
+| `AudioSettingChangedEvent` | IsMusicEnabled, IsSfxEnabled | Audio setting change |
+
+### 6.2 Event Channel SO (ScriptableObject — Cross-Layer/Inspector)
 
 | Event Channel | Params | Publisher | Subscriber |
 |---|---|---|---|
 | `TileSelectedChannel` | `TileSelectedEventData` | `BoardController` | `StackController` |
 | `TilesMatchedChannel` | void | `StackController` | `GameController`, `AudioController` |
-| `GameWonChannel` | void | `GameController` | `WinPanelView`, `AudioController`, `CoinsController` |
+| `GameWonChannel` | void | `GameController` | `WinPanelView`, `AudioController` |
 | `GameLostChannel` | void | `GameController` | `LosePanelView`, `AudioController` |
 | `GamePausedChannel` | `bool` | `GameController` | `TimerController`, `AudioController` |
 | `TimerExpiredChannel` | void | `TimerController` | `GameController` |
@@ -338,7 +232,6 @@ Dự án sử dụng **Event Channel (ScriptableObject-based)** thay vì static 
 | `CoinsChangedChannel` | `int` | `CoinsController` | `CoinsView` |
 | `HeartsChangedChannel` | `int` | `HeartsController` | `HeartsView` |
 | `SpendCoinsRequestChannel` | `PowerType` | `PowerUpController` | `CoinsController` |
-| `ShuffleCompletedChannel` | void | `BoardController` | `TimerController` |
 | `OutOfHeartsChannel` | void | `HeartsController` | `OutOfHeartPanelView` |
 
 ---
@@ -360,8 +253,6 @@ Toàn bộ dữ liệu persistent được lưu qua **SaveService** (wrapper Pla
 | `LevelStars_{n}` | int | Sao đạt tại level n | 0 |
 | `MusicToggle` | int (0/1) | Music on/off | 1 |
 | `SFXToggle` | int (0/1) | SFX on/off | 1 |
-| `HasSeenTutorial` | int (0/1) | Đã xem tutorial | 0 |
-| `STile{n}` | int (0/1) | Special tile đã thu thập | 0 |
 
 ---
 
@@ -375,7 +266,13 @@ graph TB
         SCS[SceneService]
     end
 
-    subgraph "Event Channels (SO Assets)"
+    subgraph "EventBus - Static Generic"
+        GPE["GamePhaseChangedEvent"]
+        TSE["TileStateChangedEvent"]
+        BME["BoardModelUpdatedEvent"]
+    end
+
+    subgraph "Event Channels - SO Assets"
         TSC[TileSelectedChannel]
         TMC[TilesMatchedChannel]
         GWC[GameWonChannel]
@@ -388,19 +285,17 @@ graph TB
         GC[GameController]
         BC[BoardController]
         SC[StackController]
-        PC[PowerUpController]
         TC[TimerController]
     end
 
-    subgraph "Models (Pure C#)"
+    subgraph "Models - Pure C#"
         BM[BoardModel]
         SM[StackModel]
         GSM[GameStateModel]
     end
 
-    subgraph "Views (MonoBehaviour)"
+    subgraph "Views - MonoBehaviour"
         BV[BoardView]
-        TV[TileView]
         SVW[StackView]
         WPV[WinPanelView]
         LPV[LosePanelView]
@@ -409,6 +304,8 @@ graph TB
     BC -->|Đọc/Ghi| BM
     BC -->|Cập nhật| BV
     BC -->|Raise| TSC
+    BM -.->|Raise| BME
+    BME -.->|Notify| BC
     SC -->|Đọc/Ghi| SM
     SC -->|Cập nhật| SVW
     TSC -->|Notify| SC
@@ -419,14 +316,12 @@ graph TB
     TEC -->|Notify| GC
     GC -->|Raise| GWC
     GC -->|Raise| GLC
+    GC -.->|Raise| GPE
     GWC -->|Notify| WPV
     GLC -->|Notify| LPV
     TC -->|Raise| TEC
-    GC -->|Điều phối| BC
-    GC -->|Điều phối| SC
-    GC -->|Đọc/Ghi| GSM
 ```
 
 ---
 
-> **Ghi chú:** Pirate Tiles sử dụng **Event Channel SO** thay vì EventBus static. Mỗi event là một ScriptableObject asset trong `Resources/EventChannels/`, wire qua Inspector, dễ debug và giảm coupling giữa các thành phần.
+> **Ghi chú:** Pirate Tiles sử dụng **hệ thống event hybrid**: EventBus (static generic, nét đứt `-.->`) cho sự kiện nội bộ/system-level + Event Channel SO (nét liền `-->`) cho sự kiện cross-layer. Mỗi event payload dùng **struct**.
