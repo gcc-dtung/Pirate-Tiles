@@ -4,12 +4,8 @@ using UnityEngine;
 
 public abstract class EventChannelSO<T> : ScriptableObject
 {
-    private readonly List<EventListener<T>> eventRaised = new List<EventListener<T>>();
+    private readonly List<EventListener<T>> _eventRaised = new List<EventListener<T>>();
     private bool _isRunning;
-
-
-
-
 
 
     public void EventRaise(T value)
@@ -21,7 +17,7 @@ public abstract class EventChannelSO<T> : ScriptableObject
         }
         try
         {
-            if (eventRaised == null || eventRaised.Count == 0)
+            if (_eventRaised == null || _eventRaised.Count == 0)
             {
 #if UNITY_EDITOR
                 Debug.Log($"[EventChannel] {name}: RaiseEvent called but no listeners registered.");
@@ -29,7 +25,7 @@ public abstract class EventChannelSO<T> : ScriptableObject
                 return;
             }
             _isRunning = true;
-            List<EventListener<T>> snapshot = new List<EventListener<T>>(eventRaised);
+            List<EventListener<T>> snapshot = new List<EventListener<T>>(_eventRaised);
             foreach (var listener in snapshot)
             {
                 try
@@ -48,10 +44,6 @@ public abstract class EventChannelSO<T> : ScriptableObject
         }
     }
 
-
-
-
-
     public void AddListener(EventListener<T> listener)
     {
         if (listener == null)
@@ -59,18 +51,14 @@ public abstract class EventChannelSO<T> : ScriptableObject
             Debug.LogWarning($"[EventChannel] {name}: AddListener called with null listener.");
             return;
         }
-        if (!eventRaised.Contains(listener))
+        if (!_eventRaised.Contains(listener))
         {
-            eventRaised.Add(listener);
+            _eventRaised.Add(listener);
 #if UNITY_EDITOR
             Debug.Log($"[EventChannel] {name}: Listener added — {listener.gameObject.name}");
 #endif
         }
     }
-
-
-
-
 
     public void RemoveListener(EventListener<T> listener)
     {
@@ -79,9 +67,9 @@ public abstract class EventChannelSO<T> : ScriptableObject
             Debug.LogWarning($"[EventChannel] {name}: RemoveListener called with null listener.");
             return;
         }
-        if (eventRaised.Contains(listener))
+        if (_eventRaised.Contains(listener))
         {
-            eventRaised.Remove(listener);
+            _eventRaised.Remove(listener);
 #if UNITY_EDITOR
             Debug.Log($"[EventChannel] {name}: Listener removed — {listener.gameObject.name}");
 #endif

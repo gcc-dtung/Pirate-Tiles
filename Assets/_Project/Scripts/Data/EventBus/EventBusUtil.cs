@@ -37,14 +37,18 @@ public static class EventBusUtil {
         foreach (var eventType in EventTypes) {
             var busType = typedef.MakeGenericType(eventType);
             eventBusTypes.Add(busType);
+#if UNITY_EDITOR
             Debug.Log($"Initialized EventBus<{eventType.Name}>");
+#endif
         }
 
         return eventBusTypes;
     }
 
     public static void ClearAllBuses() {
+#if UNITY_EDITOR
         Debug.Log("Clearing all buses...");
+#endif
         for (int i = 0; i < EventBusTypes.Count; i++) {
             var busType = EventBusTypes[i];
             var clearMethod = busType.GetMethod("Clear", BindingFlags.Static | BindingFlags.NonPublic);

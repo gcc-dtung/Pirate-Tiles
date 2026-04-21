@@ -1,6 +1,5 @@
 using UnityEngine;
 
-[CreateAssetMenu(menuName = "PirateTiles/Events/Bool Event Channel")]
+[CreateAssetMenu(menuName = "PirateTiles/Events/BoolEventChannel")]
 public class BoolEventChannelSO : EventChannelSO<bool> { }
 
-public class BoolEventListener : EventListener<bool> { }

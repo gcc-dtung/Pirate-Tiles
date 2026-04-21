@@ -1,6 +1,4 @@
 using UnityEngine;
 
-[CreateAssetMenu(menuName = "PirateTiles/Events/Int Event Channel")]
+[CreateAssetMenu(menuName = "PirateTiles/Events/IntEventChannel")]
 public class IntEventChannelSO : EventChannelSO<int> { }
-
-public class IntEventListener : EventListener<int> { }

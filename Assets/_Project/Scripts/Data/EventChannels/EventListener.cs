@@ -6,11 +6,6 @@ public abstract class EventListener<T> : MonoBehaviour
     [SerializeField] private EventChannelSO<T> eventChannelSo;
     [SerializeField] private UnityEvent<T> unityEvent;
 
-
-
-
-
-
     public void Raise(T value)
     {
         unityEvent?.Invoke(value);

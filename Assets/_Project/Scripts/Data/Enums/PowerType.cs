@@ -4,5 +4,5 @@ public enum PowerType
     Undo = 1,
     Shuffle = 2,
     Magic = 3,
-    AddOneStack = 4,
+    AddOneCell = 4,
 }

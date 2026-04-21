@@ -9,12 +9,6 @@ public static class PredefinedAssemblyUtil {
         AssemblyCSharpEditorFirstPass,
         AssemblyCSharpFirstPass
     }
-
-
-
-
-
-
     static AssemblyType? GetAssemblyType(string assemblyName) {
         return assemblyName switch {
             "Assembly-CSharp" => AssemblyType.AssemblyCSharp,
@@ -25,12 +19,6 @@ public static class PredefinedAssemblyUtil {
         };
     }
 
-
-
-
-
-
-
     static void AddTypesFromAssembly(Type[] assemblyTypes, Type interfaceType, ICollection<Type> results) {
         if (assemblyTypes == null) return;
         for (int i = 0; i < assemblyTypes.Length; i++) {
@@ -40,11 +28,6 @@ public static class PredefinedAssemblyUtil {
             }
         }
     }
-
-
-
-
-
 
     public static List<Type> GetTypes(Type interfaceType) {
         Assembly[] assemblies = AppDomain.CurrentDomain.GetAssemblies();
