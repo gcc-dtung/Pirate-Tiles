@@ -1,4 +1,5 @@
 ﻿<Solution>
-  <Project Path="Assembly-CSharp.csproj" />
+  <Project Path="Script.csproj" />
+  <Project Path="Tests.EditMode.csproj" />
   <Project Path="PrimeTween.Installer.csproj" />
 </Solution>
