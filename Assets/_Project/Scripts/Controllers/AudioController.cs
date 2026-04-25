@@ -10,20 +10,12 @@ public class AudioController : MonoBehaviour
 
     private void OnEnable()
     {
-        if (_tilesMatchedChannel != null) _tilesMatchedChannel.Subscribe(OnTilesMatched);
-        if (_gameWonChannel != null) _gameWonChannel.Subscribe(OnGameWon);
-        if (_gameLostChannel != null) _gameLostChannel.Subscribe(OnGameLost);
-
         _audioSettingBinding = new EventBinding<AudioSettingChangedEvent>(OnAudioSettingChanged);
         EventBus<AudioSettingChangedEvent>.Register(_audioSettingBinding);
     }
 
     private void OnDisable()
     {
-        if (_tilesMatchedChannel != null) _tilesMatchedChannel.Unsubscribe(OnTilesMatched);
-        if (_gameWonChannel != null) _gameWonChannel.Unsubscribe(OnGameWon);
-        if (_gameLostChannel != null) _gameLostChannel.Unsubscribe(OnGameLost);
-
         EventBus<AudioSettingChangedEvent>.Deregister(_audioSettingBinding);
     }
 

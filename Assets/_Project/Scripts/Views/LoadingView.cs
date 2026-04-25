@@ -17,7 +17,7 @@ public class LoadingView : MonoBehaviour
     public void UpdateProgress(float progress)
     {
         Tween.StopAll(_progressBar);
-        Tween.UIValue(_progressBar, progress, 0.1f);
+        Tween.Custom(_progressBar.value, progress, 0.1f, val => _progressBar.value = val);
     }
 
     public Tween HideAnimate()

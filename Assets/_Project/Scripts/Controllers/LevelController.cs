@@ -63,9 +63,9 @@ public class LevelController : MonoBehaviour
         else 
         {
             int id = 1;
-            tiles.Add(new TileModel(id++, CardType.TypeA, new Vector2Int(0, 0), 0));
-            tiles.Add(new TileModel(id++, CardType.TypeB, new Vector2Int(1, 0), 0));
-            tiles.Add(new TileModel(id++, CardType.TypeC, new Vector2Int(2, 0), 0));
+            tiles.Add(new TileModel(id++, CardType.Sword, new Vector2Int(0, 0), 0));
+            tiles.Add(new TileModel(id++, CardType.Anchor, new Vector2Int(1, 0), 0));
+            tiles.Add(new TileModel(id++, CardType.Skull, new Vector2Int(2, 0), 0));
         }
 
         boardModel.Initialize(tiles, overlapMap);

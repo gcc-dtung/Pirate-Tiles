@@ -31,14 +31,12 @@ public class BoardController : MonoBehaviour
         _boardModelUpdatedBinding = new EventBinding<BoardModelUpdatedEvent>(OnBoardUpdated);
         EventBus<BoardModelUpdatedEvent>.Register(_boardModelUpdatedBinding);
 
-        if (_undoRequestChannel != null) _undoRequestChannel.Subscribe(OnUndoRequest);
     }
 
     private void OnDisable()
     {
         EventBus<BoardModelUpdatedEvent>.Deregister(_boardModelUpdatedBinding);
         
-        if (_undoRequestChannel != null) _undoRequestChannel.Unsubscribe(OnUndoRequest);
 
         if (_boardModel != null)
         {
@@ -73,7 +71,7 @@ public class BoardController : MonoBehaviour
 
         if (_boardModel.IsCleared && _boardClearedChannel != null)
         {
-            _boardClearedChannel.RaiseEvent();
+            _boardClearedChannel.EventRaise();
         }
     }
 

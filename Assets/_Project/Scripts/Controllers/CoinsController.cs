@@ -17,21 +17,6 @@ public class CoinsController : MonoBehaviour
         if (_coinsView != null) _coinsView.UpdateCoins(_coinsModel.CurrentCoins);
     }
 
-    private void OnEnable()
-    {
-        if (_spendCoinsRequestChannel != null)
-        {
-            _spendCoinsRequestChannel.Subscribe(OnSpendCoinsRequest);
-        }
-    }
-
-    private void OnDisable()
-    {
-        if (_spendCoinsRequestChannel != null)
-        {
-            _spendCoinsRequestChannel.Unsubscribe(OnSpendCoinsRequest);
-        }
-    }
 
     public void AddCoins(int amount)
     {

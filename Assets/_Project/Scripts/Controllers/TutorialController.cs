@@ -4,6 +4,13 @@ public class TutorialController : MonoBehaviour
 {
     [SerializeField] private TutorialView _tutorialView;
     
+    private string[] _steps = new string[] {
+        "Welcome to Pirate Tiles!",
+        "Match 3 identical tiles in the stack.",
+        "Don't let the stack get full!"
+    };
+    private int _currentStepIndex = 0;
+
     private void Start()
     {
         // Kiểm tra PlayerPrefs xem đã chơi qua chưa
@@ -18,20 +25,39 @@ public class TutorialController : MonoBehaviour
     {
         if (_tutorialView != null)
         {
-            _tutorialView.ShowTutorial(new string[] {
-                "Welcome to Pirate Tiles!",
-                "Match 3 identical tiles in the stack.",
-                "Don't let the stack get full!"
-            });
-            _tutorialView.OnTutorialFinished += HandleTutorialFinished;
+            _currentStepIndex = 0;
+            _tutorialView.OnNext += HandleNextStep;
+            _tutorialView.OnSkip += EndTutorial;
+            
+            ShowCurrentStep();
         }
     }
 
-    private void HandleTutorialFinished()
+    private void ShowCurrentStep()
+    {
+        if (_currentStepIndex < _steps.Length)
+        {
+            _tutorialView.ShowStep(_steps[_currentStepIndex]);
+        }
+        else
+        {
+            EndTutorial();
+        }
+    }
+
+    private void HandleNextStep()
+    {
+        _currentStepIndex++;
+        ShowCurrentStep();
+    }
+
+    private void EndTutorial()
     {
         if (_tutorialView != null)
         {
-            _tutorialView.OnTutorialFinished -= HandleTutorialFinished;
+            _tutorialView.OnNext -= HandleNextStep;
+            _tutorialView.OnSkip -= EndTutorial;
+            _tutorialView.Hide();
         }
         
         PlayerPrefs.SetInt("TutorialCompleted", 1);

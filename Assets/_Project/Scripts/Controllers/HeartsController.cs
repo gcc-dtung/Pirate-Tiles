@@ -18,15 +18,7 @@ public class HeartsController : MonoBehaviour
         UpdateView();
     }
 
-    private void OnEnable()
-    {
-        if (_outOfHeartsChannel != null) _outOfHeartsChannel.Subscribe(OnOutOfHearts);
-    }
 
-    private void OnDisable()
-    {
-        if (_outOfHeartsChannel != null) _outOfHeartsChannel.Unsubscribe(OnOutOfHearts);
-    }
 
     public void ConsumeHeart()
     {
@@ -39,7 +31,7 @@ public class HeartsController : MonoBehaviour
         {
             if (_outOfHeartsChannel != null)
             {
-                _outOfHeartsChannel.RaiseEvent();
+                _outOfHeartsChannel.EventRaise();
             }
         }
     }

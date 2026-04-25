@@ -33,28 +33,6 @@ public class GameController : MonoBehaviour
         SetPhase(GamePhase.Playing);
     }
 
-    private void OnEnable()
-    {
-        if (_tilesMatchedChannel != null) _tilesMatchedChannel.Subscribe(OnTilesMatched);
-        if (_stackFullChannel != null) _stackFullChannel.Subscribe(OnStackFull);
-        if (_timerExpiredChannel != null) _timerExpiredChannel.Subscribe(OnTimerExpired);
-        if (_boardClearedChannel != null) _boardClearedChannel.Subscribe(HandleWin);
-        
-        if (_gameWonChannel != null) _gameWonChannel.Subscribe(OnGameWonEventRaised);
-        if (_gameLostChannel != null) _gameLostChannel.Subscribe(OnGameLostEventRaised);
-    }
-
-    private void OnDisable()
-    {
-        if (_tilesMatchedChannel != null) _tilesMatchedChannel.Unsubscribe(OnTilesMatched);
-        if (_stackFullChannel != null) _stackFullChannel.Unsubscribe(OnStackFull);
-        if (_timerExpiredChannel != null) _timerExpiredChannel.Unsubscribe(OnTimerExpired);
-        if (_boardClearedChannel != null) _boardClearedChannel.Unsubscribe(HandleWin);
-
-        if (_gameWonChannel != null) _gameWonChannel.Unsubscribe(OnGameWonEventRaised);
-        if (_gameLostChannel != null) _gameLostChannel.Unsubscribe(OnGameLostEventRaised);
-    }
-
     private void SetPhase(GamePhase newPhase)
     {
         var prevPhase = _gameState.Phase;
@@ -71,14 +49,14 @@ public class GameController : MonoBehaviour
     {
         if (_gameState.Phase != GamePhase.Playing) return;
         SetPhase(GamePhase.Won);
-        if (_gameWonChannel != null) _gameWonChannel.RaiseEvent();
+        if (_gameWonChannel != null) _gameWonChannel.EventRaise();
     }
 
     private void HandleLose()
     {
         if (_gameState.Phase != GamePhase.Playing) return;
         SetPhase(GamePhase.Lost);
-        if (_gameLostChannel != null) _gameLostChannel.RaiseEvent();
+        if (_gameLostChannel != null) _gameLostChannel.EventRaise();
     }
 
     private void OnTilesMatched()

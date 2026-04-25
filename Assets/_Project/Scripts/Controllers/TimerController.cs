@@ -41,7 +41,7 @@ public class TimerController : MonoBehaviour
                 _isRunning = false;
                 if (_timerExpiredChannel != null)
                 {
-                    _timerExpiredChannel.RaiseEvent();
+                    _timerExpiredChannel.EventRaise();
                 }
             }
         }

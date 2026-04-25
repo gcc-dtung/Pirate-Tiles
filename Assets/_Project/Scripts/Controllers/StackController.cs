@@ -19,16 +19,6 @@ public class StackController : MonoBehaviour
         _stackModel = stackModel;
     }
 
-    private void OnEnable()
-    {
-        if (_tileSelectedChannel != null) _tileSelectedChannel.Subscribe(OnTileSelected);
-    }
-
-    private void OnDisable()
-    {
-        if (_tileSelectedChannel != null) _tileSelectedChannel.Unsubscribe(OnTileSelected);
-    }
-
     private void OnTileSelected(TileSelectedEventData data)
     {
         if (_stackModel == null || _stackModel.IsFull) return;
@@ -59,10 +49,10 @@ public class StackController : MonoBehaviour
     private async void ProcessStackAnimationAsync(CardView movedCard, int insertIndex)
     {
         // Thẻ bài đang bay xuống, và các thẻ cũ trong khay dạt ra
-        _stackView.AnimateArrange(_cardsInStack);
+        _ = _stackView.AnimateArrange(_cardsInStack);
 
         Vector3 targetPos = _stackView.GetSlotPosition(insertIndex);
-        await movedCard.AnimateMoveToStack(targetPos, 0.3f).ToYieldInstruction();
+        await movedCard.AnimateMoveToStack(targetPos, 0.3f);
 
         int matchIdx = _stackModel.FindMatch();
         if (matchIdx >= 0)
@@ -73,8 +63,8 @@ public class StackController : MonoBehaviour
         {
             if (_stackModel.IsFull && _stackFullChannel != null)
             {
-                _stackView.AnimateShakeFull();
-                _stackFullChannel.RaiseEvent();
+                _ = _stackView.AnimateShakeFull();
+                _stackFullChannel.EventRaise();
             }
         }
     }
@@ -93,10 +83,10 @@ public class StackController : MonoBehaviour
         var seq = Sequence.Create();
         foreach (var card in matchedCards)
         {
-            seq.Group(card.AnimateFadeOut(0.3f));
+            _ = seq.Group(card.AnimateFadeOut(0.3f));
         }
 
-        await seq.ToYieldInstruction();
+        await seq;
 
         foreach (var card in matchedCards)
         {
@@ -105,9 +95,9 @@ public class StackController : MonoBehaviour
 
         if (_tilesMatchedChannel != null)
         {
-            _tilesMatchedChannel.RaiseEvent();
+            _tilesMatchedChannel.EventRaise();
         }
 
-        _stackView.AnimateArrange(_cardsInStack);
+        _ = _stackView.AnimateArrange(_cardsInStack);
     }
 }
