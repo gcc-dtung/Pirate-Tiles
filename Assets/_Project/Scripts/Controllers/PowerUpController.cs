@@ -20,7 +20,7 @@ public class PowerUpController : MonoBehaviour
         _powerUpModel.AddPowerUp(PowerType.Undo, 1);
         _powerUpModel.AddPowerUp(PowerType.Magic, 1);
         _powerUpModel.AddPowerUp(PowerType.Shuffle, 1);
-        _powerUpModel.AddPowerUp(PowerType.AddCell, 1);
+        _powerUpModel.AddPowerUp(PowerType.AddOneCell, 1);
 
         UpdateAllViews();
     }
@@ -118,15 +118,15 @@ public class PowerUpController : MonoBehaviour
         switch (type)
         {
             case PowerType.Undo:
-                if (_undoRequestChannel != null) _undoRequestChannel.RaiseEvent();
+                if (_undoRequestChannel != null) _undoRequestChannel.EventRaise();
                 break;
             case PowerType.Magic:
                 // TODO
                 break;
             case PowerType.Shuffle:
-                if (_shuffleRequestChannel != null) _shuffleRequestChannel.RaiseEvent();
+                if (_shuffleRequestChannel != null) _shuffleRequestChannel.EventRaise();
                 break;
-            case PowerType.AddCell:
+            case PowerType.AddOneCell:
                 // TODO
                 break;
         }
@@ -138,6 +138,6 @@ public class PowerUpController : MonoBehaviour
         _powerUpBarView.UpdatePowerUpCount(PowerType.Undo, _powerUpModel.GetCount(PowerType.Undo));
         _powerUpBarView.UpdatePowerUpCount(PowerType.Magic, _powerUpModel.GetCount(PowerType.Magic));
         _powerUpBarView.UpdatePowerUpCount(PowerType.Shuffle, _powerUpModel.GetCount(PowerType.Shuffle));
-        _powerUpBarView.UpdatePowerUpCount(PowerType.AddCell, _powerUpModel.GetCount(PowerType.AddCell));
+        _powerUpBarView.UpdatePowerUpCount(PowerType.AddOneCell, _powerUpModel.GetCount(PowerType.AddOneCell));
     }
 }
