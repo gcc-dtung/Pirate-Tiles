@@ -26,7 +26,7 @@ public class StackController : MonoBehaviour
         CardView cardView = data.CardView;
         if (cardView == null) return;
 
-        TileModel tileModel = new TileModel(data.TileId, data.TileType, new Vector2Int(data.GridX, data.GridY), data.LayerIndex);
+        TileModel tileModel = new TileModel(data.TileId, data.TileType, new Vector2(data.GridX, data.GridY), data.LayerIndex, Vector2.one);
         
         int insertIndex = _stackModel.GetInsertIndex(data.TileType);
         _stackModel.InsertTile(insertIndex, tileModel);

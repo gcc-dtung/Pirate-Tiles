@@ -15,7 +15,7 @@ public class StackModelTests
     [Test]
     public void Initialize_SetsMaxSizeAndClearsTiles()
     {
-        _stackModel.InsertTile(0, new TileModel(1, CardType.Sword, Vector2Int.zero, 0));
+        _stackModel.InsertTile(0, new TileModel(1, CardType.Sword, Vector2.zero, 0, Vector2.one));
         
         _stackModel.Initialize(8);
         
@@ -26,8 +26,8 @@ public class StackModelTests
     [Test]
     public void GetInsertIndex_ReturnsCorrectIndexForSameType()
     {
-        _stackModel.InsertTile(0, new TileModel(1, CardType.Sword, Vector2Int.zero, 0));
-        _stackModel.InsertTile(1, new TileModel(2, CardType.Anchor, Vector2Int.zero, 0));
+        _stackModel.InsertTile(0, new TileModel(1, CardType.Sword, Vector2.zero, 0, Vector2.one));
+        _stackModel.InsertTile(1, new TileModel(2, CardType.Anchor, Vector2.zero, 0, Vector2.one));
         
         // Cố gắng chèn thêm một Sword -> phải chèn ngay sau Sword đầu tiên (index 1)
         int index = _stackModel.GetInsertIndex(CardType.Sword);
@@ -38,7 +38,7 @@ public class StackModelTests
     [Test]
     public void GetInsertIndex_ReturnsLastIndexForNewType()
     {
-        _stackModel.InsertTile(0, new TileModel(1, CardType.Sword, Vector2Int.zero, 0));
+        _stackModel.InsertTile(0, new TileModel(1, CardType.Sword, Vector2.zero, 0, Vector2.one));
         
         // Chèn loại hoàn toàn mới -> phải chèn vào cuối
         int index = _stackModel.GetInsertIndex(CardType.Anchor);
@@ -49,7 +49,7 @@ public class StackModelTests
     [Test]
     public void InsertTile_ChangesStateToInStack()
     {
-        var tile = new TileModel(1, CardType.Sword, Vector2Int.zero, 0);
+        var tile = new TileModel(1, CardType.Sword, Vector2.zero, 0, Vector2.one);
         
         _stackModel.InsertTile(0, tile);
         
@@ -60,10 +60,10 @@ public class StackModelTests
     [Test]
     public void FindMatch_ReturnsIndexWhenThreeIdenticalTiles()
     {
-        _stackModel.InsertTile(0, new TileModel(1, CardType.Sword, Vector2Int.zero, 0));
-        _stackModel.InsertTile(1, new TileModel(2, CardType.Anchor, Vector2Int.zero, 0));
-        _stackModel.InsertTile(2, new TileModel(3, CardType.Anchor, Vector2Int.zero, 0));
-        _stackModel.InsertTile(3, new TileModel(4, CardType.Anchor, Vector2Int.zero, 0));
+        _stackModel.InsertTile(0, new TileModel(1, CardType.Sword, Vector2.zero, 0, Vector2.one));
+        _stackModel.InsertTile(1, new TileModel(2, CardType.Anchor, Vector2.zero, 0, Vector2.one));
+        _stackModel.InsertTile(2, new TileModel(3, CardType.Anchor, Vector2.zero, 0, Vector2.one));
+        _stackModel.InsertTile(3, new TileModel(4, CardType.Anchor, Vector2.zero, 0, Vector2.one));
         
         // Match 3 thẻ Anchor (index 1, 2, 3) -> Trả về 1 (index bắt đầu)
         int matchIndex = _stackModel.FindMatch();
@@ -74,9 +74,9 @@ public class StackModelTests
     [Test]
     public void FindMatch_ReturnsMinusOneWhenNoMatch()
     {
-        _stackModel.InsertTile(0, new TileModel(1, CardType.Sword, Vector2Int.zero, 0));
-        _stackModel.InsertTile(1, new TileModel(2, CardType.Anchor, Vector2Int.zero, 0));
-        _stackModel.InsertTile(2, new TileModel(3, CardType.Anchor, Vector2Int.zero, 0));
+        _stackModel.InsertTile(0, new TileModel(1, CardType.Sword, Vector2.zero, 0, Vector2.one));
+        _stackModel.InsertTile(1, new TileModel(2, CardType.Anchor, Vector2.zero, 0, Vector2.one));
+        _stackModel.InsertTile(2, new TileModel(3, CardType.Anchor, Vector2.zero, 0, Vector2.one));
         
         // Chỉ có 2 Anchor, không đủ 3
         int matchIndex = _stackModel.FindMatch();
@@ -87,10 +87,10 @@ public class StackModelTests
     [Test]
     public void RemoveTiles_RemovesCorrectAmountOfTiles()
     {
-        _stackModel.InsertTile(0, new TileModel(1, CardType.Sword, Vector2Int.zero, 0));
-        _stackModel.InsertTile(1, new TileModel(2, CardType.Anchor, Vector2Int.zero, 0));
-        _stackModel.InsertTile(2, new TileModel(3, CardType.Anchor, Vector2Int.zero, 0));
-        _stackModel.InsertTile(3, new TileModel(4, CardType.Anchor, Vector2Int.zero, 0));
+        _stackModel.InsertTile(0, new TileModel(1, CardType.Sword, Vector2.zero, 0, Vector2.one));
+        _stackModel.InsertTile(1, new TileModel(2, CardType.Anchor, Vector2.zero, 0, Vector2.one));
+        _stackModel.InsertTile(2, new TileModel(3, CardType.Anchor, Vector2.zero, 0, Vector2.one));
+        _stackModel.InsertTile(3, new TileModel(4, CardType.Anchor, Vector2.zero, 0, Vector2.one));
 
         _stackModel.RemoveTiles(1, 3);
         
@@ -101,9 +101,9 @@ public class StackModelTests
     [Test]
     public void GetMostFrequentType_ReturnsMostFrequentCardType()
     {
-        _stackModel.InsertTile(0, new TileModel(1, CardType.Sword, Vector2Int.zero, 0));
-        _stackModel.InsertTile(1, new TileModel(2, CardType.Anchor, Vector2Int.zero, 0));
-        _stackModel.InsertTile(2, new TileModel(3, CardType.Anchor, Vector2Int.zero, 0));
+        _stackModel.InsertTile(0, new TileModel(1, CardType.Sword, Vector2.zero, 0, Vector2.one));
+        _stackModel.InsertTile(1, new TileModel(2, CardType.Anchor, Vector2.zero, 0, Vector2.one));
+        _stackModel.InsertTile(2, new TileModel(3, CardType.Anchor, Vector2.zero, 0, Vector2.one));
 
         CardType frequent = _stackModel.GetMostFrequentType();
 
@@ -125,10 +125,10 @@ public class StackModelTests
     {
         var model = new StackModel(2); // Max size là 2
         
-        model.InsertTile(0, new TileModel(1, CardType.Sword, Vector2Int.zero, 0));
+        model.InsertTile(0, new TileModel(1, CardType.Sword, Vector2.zero, 0, Vector2.one));
         Assert.IsFalse(model.IsFull);
         
-        model.InsertTile(1, new TileModel(2, CardType.Anchor, Vector2Int.zero, 0));
+        model.InsertTile(1, new TileModel(2, CardType.Anchor, Vector2.zero, 0, Vector2.one));
         Assert.IsTrue(model.IsFull);
     }
 }

@@ -20,8 +20,8 @@ public class BoardModelTests
         // Arrange
         var tiles = new List<TileModel>
         {
-            new TileModel(1, CardType.Sword, new Vector2Int(0, 0), 0),
-            new TileModel(2, CardType.Anchor, new Vector2Int(0, 0), 1) // Tile 2 đè lên Tile 1
+            new TileModel(1, CardType.Sword, new Vector2(0, 0), 0, Vector2.one),
+            new TileModel(2, CardType.Anchor, new Vector2(0, 0), 1, Vector2.one) // Tile 2 đè lên Tile 1
         };
 
         var overlapMap = new Dictionary<int, List<int>>
@@ -48,8 +48,8 @@ public class BoardModelTests
         // Arrange
         var tiles = new List<TileModel>
         {
-            new TileModel(1, CardType.Sword, new Vector2Int(0, 0), 0),
-            new TileModel(2, CardType.Anchor, new Vector2Int(0, 0), 1)
+            new TileModel(1, CardType.Sword, new Vector2(0, 0), 0, Vector2.one),
+            new TileModel(2, CardType.Anchor, new Vector2(0, 0), 1, Vector2.one)
         };
 
         var overlapMap = new Dictionary<int, List<int>>
@@ -74,7 +74,7 @@ public class BoardModelTests
         // Arrange
         var tiles = new List<TileModel>
         {
-            new TileModel(1, CardType.Sword, new Vector2Int(0, 0), 0)
+            new TileModel(1, CardType.Sword, new Vector2(0, 0), 0, Vector2.one)
         };
         _boardModel.Initialize(tiles, new Dictionary<int, List<int>>());
 
@@ -108,7 +108,7 @@ public class BoardModelTests
         // Arrange
         var tiles = new List<TileModel>
         {
-            new TileModel(1, CardType.Sword, new Vector2Int(0, 0), 0)
+            new TileModel(1, CardType.Sword, new Vector2(0, 0), 0, Vector2.one)
         };
         _boardModel.Initialize(tiles, new Dictionary<int, List<int>>());
 
@@ -127,9 +127,9 @@ public class BoardModelTests
         // Arrange
         var tiles = new List<TileModel>
         {
-            new TileModel(1, CardType.Sword, new Vector2Int(0, 0), 0),
-            new TileModel(2, CardType.Anchor, new Vector2Int(1, 0), 0),
-            new TileModel(3, CardType.Skull, new Vector2Int(2, 0), 0)
+            new TileModel(1, CardType.Sword, new Vector2(0, 0), 0, Vector2.one),
+            new TileModel(2, CardType.Anchor, new Vector2(1, 0), 0, Vector2.one),
+            new TileModel(3, CardType.Skull, new Vector2(2, 0), 0, Vector2.one)
         };
         _boardModel.Initialize(tiles, new Dictionary<int, List<int>>());
 
@@ -150,8 +150,8 @@ public class BoardModelTests
         // Arrange
         var tiles = new List<TileModel>
         {
-            new TileModel(1, CardType.Sword, new Vector2Int(0, 0), 0),
-            new TileModel(2, CardType.Anchor, new Vector2Int(1, 0), 0)
+            new TileModel(1, CardType.Sword, new Vector2(0, 0), 0, Vector2.one),
+            new TileModel(2, CardType.Anchor, new Vector2(1, 0), 0, Vector2.one)
         };
         _boardModel.Initialize(tiles, new Dictionary<int, List<int>>());
 
@@ -174,9 +174,9 @@ public class BoardModelTests
         // Arrange
         var tiles = new List<TileModel>
         {
-            new TileModel(1, CardType.Sword, new Vector2Int(0, 0), 0),
-            new TileModel(2, CardType.Sword, new Vector2Int(1, 0), 0),
-            new TileModel(3, CardType.Anchor, new Vector2Int(2, 0), 0)
+            new TileModel(1, CardType.Sword, new Vector2(0, 0), 0, Vector2.one),
+            new TileModel(2, CardType.Sword, new Vector2(1, 0), 0, Vector2.one),
+            new TileModel(3, CardType.Anchor, new Vector2(2, 0), 0, Vector2.one)
         };
         _boardModel.Initialize(tiles, new Dictionary<int, List<int>>());
 

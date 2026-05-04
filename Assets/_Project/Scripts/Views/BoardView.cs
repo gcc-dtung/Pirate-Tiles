@@ -25,6 +25,7 @@ public class BoardView : MonoBehaviour
             Vector3 targetPos = GetWorldPosition(tile.GridPosition);
             cardObj.transform.localPosition = targetPos;
             cardObj.SetOrderInLayer(tile.LayerIndex);
+            cardObj.SetSize(tile.Size, _spacingX); // Scale visual theo kích thước tile
 
             Sprite icon = database.GetSprite(tile.TileType);
             cardObj.Initialize(tile.Id, tile.TileType, icon);
@@ -101,7 +102,7 @@ public class BoardView : MonoBehaviour
         return seq;
     }
 
-    private Vector3 GetWorldPosition(Vector2Int gridPosition)
+    private Vector3 GetWorldPosition(Vector2 gridPosition)
     {
         return new Vector3(gridPosition.x * _spacingX, gridPosition.y * _spacingY, 0);
     }

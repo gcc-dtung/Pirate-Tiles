@@ -71,6 +71,17 @@ public class CardView : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Scale toàn bộ CardView (visual + collider) theo kích thước tile.
+    /// VD: size=(2,1) và spacing=1.0 → scale=(2, 1, 1).
+    /// </summary>
+    /// <param name="tileSize">Kích thước tile theo grid unit, VD: (1,1), (2,1)</param>
+    /// <param name="gridSpacing">Khoảng cách giữa 2 tile (= _spacingX của BoardView)</param>
+    public void SetSize(Vector2 tileSize, float gridSpacing)
+    {
+        transform.localScale = new Vector3(tileSize.x * gridSpacing, tileSize.y * gridSpacing, 1f);
+    }
+
     public Sequence AnimateMoveToStack(Vector3 targetPosition, float duration = 0.3f)
     {
         Tween.StopAll(transform);

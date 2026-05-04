@@ -9,7 +9,7 @@ public class GameManager : MonoBehaviour
         if (Instance == null)
         {
             Instance = this;
-            DontDestroyOnLoad(gameObject); // Giữ nguyên obj này khi chuyển scene
+            DontDestroyOnLoad(gameObject); 
         }
         else
         {

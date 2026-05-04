@@ -37,7 +37,9 @@ public class LevelController : MonoBehaviour
             int idCounter = 1;
             foreach (var tileData in _currentLevelConfig.InitialTiles)
             {
-                var tile = new TileModel(idCounter++, tileData.Type, tileData.GridPosition, tileData.LayerIndex);
+                // Đảm bảo Size tối thiểu (1,1) nếu chưa set trong Inspector
+                var size = (tileData.Size.x > 0 && tileData.Size.y > 0) ? tileData.Size : Vector2.one;
+                var tile = new TileModel(idCounter++, tileData.Type, tileData.GridPosition, tileData.LayerIndex, size);
                 tiles.Add(tile);
             }
             
@@ -50,8 +52,13 @@ public class LevelController : MonoBehaviour
                     var t2 = tiles[j];
                     if (t1.Id != t2.Id && t2.LayerIndex > t1.LayerIndex)
                     {
-                        float dist = Vector2.Distance(t1.GridPosition, t2.GridPosition);
-                        if (dist < 1.0f) 
+                        // AABB overlap: t2 (layer cao hơn) có đè lên t1 không?
+                        // Hai hình chữ nhật overlap khi khoảng cách tâm < tổng nửa kích thước mỗi chiều
+                        float overlapX = (t1.Size.x + t2.Size.x) / 2f;
+                        float overlapY = (t1.Size.y + t2.Size.y) / 2f;
+                        bool overlaps = Mathf.Abs(t1.GridPosition.x - t2.GridPosition.x) < overlapX
+                                     && Mathf.Abs(t1.GridPosition.y - t2.GridPosition.y) < overlapY;
+                        if (overlaps)
                         {
                             covers.Add(t2.Id);
                         }
@@ -63,9 +70,9 @@ public class LevelController : MonoBehaviour
         else 
         {
             int id = 1;
-            tiles.Add(new TileModel(id++, CardType.Sword, new Vector2Int(0, 0), 0));
-            tiles.Add(new TileModel(id++, CardType.Anchor, new Vector2Int(1, 0), 0));
-            tiles.Add(new TileModel(id++, CardType.Skull, new Vector2Int(2, 0), 0));
+            tiles.Add(new TileModel(id++, CardType.Sword, new Vector2(0, 0), 0, Vector2.one));
+            tiles.Add(new TileModel(id++, CardType.Anchor, new Vector2(1, 0), 0, Vector2.one));
+            tiles.Add(new TileModel(id++, CardType.Skull, new Vector2(2, 0), 0, Vector2.one));
         }
 
         boardModel.Initialize(tiles, overlapMap);

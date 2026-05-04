@@ -9,9 +9,16 @@ public class PowerUpController : MonoBehaviour
     [SerializeField] private PowerTypeEventChannelSO _spendCoinsRequestChannel;
     [SerializeField] private VoidEventChannelSO _undoRequestChannel;
     [SerializeField] private VoidEventChannelSO _shuffleRequestChannel;
+    [SerializeField] private VoidEventChannelSO _magicRequestChannel;
+    [SerializeField] private VoidEventChannelSO _addOneCellRequestChannel;
 
     private PowerUpModel _powerUpModel;
     private PowerType _pendingPurchaseType;
+
+    private void Start()
+    {
+        Initialize();
+    }
 
     public void Initialize()
     {
@@ -121,13 +128,13 @@ public class PowerUpController : MonoBehaviour
                 if (_undoRequestChannel != null) _undoRequestChannel.EventRaise();
                 break;
             case PowerType.Magic:
-                // TODO
+                if (_magicRequestChannel != null) _magicRequestChannel.EventRaise();
                 break;
             case PowerType.Shuffle:
                 if (_shuffleRequestChannel != null) _shuffleRequestChannel.EventRaise();
                 break;
             case PowerType.AddOneCell:
-                // TODO
+                if (_addOneCellRequestChannel != null) _addOneCellRequestChannel.EventRaise();
                 break;
         }
     }
