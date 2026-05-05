@@ -4,7 +4,9 @@ using UnityEngine;
 
 public abstract class EventChannelSO<T> : ScriptableObject
 {
-    private readonly List<EventListener<T>> _eventRaised = new List<EventListener<T>>();
+    private readonly List<EventListener<T>> eventRaised = new List<EventListener<T>>();
+    public event Action<T> OnEventRaised;
+    
     private bool _isRunning;
 
 
@@ -12,29 +14,46 @@ public abstract class EventChannelSO<T> : ScriptableObject
     {
         if (_isRunning)
         {
-            Debug.LogWarning($"[EventChannel] {name}: RaiseEvent blocked — reentrancy detected.");
+            Debug.LogWarning("RaiseEvent called while event is already running (reentrancy blocked).");
             return;
         }
         try
         {
-            if (_eventRaised == null || _eventRaised.Count == 0)
+            _isRunning = true;
+            if (eventRaised.Count == 0 && OnEventRaised == null)
             {
-#if UNITY_EDITOR
-                Debug.Log($"[EventChannel] {name}: RaiseEvent called but no listeners registered.");
-#endif
+                Debug.LogWarning("EventRaise called but no listeners or subscribers.");
                 return;
             }
-            _isRunning = true;
-            List<EventListener<T>> snapshot = new List<EventListener<T>>(_eventRaised);
-            foreach (var listener in snapshot)
+            if (eventRaised != null)
             {
-                try
+                List<EventListener<T>> snapshot = new List<EventListener<T>>(eventRaised);
+                foreach (var listener in snapshot)
                 {
-                    listener?.Raise(value);
+                    try
+                    {
+                        listener?.Raise(value);
+                    }
+                    catch (Exception ex)
+                    {
+                        Debug.LogError("RaiseEvent called but exception " + ex.Message);
+                    }
                 }
-                catch (Exception ex)
+            }
+            var handlers = OnEventRaised;
+            if (handlers != null)
+            {
+                Delegate[] handlerList = handlers.GetInvocationList();
+                foreach (var handler in handlerList)
                 {
-                    Debug.LogError($"[EventChannel] {name}: Exception in listener — {ex.Message}");
+                    try
+                    {
+                        ((Action<T>)handler)?.Invoke(value);
+                    }
+                    catch (Exception e)
+                    {
+                        Debug.LogError("RaiseEvent called but exception: " + e.Message);
+                    }
                 }
             }
         }
@@ -48,15 +67,13 @@ public abstract class EventChannelSO<T> : ScriptableObject
     {
         if (listener == null)
         {
-            Debug.LogWarning($"[EventChannel] {name}: AddListener called with null listener.");
+            Debug.LogWarning("AddListener called but no listeners are registered.");
             return;
         }
-        if (!_eventRaised.Contains(listener))
+        if (!eventRaised.Contains(listener))
         {
-            _eventRaised.Add(listener);
-#if UNITY_EDITOR
-            Debug.Log($"[EventChannel] {name}: Listener added — {listener.gameObject.name}");
-#endif
+            eventRaised.Add(listener);
+            Debug.Log("Listener added: " + listener);
         }
     }
 
@@ -64,15 +81,23 @@ public abstract class EventChannelSO<T> : ScriptableObject
     {
         if (listener == null)
         {
-            Debug.LogWarning($"[EventChannel] {name}: RemoveListener called with null listener.");
+            Debug.LogWarning("RemoveListener called but no listeners are registered.");
             return;
         }
-        if (_eventRaised.Contains(listener))
+        if (eventRaised.Contains(listener))
         {
-            _eventRaised.Remove(listener);
-#if UNITY_EDITOR
-            Debug.Log($"[EventChannel] {name}: Listener removed — {listener.gameObject.name}");
-#endif
+            Debug.Log("Listener removed: " + listener);
+            eventRaised.Remove(listener);
         }
+    }
+
+    public void AddListener(Action<T> listener)
+    {
+        OnEventRaised += listener;
+    }
+
+    public void RemoveListener(Action<T> listener)
+    {
+        OnEventRaised -= listener;
     }
 }

@@ -13,10 +13,29 @@ public class StackController : MonoBehaviour
 
     private StackModel _stackModel;
     private List<CardView> _cardsInStack = new List<CardView>();
+    private Sequence _arrangeSeq; // Track để Complete trước khi tạo mới
 
     public void Initialize(StackModel stackModel)
     {
         _stackModel = stackModel;
+    }
+
+    public bool IsStackEmpty => _stackModel != null && _stackModel.Count == 0;
+
+    private void OnEnable()
+    {
+        if (_tileSelectedChannel != null)
+        {
+            _tileSelectedChannel.AddListener(OnTileSelected);
+        }
+    }
+
+    private void OnDisable()
+    {
+        if (_tileSelectedChannel != null)
+        {
+            _tileSelectedChannel.RemoveListener(OnTileSelected);
+        }
     }
 
     private void OnTileSelected(TileSelectedEventData data)
@@ -49,7 +68,7 @@ public class StackController : MonoBehaviour
     private async void ProcessStackAnimationAsync(CardView movedCard, int insertIndex)
     {
         // Thẻ bài đang bay xuống, và các thẻ cũ trong khay dạt ra
-        _ = _stackView.AnimateArrange(_cardsInStack);
+        RunArrangeAnimation();
 
         Vector3 targetPos = _stackView.GetSlotPosition(insertIndex);
         await movedCard.AnimateMoveToStack(targetPos, 0.3f);
@@ -98,6 +117,16 @@ public class StackController : MonoBehaviour
             _tilesMatchedChannel.EventRaise();
         }
 
-        _ = _stackView.AnimateArrange(_cardsInStack);
+        RunArrangeAnimation();
+    }
+
+    /// <summary>
+    /// Complete sequence sắp xếp cũ (jump cards về đúng vị trí ngay lập tức)
+    /// rồi tạo sequence mới. Tránh tween trên card đã bị Destroy.
+    /// </summary>
+    private void RunArrangeAnimation()
+    {
+        if (_arrangeSeq.isAlive) _arrangeSeq.Complete();
+        _arrangeSeq = _stackView.AnimateArrange(_cardsInStack);
     }
 }

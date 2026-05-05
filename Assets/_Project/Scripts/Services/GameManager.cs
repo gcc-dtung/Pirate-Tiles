@@ -1,4 +1,5 @@
 using UnityEngine;
+using PrimeTween;
 
 public class GameManager : MonoBehaviour
 {
@@ -9,7 +10,9 @@ public class GameManager : MonoBehaviour
         if (Instance == null)
         {
             Instance = this;
-            DontDestroyOnLoad(gameObject); 
+            DontDestroyOnLoad(gameObject);
+            // Tắt warning khi tween endValue = currentValue (harmless, xảy ra khi card đã ở đúng vị trí)
+            PrimeTweenConfig.warnEndValueEqualsCurrent = false;
         }
         else
         {

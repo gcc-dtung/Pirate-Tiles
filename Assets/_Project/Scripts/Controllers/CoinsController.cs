@@ -9,6 +9,21 @@ public class CoinsController : MonoBehaviour
 
     private CoinsModel _coinsModel;
 
+    private void Start()
+    {
+        Initialize();
+    }
+
+    private void OnEnable()
+    {
+        if (_spendCoinsRequestChannel != null) _spendCoinsRequestChannel.AddListener(OnSpendCoinsRequest);
+    }
+
+    private void OnDisable()
+    {
+        if (_spendCoinsRequestChannel != null) _spendCoinsRequestChannel.RemoveListener(OnSpendCoinsRequest);
+    }
+
     public void Initialize()
     {
         _coinsModel = new CoinsModel();

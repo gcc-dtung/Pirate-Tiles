@@ -13,6 +13,11 @@ public class OutOfHeartPanelView : MonoBehaviour
         _closeButton.onClick.AddListener(Hide);
     }
 
+    private void OnDisable()
+    {
+        _closeButton.onClick.RemoveListener(Hide);
+    }
+
     public void Show()
     {
         gameObject.SetActive(true);

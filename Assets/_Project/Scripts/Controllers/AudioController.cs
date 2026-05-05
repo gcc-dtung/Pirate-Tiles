@@ -12,11 +12,19 @@ public class AudioController : MonoBehaviour
     {
         _audioSettingBinding = new EventBinding<AudioSettingChangedEvent>(OnAudioSettingChanged);
         EventBus<AudioSettingChangedEvent>.Register(_audioSettingBinding);
+        
+        if (_tilesMatchedChannel != null) _tilesMatchedChannel.AddListener(OnTilesMatched);
+        if (_gameWonChannel != null) _gameWonChannel.AddListener(OnGameWon);
+        if (_gameLostChannel != null) _gameLostChannel.AddListener(OnGameLost);
     }
 
     private void OnDisable()
     {
         EventBus<AudioSettingChangedEvent>.Deregister(_audioSettingBinding);
+        
+        if (_tilesMatchedChannel != null) _tilesMatchedChannel.RemoveListener(OnTilesMatched);
+        if (_gameWonChannel != null) _gameWonChannel.RemoveListener(OnGameWon);
+        if (_gameLostChannel != null) _gameLostChannel.RemoveListener(OnGameLost);
     }
 
     private void OnTilesMatched()

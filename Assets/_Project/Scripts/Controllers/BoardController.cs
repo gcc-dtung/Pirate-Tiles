@@ -31,13 +31,14 @@ public class BoardController : MonoBehaviour
         _boardModelUpdatedBinding = new EventBinding<BoardModelUpdatedEvent>(OnBoardUpdated);
         EventBus<BoardModelUpdatedEvent>.Register(_boardModelUpdatedBinding);
 
+        if (_undoRequestChannel != null) _undoRequestChannel.AddListener(OnUndoRequest);
     }
 
     private void OnDisable()
     {
         EventBus<BoardModelUpdatedEvent>.Deregister(_boardModelUpdatedBinding);
         
-
+        if (_undoRequestChannel != null) _undoRequestChannel.RemoveListener(OnUndoRequest);
         if (_boardModel != null)
         {
             foreach (var tile in _boardModel.Tiles)
@@ -66,7 +67,7 @@ public class BoardController : MonoBehaviour
             CardView = cardView
         });
 
-        cardView.SetSelectable(false);
+        cardView.SetSelectable(false, false);
         cardView.OnClicked -= HandleCardClicked;
 
         if (_boardModel.IsCleared && _boardClearedChannel != null)

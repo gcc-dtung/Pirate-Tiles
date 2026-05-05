@@ -11,30 +11,47 @@ public class VoidEventChannelSO : ScriptableObject
     //-----Event-----
     public delegate void OnHandler();
     private event OnHandler EventRaised;
-
+    public event Action OnEventRaised;
     public void EventRaise()
     {
         if (_isRunning)
         {
+            Debug.LogWarning("RaiseEvent called while event is already running (reentrancy blocked).");
             return;
         }
         try
         {
-            if (EventRaised == null)
-            {
-                return;
-            }
             _isRunning = true;
-            Delegate[] listener = EventRaised.GetInvocationList();
-            foreach (var lis in listener)
+            if (EventRaised != null)
             {
-                try
+                Delegate[] listener = EventRaised.GetInvocationList();
+                foreach (var lis in listener)
                 {
-                    ((OnHandler)lis)?.Invoke();
+                    try
+                    {
+                        ((OnHandler)lis)?.Invoke();
+                    }
+                    catch (Exception e)
+                    {
+                        Debug.LogError("RaiseEvent called but exception: " + e.Message);
+                    }
                 }
-                catch (Exception e)
+            }
+            
+            var handlers = OnEventRaised;
+            if (handlers != null)
+            {
+                Delegate[] handlerList = handlers.GetInvocationList();
+                foreach (var handler in handlerList)
                 {
-                    Debug.LogError("RaiseEvent called but exception: " + e.Message);
+                    try
+                    {
+                        ((Action)handler)?.Invoke();
+                    }
+                    catch (Exception e)
+                    {
+                        Debug.LogError("RaiseEvent called but exception: " + e.Message);
+                    }
                 }
             }
         }
@@ -48,6 +65,7 @@ public class VoidEventChannelSO : ScriptableObject
     {
         if (listener == null)
         {
+            Debug.LogWarning("AddListener called with null listener argument.");
             return;
         }
         EventRaised += listener;
@@ -57,6 +75,7 @@ public class VoidEventChannelSO : ScriptableObject
     {
         if (listener == null)
         {
+            Debug.LogWarning("RemoveListener called with null listener argument.");
             return;
         }
         EventRaised -= listener;

@@ -9,6 +9,21 @@ public class HeartsController : MonoBehaviour
 
     private HeartsModel _heartsModel;
     
+    private void Start()
+    {
+        Initialize();
+    }
+
+    private void OnEnable()
+    {
+        if (_outOfHeartsChannel != null) _outOfHeartsChannel.AddListener(OnOutOfHearts);
+    }
+
+    private void OnDisable()
+    {
+        if (_outOfHeartsChannel != null) _outOfHeartsChannel.RemoveListener(OnOutOfHearts);
+    }
+
     public void Initialize()
     {
         _heartsModel = new HeartsModel();

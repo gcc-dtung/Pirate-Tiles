@@ -12,10 +12,79 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5ff093f87cac5a845857d8fd684ff13e, type: 3}
   m_Name: LevelConfig_01
   m_EditorClassIdentifier: Script::LevelConfigSO
-  <LevelIndex>k__BackingField: 0
+  <LevelIndex>k__BackingField: 1
   <TimeLimit>k__BackingField: 0
   <MaxStackSize>k__BackingField: 7
   <InitialTiles>k__BackingField:
-  - GridPosition: {x: 0, y: 0}
+  - GridPosition: {x: -1.5, y: -1}
+    Size: {x: 1, y: 1}
     LayerIndex: 0
-    Type: 0
+    Type: 1
+  - GridPosition: {x: -0.5, y: -1}
+    Size: {x: 1, y: 1}
+    LayerIndex: 0
+    Type: 2
+  - GridPosition: {x: 0.5, y: -1}
+    Size: {x: 1, y: 1}
+    LayerIndex: 0
+    Type: 3
+  - GridPosition: {x: 1.5, y: -1}
+    Size: {x: 1, y: 1}
+    LayerIndex: 0
+    Type: 4
+  - GridPosition: {x: -0.5, y: 0}
+    Size: {x: 1, y: 1}
+    LayerIndex: 0
+    Type: 5
+  - GridPosition: {x: 0.5, y: 0}
+    Size: {x: 1, y: 1}
+    LayerIndex: 0
+    Type: 6
+  - GridPosition: {x: -1.5, y: 1}
+    Size: {x: 1, y: 1}
+    LayerIndex: 0
+    Type: 1
+  - GridPosition: {x: -0.5, y: 1}
+    Size: {x: 1, y: 1}
+    LayerIndex: 0
+    Type: 2
+  - GridPosition: {x: 0.5, y: 1}
+    Size: {x: 1, y: 1}
+    LayerIndex: 0
+    Type: 3
+  - GridPosition: {x: 1.5, y: 1}
+    Size: {x: 1, y: 1}
+    LayerIndex: 0
+    Type: 4
+  - GridPosition: {x: -1, y: -0.5}
+    Size: {x: 1, y: 1}
+    LayerIndex: 1
+    Type: 5
+  - GridPosition: {x: 0, y: -0.5}
+    Size: {x: 1, y: 1}
+    LayerIndex: 1
+    Type: 6
+  - GridPosition: {x: 1, y: -0.5}
+    Size: {x: 1, y: 1}
+    LayerIndex: 1
+    Type: 1
+  - GridPosition: {x: -1, y: 0.5}
+    Size: {x: 1, y: 1}
+    LayerIndex: 1
+    Type: 2
+  - GridPosition: {x: 0, y: 0.5}
+    Size: {x: 1, y: 1}
+    LayerIndex: 1
+    Type: 3
+  - GridPosition: {x: 1, y: 0.5}
+    Size: {x: 1, y: 1}
+    LayerIndex: 1
+    Type: 4
+  - GridPosition: {x: -0.5, y: 0}
+    Size: {x: 1, y: 1}
+    LayerIndex: 2
+    Type: 5
+  - GridPosition: {x: 0.5, y: 0}
+    Size: {x: 1, y: 1}
+    LayerIndex: 2
+    Type: 6

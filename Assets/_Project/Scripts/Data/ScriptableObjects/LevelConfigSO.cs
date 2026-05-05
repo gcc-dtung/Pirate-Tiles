@@ -14,4 +14,14 @@ public class LevelConfigSO : ScriptableObject
     [field: SerializeField] public List<LevelTileData> InitialTiles { get; private set; }
     
     // [field: SerializeField] public TextAsset LevelDataJson { get; private set; } // (Tùy chọn nếu bạn muốn load layout từ JSON)
+
+#if UNITY_EDITOR
+    public void SetupForEditor(int index, float time, int maxStack, List<LevelTileData> tiles)
+    {
+        LevelIndex = index;
+        TimeLimit = time;
+        MaxStackSize = maxStack;
+        InitialTiles = tiles;
+    }
+#endif
 }

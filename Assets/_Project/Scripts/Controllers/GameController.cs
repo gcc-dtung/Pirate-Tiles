@@ -21,16 +21,38 @@ public class GameController : MonoBehaviour
     [SerializeField] private LosePanelView _losePanelView;
 
     private GameStateModel _gameState;
+    private bool _isBoardCleared = false;
 
     private void Awake()
     {
         _gameState = new GameStateModel();
         _gameState.Phase = GamePhase.Init;
+        _isBoardCleared = false;
     }
 
     private void Start()
     {
         SetPhase(GamePhase.Playing);
+    }
+
+    private void OnEnable()
+    {
+        if (_tilesMatchedChannel != null) _tilesMatchedChannel.AddListener(OnTilesMatched);
+        if (_stackFullChannel != null) _stackFullChannel.AddListener(OnStackFull);
+        if (_timerExpiredChannel != null) _timerExpiredChannel.AddListener(OnTimerExpired);
+        if (_gameWonChannel != null) _gameWonChannel.AddListener(OnGameWonEventRaised);
+        if (_gameLostChannel != null) _gameLostChannel.AddListener(OnGameLostEventRaised);
+        if (_boardClearedChannel != null) _boardClearedChannel.AddListener(OnBoardCleared);
+    }
+
+    private void OnDisable()
+    {
+        if (_tilesMatchedChannel != null) _tilesMatchedChannel.RemoveListener(OnTilesMatched);
+        if (_stackFullChannel != null) _stackFullChannel.RemoveListener(OnStackFull);
+        if (_timerExpiredChannel != null) _timerExpiredChannel.RemoveListener(OnTimerExpired);
+        if (_gameWonChannel != null) _gameWonChannel.RemoveListener(OnGameWonEventRaised);
+        if (_gameLostChannel != null) _gameLostChannel.RemoveListener(OnGameLostEventRaised);
+        if (_boardClearedChannel != null) _boardClearedChannel.RemoveListener(OnBoardCleared);
     }
 
     private void SetPhase(GamePhase newPhase)
@@ -43,6 +65,23 @@ public class GameController : MonoBehaviour
             PreviousPhase = prevPhase,
             NewPhase = newPhase
         });
+    }
+
+    private void OnBoardCleared()
+    {
+        _isBoardCleared = true;
+        CheckWinCondition();
+    }
+
+    private void CheckWinCondition()
+    {
+        if (_gameState.Phase != GamePhase.Playing) return;
+        
+        if (_isBoardCleared && (_stackController == null || _stackController.IsStackEmpty))
+        {
+            SetPhase(GamePhase.Won);
+            if (_gameWonChannel != null) _gameWonChannel.EventRaise();
+        }
     }
 
     private void HandleWin()
@@ -62,6 +101,7 @@ public class GameController : MonoBehaviour
     private void OnTilesMatched()
     {
         // Add score or any overall game state logic on match
+        CheckWinCondition();
     }
 
     private void OnStackFull()

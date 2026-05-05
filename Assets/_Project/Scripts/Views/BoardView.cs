@@ -51,14 +51,18 @@ public class BoardView : MonoBehaviour
         return view;
     }
 
-    // 4.8 SyncSelectable
     public void SyncSelectable(IEnumerable<TileModel> tiles)
     {
         foreach (var tile in tiles)
         {
+            if (tile.State != CardState.InBoard) continue;
+
             if (_cardViews.TryGetValue(tile.Id, out var view))
             {
-                view.SetSelectable(tile.IsSelectable);
+                if (view != null)
+                {
+                    view.SetSelectable(tile.IsSelectable);
+                }
             }
         }
     }
