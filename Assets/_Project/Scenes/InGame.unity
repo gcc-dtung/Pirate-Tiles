@@ -2581,6 +2581,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Script::LevelController
   _currentLevelConfig: {fileID: 11400000, guid: 025facacb977da04eb43f58b2c0da872, type: 2}
+  _gameConfig: {fileID: 11400000, guid: 25de5f37bb820ef409fe5ae2ea7d03d8, type: 2}
   _tileDatabase: {fileID: 11400000, guid: 55232ac3c3453004fb0710ea12e0a08c, type: 2}
   _boardController: {fileID: 74566852}
   _stackController: {fileID: 1226930846}

@@ -67,7 +67,6 @@ public class StackController : MonoBehaviour
 
     private async void ProcessStackAnimationAsync(CardView movedCard, int insertIndex)
     {
-        // Thẻ bài đang bay xuống, và các thẻ cũ trong khay dạt ra
         RunArrangeAnimation();
 
         Vector3 targetPos = _stackView.GetSlotPosition(insertIndex);

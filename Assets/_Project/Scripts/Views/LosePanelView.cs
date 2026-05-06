@@ -1,5 +1,6 @@
-using UnityEngine;
 using PrimeTween;
+using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class LosePanelView : MonoBehaviour
@@ -25,40 +26,33 @@ public class LosePanelView : MonoBehaviour
     {
         gameObject.SetActive(false);
     }
+
     private void OnEnable()
     {
-        if (_replayButton != null)
-            _replayButton.onClick.AddListener(OnReplayClicked);
-            
-        if (_homeButton != null)
-            _homeButton.onClick.AddListener(OnHomeClicked);
+        if (_replayButton != null) _replayButton.onClick.AddListener(OnReplayClicked);
+        if (_homeButton != null) _homeButton.onClick.AddListener(OnHomeClicked);
     }
 
     private void OnDisable()
     {
-        if (_replayButton != null)
-            _replayButton.onClick.RemoveListener(OnReplayClicked);
-            
-        if (_homeButton != null)
-            _homeButton.onClick.RemoveListener(OnHomeClicked);
+        if (_replayButton != null) _replayButton.onClick.RemoveListener(OnReplayClicked);
+        if (_homeButton != null) _homeButton.onClick.RemoveListener(OnHomeClicked);
     }
 
     private void OnReplayClicked()
     {
-        // Yêu cầu load lại scene hiện tại (scene InGame)
         EventBus<SceneLoadRequestedEvent>.Raise(new SceneLoadRequestedEvent
         {
-            SceneName = UnityEngine.SceneManagement.SceneManager.GetActiveScene().name,
+            SceneName = SceneManager.GetActiveScene().name,
             UseLoadingScreen = true
         });
     }
 
     private void OnHomeClicked()
     {
-        // Yêu cầu load về scene MainMenu (đổi tên cho đúng với tên scene menu của bạn)
         EventBus<SceneLoadRequestedEvent>.Raise(new SceneLoadRequestedEvent
         {
-            SceneName = "MainMenu", 
+            SceneName = SceneNames.Map,
             UseLoadingScreen = true
         });
     }

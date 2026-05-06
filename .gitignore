@@ -100,3 +100,4 @@ InitTestScene*.unity*
 
 # Antigravity agent data
 .antigravity/
+.agent/

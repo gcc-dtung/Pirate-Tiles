@@ -116,7 +116,25 @@ public class GameController : MonoBehaviour
 
     private void OnGameWonEventRaised()
     {
-        if (_winPanelView != null) _winPanelView.Show(100); 
+        int coinsReward = 100;
+        if (_winPanelView != null) _winPanelView.Show(coinsReward); 
+
+        var save = SaveService.Instance;
+        if (save != null)
+        {
+            // Update Coins
+            int currentCoins = save.GetInt(SaveKeys.Coins, 100); // Mặc định 100 theo GameConfig
+            save.SetInt(SaveKeys.Coins, currentCoins + coinsReward);
+
+            // Update Unlocked Level
+            int currentLevelIndex = save.GetInt(SaveKeys.SelectedLevelIndex, 1);
+            int highestUnlocked = save.GetInt(SaveKeys.UnlockLevel, 1);
+
+            if (currentLevelIndex >= highestUnlocked)
+            {
+                save.SetInt(SaveKeys.UnlockLevel, currentLevelIndex + 1);
+            }
+        }
     }
 
     private void OnGameLostEventRaised()

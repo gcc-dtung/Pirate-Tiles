@@ -1,5 +1,7 @@
+using System;
 using UnityEditor;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.UI;
 using TMPro;
 
@@ -8,6 +10,8 @@ public class InGameSceneSetup : EditorWindow
     [MenuItem("Pirate Tiles/Setup InGame Scene")]
     public static void SetupScene()
     {
+        EnsureEventSystem();
+
         // 1. GameManager
         var gmObj = new GameObject("GameManager");
         gmObj.AddComponent<GameManager>();
@@ -49,6 +53,14 @@ public class InGameSceneSetup : EditorWindow
         // 3. Controllers
         var levelCtrlObj = new GameObject("LevelController");
         var levelCtrl = levelCtrlObj.AddComponent<LevelController>();
+
+        var gameConfig = AssetDatabase.LoadAssetAtPath<GameConfigSO>("Assets/_Project/Scripts/Data/SO/GameConfig.asset");
+        if (gameConfig != null)
+        {
+            var so = new SerializedObject(levelCtrl);
+            so.FindProperty("_gameConfig").objectReferenceValue = gameConfig;
+            so.ApplyModifiedProperties();
+        }
 
         var gameCtrlObj = new GameObject("GameController");
         var gameCtrl = gameCtrlObj.AddComponent<GameController>();
@@ -240,5 +252,47 @@ public class InGameSceneSetup : EditorWindow
         soTutorialCtrl.ApplyModifiedProperties();
 
         Debug.Log("InGame Scene Setup Complete!");
+    }
+
+    private static void EnsureEventSystem()
+    {
+        var eventSystem = UnityEngine.Object.FindAnyObjectByType<EventSystem>();
+        GameObject eventSystemGo;
+
+        if (eventSystem == null)
+        {
+            eventSystemGo = new GameObject("EventSystem");
+            eventSystem = eventSystemGo.AddComponent<EventSystem>();
+        }
+        else
+        {
+            eventSystemGo = eventSystem.gameObject;
+        }
+
+        EnsureCompatibleInputModule(eventSystemGo);
+    }
+
+    private static void EnsureCompatibleInputModule(GameObject eventSystemGo)
+    {
+        var standalone = eventSystemGo.GetComponent<StandaloneInputModule>();
+        if (standalone != null)
+        {
+            UnityEngine.Object.DestroyImmediate(standalone);
+        }
+
+        var inputSystemUiType = Type.GetType("UnityEngine.InputSystem.UI.InputSystemUIInputModule, Unity.InputSystem");
+        if (inputSystemUiType != null)
+        {
+            if (eventSystemGo.GetComponent(inputSystemUiType) == null)
+            {
+                eventSystemGo.AddComponent(inputSystemUiType);
+            }
+            return;
+        }
+
+        if (eventSystemGo.GetComponent<StandaloneInputModule>() == null)
+        {
+            eventSystemGo.AddComponent<StandaloneInputModule>();
+        }
     }
 }

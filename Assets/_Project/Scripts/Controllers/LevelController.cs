@@ -4,6 +4,7 @@ using System.Collections.Generic;
 public class LevelController : MonoBehaviour
 {
     [SerializeField] private LevelConfigSO _currentLevelConfig;
+    [SerializeField] private GameConfigSO _gameConfig;
     [SerializeField] private TileDatabaseSO _tileDatabase;
     
     [Header("Controllers to Initialize")]
@@ -18,6 +19,22 @@ public class LevelController : MonoBehaviour
 
     private void InitializeLevel()
     {
+        if (_gameConfig != null)
+        {
+            int chapterIdx = SaveService.Instance != null ? SaveService.Instance.GetInt(SaveKeys.SelectedChapterIndex, 0) : 0;
+            int levelIdx = SaveService.Instance != null ? SaveService.Instance.GetInt(SaveKeys.SelectedLevelIndex, 1) : 1;
+
+            if (chapterIdx >= 0 && chapterIdx < _gameConfig.Chapters.Count)
+            {
+                var chapter = _gameConfig.Chapters[chapterIdx];
+                int levelArrayIndex = levelIdx - 1; // Assuming levels are 1-indexed (Level 1 is at index 0)
+                if (levelArrayIndex >= 0 && levelArrayIndex < chapter.LevelNodes.Count)
+                {
+                    _currentLevelConfig = chapter.LevelNodes[levelArrayIndex].LevelConfig;
+                }
+            }
+        }
+
         if (_currentLevelConfig == null) return;
 
         var levelModel = new LevelModel();

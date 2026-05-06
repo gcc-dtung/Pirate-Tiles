@@ -6,15 +6,20 @@ public class SceneService : MonoBehaviour
     public static SceneService Instance { get; private set; }
 
     [Header("Loading UI")]
-    // Kéo một Loading Canvas (nằm dưới GameManager) vào đây, mặc định tắt đi
-    [SerializeField] private GameObject _loadingScreen; 
-    
+    [SerializeField] private GameObject _loadingScreen;
+
     private EventBinding<SceneLoadRequestedEvent> _sceneLoadBinding;
 
     private void Awake()
     {
-        if (Instance == null) Instance = this;
-        else Destroy(gameObject);
+        if (Instance == null)
+        {
+            Instance = this;
+        }
+        else
+        {
+            Destroy(gameObject);
+        }
     }
 
     private void OnEnable()
@@ -32,33 +37,65 @@ public class SceneService : MonoBehaviour
     {
         if (data.UseLoadingScreen)
         {
-            _ = LoadSceneAsyncAwaitable(data.SceneName); // Lệnh _ = để báo cho compiler biết ta chủ động bỏ qua việc await
+            TryResolveLoadingScreen();
+            _ = LoadSceneAsyncAwaitable(data.SceneName);
+            return;
         }
-        else
-        {
-            SceneManager.LoadScene(data.SceneName);
-        }
+
+        SceneManager.LoadScene(data.SceneName);
     }
 
     private async Awaitable LoadSceneAsyncAwaitable(string sceneName)
     {
-        // 1. Hiện màn hình Loading
-        if (_loadingScreen != null) _loadingScreen.SetActive(true);
+        LoadingView loadingView = null;
 
-        // 2. Bắt đầu load scene ngầm và đợi nó hoàn thành
+        if (_loadingScreen != null)
+        {
+            _loadingScreen.SetActive(true);
+            loadingView = _loadingScreen.GetComponent<LoadingView>();
+            if (loadingView != null)
+            {
+                loadingView.Show();
+            }
+        }
+
         AsyncOperation asyncLoad = SceneManager.LoadSceneAsync(sceneName);
-        
-        // Chờ cho đến khi tiến trình load trả về kết quả xong
         while (!asyncLoad.isDone)
         {
-            // Ở đây bạn có thể update thanh Progress Bar nếu có:
-            // float progress = Mathf.Clamp01(asyncLoad.progress / 0.9f);
-            
-            // Tương đương với yield return null trong Coroutine
+            if (loadingView != null)
+            {
+                loadingView.UpdateProgress(asyncLoad.progress);
+            }
             await Awaitable.NextFrameAsync();
         }
 
-        // 3. Tắt màn hình Loading sau khi load xong
-        if (_loadingScreen != null) _loadingScreen.SetActive(false);
+        if (loadingView != null)
+        {
+            loadingView.UpdateProgress(1f);
+            await loadingView.HideAnimate();
+        }
+        else if (_loadingScreen != null)
+        {
+            _loadingScreen.SetActive(false);
+        }
+    }
+
+    private void TryResolveLoadingScreen()
+    {
+        if (_loadingScreen != null) return;
+
+        var roots = SceneManager.GetActiveScene().GetRootGameObjects();
+        foreach (var root in roots)
+        {
+            var children = root.GetComponentsInChildren<Transform>(true);
+            foreach (var child in children)
+            {
+                if (child.name == "LoadingScreen")
+                {
+                    _loadingScreen = child.gameObject;
+                    return;
+                }
+            }
+        }
     }
 }

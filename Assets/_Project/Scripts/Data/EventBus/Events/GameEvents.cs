@@ -13,3 +13,8 @@ public struct SceneLoadRequestedEvent : IEvent {
 public struct SaveDataChangedEvent : IEvent {
     public string Key;
 }
+
+public struct LevelSelectedEvent : IEvent {
+    public int LevelIndex;
+    public int ChapterIndex;
+}

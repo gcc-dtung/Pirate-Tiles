@@ -12,23 +12,34 @@ public class AudioService : MonoBehaviour
 
     private void Awake()
     {
-        if (Instance == null) Instance = this;
-        else Destroy(gameObject);
+        if (Instance == null)
+        {
+            Instance = this;
+            EnsureAudioSources();
+        }
+        else
+        {
+            Destroy(gameObject);
+        }
     }
 
     private void Start()
     {
-        // Restore settings from SaveService
-        bool isMusicEnabled = SaveService.Instance.GetBool(SaveKeys.MusicVolume, true);
-        bool isSfxEnabled = SaveService.Instance.GetBool(SaveKeys.SoundVolume, true);
-        
-        _bgmSource.mute = !isMusicEnabled;
-        _sfxSource.mute = !isSfxEnabled;
+        bool isMusicEnabled = true;
+        bool isSfxEnabled = true;
+
+        if (SaveService.Instance != null)
+        {
+            isMusicEnabled = SaveService.Instance.GetBool(SaveKeys.MusicVolume, true);
+            isSfxEnabled = SaveService.Instance.GetBool(SaveKeys.SoundVolume, true);
+        }
+
+        if (_bgmSource != null) _bgmSource.mute = !isMusicEnabled;
+        if (_sfxSource != null) _sfxSource.mute = !isSfxEnabled;
     }
 
     private void OnEnable()
     {
-        // Lắng nghe sự kiện người dùng thay đổi Setting để tắt/mở tiếng
         _audioSettingBinding = new EventBinding<AudioSettingChangedEvent>(OnAudioSettingChanged);
         EventBus<AudioSettingChangedEvent>.Register(_audioSettingBinding);
     }
@@ -38,30 +49,77 @@ public class AudioService : MonoBehaviour
         EventBus<AudioSettingChangedEvent>.Deregister(_audioSettingBinding);
     }
 
-    // === PUBLIC API CHO CÁC CONTROLLER GỌI ===
-
     public void PlayBGM(AudioClip clip, bool loop = true)
     {
-        if (clip == null) return;
+        if (_bgmSource == null)
+        {
+            Debug.LogWarning("[AudioService] BGM AudioSource is null.");
+            return;
+        }
+
+        if (clip == null)
+        {
+            Debug.LogWarning("[AudioService] BGM clip is null.");
+            return;
+        }
+
         _bgmSource.clip = clip;
         _bgmSource.loop = loop;
         _bgmSource.Play();
     }
 
-    public void StopBGM() => _bgmSource.Stop();
+    public void StopBGM()
+    {
+        if (_bgmSource != null) _bgmSource.Stop();
+    }
 
     public void PlaySFX(AudioClip clip)
     {
-        if (clip == null) return;
-        // Dùng PlayOneShot để các âm thanh SFX có thể đè lên nhau (tiếng click, tiếng match bài)
-        _sfxSource.PlayOneShot(clip); 
-    }
+        if (_sfxSource == null)
+        {
+            Debug.LogWarning("[AudioService] SFX AudioSource is null.");
+            return;
+        }
 
-    // === XỬ LÝ EVENT ===
+        if (clip == null) return;
+        _sfxSource.PlayOneShot(clip);
+    }
 
     private void OnAudioSettingChanged(AudioSettingChangedEvent data)
     {
-        _bgmSource.mute = !data.IsMusicEnabled;
-        _sfxSource.mute = !data.IsSfxEnabled;
+        if (_bgmSource != null) _bgmSource.mute = !data.IsMusicEnabled;
+        if (_sfxSource != null) _sfxSource.mute = !data.IsSfxEnabled;
+    }
+
+    private void EnsureAudioSources()
+    {
+        if (_bgmSource == null)
+        {
+            _bgmSource = FindOrCreateSource("BGMSource", true);
+        }
+
+        if (_sfxSource == null)
+        {
+            _sfxSource = FindOrCreateSource("SFXSource", false);
+        }
+    }
+
+    private AudioSource FindOrCreateSource(string childName, bool loop)
+    {
+        Transform child = transform.Find(childName);
+        GameObject go = child != null ? child.gameObject : new GameObject(childName);
+        if (go.transform.parent != transform)
+        {
+            go.transform.SetParent(transform);
+        }
+
+        AudioSource source = go.GetComponent<AudioSource>();
+        if (source == null)
+        {
+            source = go.AddComponent<AudioSource>();
+        }
+
+        source.loop = loop;
+        return source;
     }
 }

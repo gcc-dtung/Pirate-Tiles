@@ -15,4 +15,8 @@ public class GameConfigSO : ScriptableObject
     [field: SerializeField] public int MagicCost { get; private set; } = 15;
     [field: SerializeField] public int ShuffleCost { get; private set; } = 20;
     [field: SerializeField] public int AddCellCost { get; private set; } = 30;
+
+    [field: Header("Chapter / Map")]
+    [field: SerializeField] public System.Collections.Generic.List<ChapterConfigSO> Chapters { get; private set; }
+    [field: SerializeField] public int LevelsPerChapter { get; private set; } = 12;
 }

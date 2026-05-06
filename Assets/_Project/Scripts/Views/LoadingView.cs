@@ -1,6 +1,6 @@
+using PrimeTween;
 using UnityEngine;
 using UnityEngine.UI;
-using PrimeTween;
 
 public class LoadingView : MonoBehaviour
 {
@@ -10,18 +10,34 @@ public class LoadingView : MonoBehaviour
     public void Show()
     {
         gameObject.SetActive(true);
-        _canvasGroup.alpha = 1f;
-        _progressBar.value = 0f;
+
+        if (_canvasGroup != null)
+        {
+            _canvasGroup.alpha = 1f;
+        }
+
+        if (_progressBar != null)
+        {
+            _progressBar.value = 0f;
+        }
     }
 
     public void UpdateProgress(float progress)
     {
+        if (_progressBar == null) return;
+
         Tween.StopAll(_progressBar);
         Tween.Custom(_progressBar.value, progress, 0.1f, val => _progressBar.value = val);
     }
 
     public Tween HideAnimate()
     {
+        if (_canvasGroup == null)
+        {
+            gameObject.SetActive(false);
+            return default;
+        }
+
         return Tween.Alpha(_canvasGroup, 0f, 0.5f)
             .OnComplete(() => gameObject.SetActive(false));
     }
