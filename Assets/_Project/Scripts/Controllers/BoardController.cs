@@ -1,4 +1,6 @@
 using UnityEngine;
+using System.Linq;
+using PrimeTween;
 
 public class BoardController : MonoBehaviour
 {
@@ -6,15 +8,21 @@ public class BoardController : MonoBehaviour
     [SerializeField] private TileSelectedChannelSO _tileSelectedChannel;
     [SerializeField] private VoidEventChannelSO _boardClearedChannel;
     [SerializeField] private VoidEventChannelSO _undoRequestChannel;
+    [SerializeField] private VoidEventChannelSO _shuffleRequestChannel;
+    [SerializeField] private VoidEventChannelSO _magicRequestChannel;
+    [SerializeField] private VoidEventChannelSO _tilesMatchedChannel;
 
     private BoardModel _boardModel;
+    private TileDatabaseSO _tileDatabase;
     private EventBinding<BoardModelUpdatedEvent> _boardModelUpdatedBinding;
+    private EventBinding<UndoPerformedEvent> _undoBinding;
 
     public void Initialize(BoardModel boardModel, TileDatabaseSO database)
     {
         _boardModel = boardModel;
+        _tileDatabase = database;
         
-        _boardView.SpawnCards(_boardModel.Tiles, database);
+        _boardView.SpawnCards(_boardModel.Tiles, _tileDatabase);
         
         foreach (var tile in _boardModel.Tiles)
         {
@@ -31,14 +39,22 @@ public class BoardController : MonoBehaviour
         _boardModelUpdatedBinding = new EventBinding<BoardModelUpdatedEvent>(OnBoardUpdated);
         EventBus<BoardModelUpdatedEvent>.Register(_boardModelUpdatedBinding);
 
+        _undoBinding = new EventBinding<UndoPerformedEvent>(OnUndoPerformed);
+        EventBus<UndoPerformedEvent>.Register(_undoBinding);
+
         if (_undoRequestChannel != null) _undoRequestChannel.AddListener(OnUndoRequest);
+        if (_shuffleRequestChannel != null) _shuffleRequestChannel.AddListener(OnShuffleRequest);
+        if (_magicRequestChannel != null) _magicRequestChannel.AddListener(OnMagicRequest);
     }
 
     private void OnDisable()
     {
         EventBus<BoardModelUpdatedEvent>.Deregister(_boardModelUpdatedBinding);
+        EventBus<UndoPerformedEvent>.Deregister(_undoBinding);
         
         if (_undoRequestChannel != null) _undoRequestChannel.RemoveListener(OnUndoRequest);
+        if (_shuffleRequestChannel != null) _shuffleRequestChannel.RemoveListener(OnShuffleRequest);
+        if (_magicRequestChannel != null) _magicRequestChannel.RemoveListener(OnMagicRequest);
         if (_boardModel != null)
         {
             foreach (var tile in _boardModel.Tiles)
@@ -86,7 +102,80 @@ public class BoardController : MonoBehaviour
 
     private void OnUndoRequest()
     {
-        // Xử lý khi nhận sự kiện undo. BoardModel sẽ thêm lại thẻ bài từ Stack.
-        // Điều này sẽ được gọi từ PowerUpController sau.
+        // StackController handles this and raises UndoPerformedEvent
+    }
+
+    private void OnUndoPerformed(UndoPerformedEvent e)
+    {
+        _boardModel.RestoreTile(e.TileId);
+        var tile = _boardModel.Tiles.FirstOrDefault(t => t.Id == e.TileId);
+        if (tile != null)
+        {
+            Vector3 originalPos = _boardView.GetWorldPosition(tile.GridPosition);
+            e.CardView.AnimateUndoMove(originalPos);
+            e.CardView.SetOrderInLayer(tile.LayerIndex);
+            e.CardView.SetSelectable(true);
+            e.CardView.OnClicked += HandleCardClicked;
+        }
+    }
+
+    private async void OnShuffleRequest()
+    {
+        var boardTiles = _boardModel.Tiles.Where(t => t.State == CardState.InBoard).ToList();
+        await _boardView.AnimateShuffleGather(boardTiles);
+        _boardModel.ShuffleTileTypes();
+        await _boardView.AnimateShuffleSpread(boardTiles, _tileDatabase);
+    }
+
+    private async void OnMagicRequest()
+    {
+        var targets = _boardModel.GetBestMagicTargets(3);
+        if (targets == null || targets.Count < 3) return;
+
+        var seq = Sequence.Create();
+        var stackTileIds = new System.Collections.Generic.List<int>();
+
+        foreach (var tile in targets)
+        {
+            if (tile.State == CardState.InBoard)
+            {
+                _boardModel.RemoveTile(tile.Id);
+                var cardView = _boardView.GetCardView(tile.Id);
+                if (cardView != null)
+                {
+                    cardView.OnClicked -= HandleCardClicked;
+                    seq.Group(cardView.AnimateCollectSpecial());
+                }
+            }
+            else if (tile.State == CardState.InStack)
+            {
+                stackTileIds.Add(tile.Id);
+            }
+        }
+
+        if (stackTileIds.Count > 0)
+        {
+            EventBus<MagicRemoveFromStackEvent>.Raise(new MagicRemoveFromStackEvent { TileIds = stackTileIds });
+        }
+
+        await seq;
+
+        foreach (var tile in targets)
+        {
+            if (!stackTileIds.Contains(tile.Id))
+            {
+                _boardView.DespawnCard(tile.Id);
+            }
+        }
+
+        if (_tilesMatchedChannel != null)
+        {
+            _tilesMatchedChannel.EventRaise();
+        }
+
+        if (_boardModel.IsCleared && _boardClearedChannel != null)
+        {
+            _boardClearedChannel.EventRaise();
+        }
     }
 }

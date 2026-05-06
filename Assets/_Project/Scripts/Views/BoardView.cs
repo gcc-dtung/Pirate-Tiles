@@ -68,26 +68,28 @@ public class BoardView : MonoBehaviour
     }
 
     // 4.9 Shuffle animations
-    public Sequence AnimateShuffleGather(float duration = 0.5f)
+    public Sequence AnimateShuffleGather(IEnumerable<TileModel> tilesToShuffle, float duration = 0.5f)
     {
         var seq = Sequence.Create();
         Vector3 centerPos = Vector3.zero;
 
-        foreach (var kvp in _cardViews)
+        foreach (var tile in tilesToShuffle)
         {
-            var view = kvp.Value;
-            seq.Group(Tween.LocalPosition(view.transform, centerPos, duration, Ease.InBack));
-            seq.Group(Tween.LocalRotation(view.transform, Quaternion.Euler(0, 0, 180), duration, Ease.Linear));
+            if (_cardViews.TryGetValue(tile.Id, out var view))
+            {
+                seq.Group(Tween.LocalPosition(view.transform, centerPos, duration, Ease.InBack));
+                seq.Group(Tween.LocalRotation(view.transform, Quaternion.Euler(0, 0, 180), duration, Ease.Linear));
+            }
         }
 
         return seq;
     }
     
-    public Sequence AnimateShuffleSpread(IEnumerable<TileModel> tiles, TileDatabaseSO database, float duration = 0.5f)
+    public Sequence AnimateShuffleSpread(IEnumerable<TileModel> tilesToShuffle, TileDatabaseSO database, float duration = 0.5f)
     {
         var seq = Sequence.Create();
 
-        foreach (var tile in tiles)
+        foreach (var tile in tilesToShuffle)
         {
             if (_cardViews.TryGetValue(tile.Id, out var view))
             {
@@ -106,7 +108,7 @@ public class BoardView : MonoBehaviour
         return seq;
     }
 
-    private Vector3 GetWorldPosition(Vector2 gridPosition)
+    public Vector3 GetWorldPosition(Vector2 gridPosition)
     {
         return new Vector3(gridPosition.x * _spacingX, gridPosition.y * _spacingY, 0);
     }

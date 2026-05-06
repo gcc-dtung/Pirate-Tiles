@@ -10,7 +10,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: d5a15e972b7567d4b9206fab83a22184, type: 3}
-  m_Name: ChapterConfig
+  m_Name: ChapterConfig_1
   m_EditorClassIdentifier: Script::ChapterConfigSO
   <ChapterIndex>k__BackingField: 0
   <ChapterName>k__BackingField: Chapter 1

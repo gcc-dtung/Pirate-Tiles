@@ -1,0 +1,3 @@
+public struct AddOneCellUsedEvent : IEvent
+{
+}

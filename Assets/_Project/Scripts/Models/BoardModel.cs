@@ -87,29 +87,87 @@ public class BoardModel
     // 3.5 ShuffleTileTypes
     public void ShuffleTileTypes()
     {
-        // Lấy danh sách các tile còn trên bàn cờ
         var boardTiles = _tiles.Where(t => t.State == CardState.InBoard).ToList();
         if (boardTiles.Count <= 1) return;
 
-        // Trích xuất list Type
-        var types = boardTiles.Select(t => t.TileType).ToList();
-        
-        // Shuffle the types (Fisher-Yates)
+        var originalTypes = boardTiles.Select(t => t.TileType).ToList();
         System.Random rng = new System.Random();
-        int n = types.Count;
-        while (n > 1)
+
+        int maxRetries = 10;
+        bool hasMatch = false;
+
+        for (int retry = 0; retry < maxRetries; retry++)
         {
-            n--;
-            int k = rng.Next(n + 1);
-            CardType value = types[k];
-            types[k] = types[n];
-            types[n] = value;
+            var types = new List<CardType>(originalTypes);
+            int n = types.Count;
+            while (n > 1)
+            {
+                n--;
+                int k = rng.Next(n + 1);
+                CardType value = types[k];
+                types[k] = types[n];
+                types[n] = value;
+            }
+
+            for (int i = 0; i < boardTiles.Count; i++)
+            {
+                boardTiles[i].TileType = types[i];
+            }
+
+            UpdateSelectableStatus();
+
+            if (HasSelectableMatch())
+            {
+                hasMatch = true;
+                break;
+            }
         }
 
-        // Gán ngược lại
-        for (int i = 0; i < boardTiles.Count; i++)
+        if (!hasMatch)
         {
-            boardTiles[i].TileType = types[i];
+            ForceGuaranteeSelectableMatch(boardTiles, originalTypes, rng);
+            UpdateSelectableStatus();
+        }
+    }
+
+    private bool HasSelectableMatch()
+    {
+        var selectableTiles = _tiles.Where(t => t.State == CardState.InBoard && t.IsSelectable).ToList();
+        var grouped = selectableTiles.GroupBy(t => t.TileType);
+        return grouped.Any(g => g.Count() >= 3);
+    }
+
+    private void ForceGuaranteeSelectableMatch(List<TileModel> boardTiles, List<CardType> originalTypes, System.Random rng)
+    {
+        var selectableTiles = boardTiles.Where(t => t.IsSelectable).ToList();
+        if (selectableTiles.Count >= 3)
+        {
+            var matchTiles = selectableTiles.OrderBy(x => rng.Next()).Take(3).ToList();
+            
+            var typeCounts = originalTypes.GroupBy(t => t).Where(g => g.Count() >= 3).Select(g => g.Key).ToList();
+            CardType chosenType = typeCounts.Count > 0 ? typeCounts[rng.Next(typeCounts.Count)] : originalTypes[0];
+
+            foreach (var t in matchTiles)
+            {
+                t.TileType = chosenType;
+                originalTypes.Remove(chosenType);
+            }
+
+            var remainingTiles = boardTiles.Except(matchTiles).ToList();
+            int n = originalTypes.Count;
+            while (n > 1)
+            {
+                n--;
+                int k = rng.Next(n + 1);
+                CardType value = originalTypes[k];
+                originalTypes[k] = originalTypes[n];
+                originalTypes[n] = value;
+            }
+
+            for (int i = 0; i < remainingTiles.Count; i++)
+            {
+                remainingTiles[i].TileType = originalTypes[i];
+            }
         }
     }
 
@@ -117,6 +175,53 @@ public class BoardModel
     public List<TileModel> GetTilesByType(CardType type)
     {
         return _tiles.Where(t => t.TileType == type).ToList();
+    }
+
+    public void RestoreTile(int tileId)
+    {
+        var tile = GetTileById(tileId);
+        if (tile != null && tile.State != CardState.InBoard)
+        {
+            tile.State = CardState.InBoard;
+            UpdateSelectableStatus();
+        }
+    }
+
+    public List<TileModel> GetBestMagicTargets(int count)
+    {
+        var boardTiles = _tiles.Where(t => t.State == CardState.InBoard).ToList();
+        var stackTiles = _tiles.Where(t => t.State == CardState.InStack).ToList();
+
+        // 1. Prioritize types that are ALREADY in the stack
+        var stackGroups = stackTiles.GroupBy(t => t.TileType).OrderByDescending(g => g.Count());
+        foreach (var group in stackGroups)
+        {
+            int neededFromBoard = count - group.Count();
+            if (neededFromBoard <= 0) continue;
+
+            var boardTilesOfType = boardTiles.Where(t => t.TileType == group.Key).OrderByDescending(t => t.IsSelectable).ToList();
+            if (boardTilesOfType.Count >= neededFromBoard)
+            {
+                var targets = new List<TileModel>();
+                targets.AddRange(group); // Add all from stack
+                targets.AddRange(boardTilesOfType.Take(neededFromBoard)); // Add needed from board
+                return targets;
+            }
+        }
+
+        // 2. If no combination with stack works, try to find 'count' tiles purely on the board
+        var grouped = boardTiles.GroupBy(t => t.TileType).OrderByDescending(g => g.Count());
+
+        foreach (var group in grouped)
+        {
+            if (group.Count() >= count)
+            {
+                var sorted = group.OrderByDescending(t => t.IsSelectable).ToList();
+                return sorted.Take(count).ToList();
+            }
+        }
+        
+        return null;
     }
 
     // Helper

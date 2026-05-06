@@ -4,17 +4,95 @@ using System.Collections.Generic;
 
 public class StackView : MonoBehaviour
 {
-    [SerializeField] private Transform[] _slotPositions;
+    [System.Serializable]
+    public struct StackSlot
+    {
+        public Transform SlotTransform;        // vị trí slot
+        public SpriteRenderer Background;      // sprite nền ô trống
+        public SpriteRenderer LockIcon;        // icon khóa (chỉ ô 8 mới cần)
+    }
+
+    [Header("Slot Setup")]
+    [SerializeField] private StackSlot[] _slots;
+    [SerializeField] private Sprite _normalSlotSprite;
+    [SerializeField] private Sprite _lockedSlotSprite;
+    [SerializeField] private Color _normalSlotColor = Color.white;
+    [SerializeField] private Color _lockedSlotColor = Color.gray;
+
     [SerializeField] private Transform _stackContainer; // Object chứa background của khay, dùng để rung
 
-    public int MaxSlots => _slotPositions != null ? _slotPositions.Length : 0;
+    public int MaxSlots => _slots != null ? _slots.Length : 0;
+
+    private void Awake()
+    {
+        InitializeSlots();
+    }
+
+    public void InitializeSlots()
+    {
+        if (_slots == null) return;
+
+        for (int i = 0; i < _slots.Length; i++)
+        {
+            if (i < 7)
+            {
+                if (_slots[i].Background != null)
+                {
+                    if (_normalSlotSprite != null)
+                    {
+                        _slots[i].Background.sprite = _normalSlotSprite;
+                    }
+                    _slots[i].Background.color = _normalSlotColor;
+                }
+                if (_slots[i].LockIcon != null)
+                {
+                    _slots[i].LockIcon.gameObject.SetActive(false);
+                }
+            }
+            else // Slot 8 (index 7)
+            {
+                if (_slots[i].Background != null)
+                {
+                    if (_lockedSlotSprite != null)
+                    {
+                        _slots[i].Background.sprite = _lockedSlotSprite;
+                    }
+                    _slots[i].Background.color = _lockedSlotColor;
+                }
+                if (_slots[i].LockIcon != null)
+                {
+                    _slots[i].LockIcon.gameObject.SetActive(true);
+                }
+            }
+        }
+    }
+
+    public void UnlockExtraSlot()
+    {
+        if (_slots != null && _slots.Length > 7)
+        {
+            var extraSlot = _slots[7];
+            if (extraSlot.Background != null)
+            {
+                if (_normalSlotSprite != null)
+                {
+                    extraSlot.Background.sprite = _normalSlotSprite;
+                }
+                extraSlot.Background.color = _normalSlotColor;
+            }
+            if (extraSlot.LockIcon != null)
+            {
+                extraSlot.LockIcon.gameObject.SetActive(false);
+            }
+        }
+    }
 
     // 4.10 Setup StackView
     public Vector3 GetSlotPosition(int index)
     {
-        if (_slotPositions != null && index >= 0 && index < _slotPositions.Length)
+        if (_slots != null && index >= 0 && index < _slots.Length)
         {
-            return _slotPositions[index].position;
+            return _slots[index].SlotTransform.position;
         }
         return Vector3.zero;
     }

@@ -10,10 +10,14 @@ public class StackController : MonoBehaviour
     [SerializeField] private TileSelectedChannelSO _tileSelectedChannel;
     [SerializeField] private VoidEventChannelSO _tilesMatchedChannel;
     [SerializeField] private VoidEventChannelSO _stackFullChannel;
+    [SerializeField] private VoidEventChannelSO _undoRequestChannel;
+    [SerializeField] private VoidEventChannelSO _addOneCellRequestChannel;
 
     private StackModel _stackModel;
     private List<CardView> _cardsInStack = new List<CardView>();
     private Sequence _arrangeSeq; // Track để Complete trước khi tạo mới
+    private bool _hasUsedAddOneCell = false;
+    private EventBinding<MagicRemoveFromStackEvent> _magicRemoveBinding;
 
     public void Initialize(StackModel stackModel)
     {
@@ -28,6 +32,11 @@ public class StackController : MonoBehaviour
         {
             _tileSelectedChannel.AddListener(OnTileSelected);
         }
+        if (_undoRequestChannel != null) _undoRequestChannel.AddListener(OnUndoRequest);
+        if (_addOneCellRequestChannel != null) _addOneCellRequestChannel.AddListener(OnAddOneCellRequest);
+
+        _magicRemoveBinding = new EventBinding<MagicRemoveFromStackEvent>(OnMagicRemoveFromStack);
+        EventBus<MagicRemoveFromStackEvent>.Register(_magicRemoveBinding);
     }
 
     private void OnDisable()
@@ -36,6 +45,10 @@ public class StackController : MonoBehaviour
         {
             _tileSelectedChannel.RemoveListener(OnTileSelected);
         }
+        if (_undoRequestChannel != null) _undoRequestChannel.RemoveListener(OnUndoRequest);
+        if (_addOneCellRequestChannel != null) _addOneCellRequestChannel.RemoveListener(OnAddOneCellRequest);
+
+        EventBus<MagicRemoveFromStackEvent>.Deregister(_magicRemoveBinding);
     }
 
     private void OnTileSelected(TileSelectedEventData data)
@@ -50,6 +63,8 @@ public class StackController : MonoBehaviour
         int insertIndex = _stackModel.GetInsertIndex(data.TileType);
         _stackModel.InsertTile(insertIndex, tileModel);
         _cardsInStack.Insert(insertIndex, cardView);
+        
+        EventBus<StackUpdatedEvent>.Raise(new StackUpdatedEvent { Count = _cardsInStack.Count });
 
         cardView.SetOrderInLayer(100 + insertIndex);
 
@@ -97,6 +112,8 @@ public class StackController : MonoBehaviour
 
         _cardsInStack.RemoveRange(startIndex, 3);
         _stackModel.RemoveTiles(startIndex, 3);
+        
+        EventBus<StackUpdatedEvent>.Raise(new StackUpdatedEvent { Count = _cardsInStack.Count });
 
         var seq = Sequence.Create();
         foreach (var card in matchedCards)
@@ -127,5 +144,65 @@ public class StackController : MonoBehaviour
     {
         if (_arrangeSeq.isAlive) _arrangeSeq.Complete();
         _arrangeSeq = _stackView.AnimateArrange(_cardsInStack);
+    }
+
+    private void OnUndoRequest()
+    {
+        if (_cardsInStack.Count == 0) return;
+
+        var lastTile = _stackModel.RemoveLastTile();
+        if (lastTile != null)
+        {
+            var cardView = _cardsInStack[_cardsInStack.Count - 1];
+            _cardsInStack.RemoveAt(_cardsInStack.Count - 1);
+            
+            EventBus<StackUpdatedEvent>.Raise(new StackUpdatedEvent { Count = _cardsInStack.Count });
+
+            EventBus<UndoPerformedEvent>.Raise(new UndoPerformedEvent
+            {
+                TileId = lastTile.Id,
+                CardView = cardView
+            });
+
+            RunArrangeAnimation();
+        }
+    }
+
+    private void OnAddOneCellRequest()
+    {
+        if (_hasUsedAddOneCell) return;
+
+        _hasUsedAddOneCell = true;
+        _stackModel.ExpandSize(1);
+        _stackView.UnlockExtraSlot();
+
+        EventBus<AddOneCellUsedEvent>.Raise(new AddOneCellUsedEvent());
+    }
+
+    private void OnMagicRemoveFromStack(MagicRemoveFromStackEvent e)
+    {
+        bool changed = false;
+        
+        for (int i = _cardsInStack.Count - 1; i >= 0; i--)
+        {
+            var cardView = _cardsInStack[i];
+            if (e.TileIds.Contains(cardView.TileId))
+            {
+                _stackModel.RemoveTiles(i, 1);
+                _cardsInStack.RemoveAt(i);
+                
+                cardView.AnimateCollectSpecial().OnComplete(() => {
+                    if (cardView != null && cardView.gameObject != null)
+                        Destroy(cardView.gameObject);
+                });
+                changed = true;
+            }
+        }
+
+        if (changed)
+        {
+            EventBus<StackUpdatedEvent>.Raise(new StackUpdatedEvent { Count = _cardsInStack.Count });
+            RunArrangeAnimation();
+        }
     }
 }

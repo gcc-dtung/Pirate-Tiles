@@ -1,0 +1,22 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d5a15e972b7567d4b9206fab83a22184, type: 3}
+  m_Name: ChapterConfig_2
+  m_EditorClassIdentifier: Script::ChapterConfigSO
+  <ChapterIndex>k__BackingField: 0
+  <ChapterName>k__BackingField: Chapter 2
+  <MapBackground>k__BackingField: {fileID: 0}
+  <LevelNodes>k__BackingField:
+  - LevelConfig: {fileID: 11400000, guid: 910df2aaef0edc8439079c45666ab249, type: 2}
+    MapPosition: {x: -345, y: -113}
+  - LevelConfig: {fileID: 11400000, guid: a276ba1df7fe30a4498bbfb50176c323, type: 2}
+    MapPosition: {x: -186, y: 37}

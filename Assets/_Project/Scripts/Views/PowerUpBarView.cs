@@ -41,4 +41,25 @@ public class PowerUpBarView : MonoBehaviour
             }
         }
     }
+    public void SetButtonInteractable(PowerType type, bool interactable)
+    {
+        var p = _powerUpButtons.Find(x => x.Type == type);
+        if (p.Button != null)
+        {
+            p.Button.interactable = interactable;
+            if (p.Icon != null)
+            {
+                if (!interactable)
+                {
+                    p.Icon.color = new Color(0.5f, 0.5f, 0.5f, 0.5f);
+                }
+                else
+                {
+                    int count = 0;
+                    if (p.CountText != null) int.TryParse(p.CountText.text, out count);
+                    p.Icon.color = count > 0 ? Color.white : new Color(1f, 1f, 1f, 0.5f);
+                }
+            }
+        }
+    }
 }

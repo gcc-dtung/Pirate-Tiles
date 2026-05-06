@@ -14,6 +14,8 @@ public class PowerUpController : MonoBehaviour
 
     private PowerUpModel _powerUpModel;
     private PowerType _pendingPurchaseType;
+    private EventBinding<AddOneCellUsedEvent> _addOneCellBinding;
+    private EventBinding<StackUpdatedEvent> _stackUpdatedBinding;
 
     private void Start()
     {
@@ -30,10 +32,21 @@ public class PowerUpController : MonoBehaviour
         _powerUpModel.AddPowerUp(PowerType.AddOneCell, 1);
 
         UpdateAllViews();
+
+        if (_powerUpBarView != null)
+        {
+            _powerUpBarView.SetButtonInteractable(PowerType.Undo, false);
+        }
     }
 
     private void OnEnable()
     {
+        _addOneCellBinding = new EventBinding<AddOneCellUsedEvent>(OnAddOneCellUsed);
+        EventBus<AddOneCellUsedEvent>.Register(_addOneCellBinding);
+
+        _stackUpdatedBinding = new EventBinding<StackUpdatedEvent>(OnStackUpdated);
+        EventBus<StackUpdatedEvent>.Register(_stackUpdatedBinding);
+
         if (_powerUpBarView != null)
         {
             _powerUpBarView.OnPowerUpClicked += HandlePowerUpClicked;
@@ -48,6 +61,9 @@ public class PowerUpController : MonoBehaviour
 
     private void OnDisable()
     {
+        EventBus<AddOneCellUsedEvent>.Deregister(_addOneCellBinding);
+        EventBus<StackUpdatedEvent>.Deregister(_stackUpdatedBinding);
+
         if (_powerUpBarView != null)
         {
             _powerUpBarView.OnPowerUpClicked -= HandlePowerUpClicked;
@@ -146,5 +162,21 @@ public class PowerUpController : MonoBehaviour
         _powerUpBarView.UpdatePowerUpCount(PowerType.Magic, _powerUpModel.GetCount(PowerType.Magic));
         _powerUpBarView.UpdatePowerUpCount(PowerType.Shuffle, _powerUpModel.GetCount(PowerType.Shuffle));
         _powerUpBarView.UpdatePowerUpCount(PowerType.AddOneCell, _powerUpModel.GetCount(PowerType.AddOneCell));
+    }
+
+    private void OnAddOneCellUsed(AddOneCellUsedEvent e)
+    {
+        if (_powerUpBarView != null)
+        {
+            _powerUpBarView.SetButtonInteractable(PowerType.AddOneCell, false);
+        }
+    }
+
+    private void OnStackUpdated(StackUpdatedEvent e)
+    {
+        if (_powerUpBarView != null)
+        {
+            _powerUpBarView.SetButtonInteractable(PowerType.Undo, e.Count > 0);
+        }
     }
 }

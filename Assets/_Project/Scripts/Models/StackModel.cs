@@ -73,6 +73,14 @@ public class StackModel
         }
     }
 
+    public TileModel RemoveLastTile()
+    {
+        if (_tiles.Count == 0) return null;
+        var lastTile = _tiles[_tiles.Count - 1];
+        _tiles.RemoveAt(_tiles.Count - 1);
+        return lastTile;
+    }
+
     // 3.11 GetMostFrequentType
     public CardType GetMostFrequentType()
     {

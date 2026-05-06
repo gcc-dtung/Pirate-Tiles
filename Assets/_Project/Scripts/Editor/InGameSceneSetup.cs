@@ -81,14 +81,25 @@ public class InGameSceneSetup : EditorWindow
         var soStackView = new SerializedObject(stackView);
         soStackView.FindProperty("_stackContainer").objectReferenceValue = stackBg.transform;
         
-        SerializedProperty slotPositionsProp = soStackView.FindProperty("_slotPositions");
-        slotPositionsProp.arraySize = 7;
-        for(int i=0; i<7; i++)
+        SerializedProperty slotPositionsProp = soStackView.FindProperty("_slots");
+        slotPositionsProp.arraySize = 8;
+        for(int i=0; i<8; i++)
         {
             var slot = new GameObject($"Slot_{i}");
             slot.transform.SetParent(slotsObj.transform);
             slot.transform.localPosition = new Vector3(-3f + i*1f, 0, 0);
-            slotPositionsProp.GetArrayElementAtIndex(i).objectReferenceValue = slot.transform;
+            
+            var bgRenderer = slot.AddComponent<SpriteRenderer>();
+            
+            var lockObj = new GameObject("LockIcon");
+            lockObj.transform.SetParent(slot.transform);
+            lockObj.transform.localPosition = Vector3.zero;
+            var lockRenderer = lockObj.AddComponent<SpriteRenderer>();
+
+            var slotProp = slotPositionsProp.GetArrayElementAtIndex(i);
+            slotProp.FindPropertyRelative("SlotTransform").objectReferenceValue = slot.transform;
+            slotProp.FindPropertyRelative("Background").objectReferenceValue = bgRenderer;
+            slotProp.FindPropertyRelative("LockIcon").objectReferenceValue = lockRenderer;
         }
         soStackView.ApplyModifiedProperties();
 
@@ -134,12 +145,17 @@ public class InGameSceneSetup : EditorWindow
         var powerUpUsedChannel = AssetDatabase.LoadAssetAtPath<PowerTypeEventChannelSO>("Assets/_Project/Resources/EventChannels/PowerUpUsedChannel.asset");
         var outOfHeartsChannel = AssetDatabase.LoadAssetAtPath<VoidEventChannelSO>("Assets/_Project/Resources/EventChannels/OutOfHeartsChannel.asset");
         var shuffleCompletedChannel = AssetDatabase.LoadAssetAtPath<VoidEventChannelSO>("Assets/_Project/Resources/EventChannels/ShuffleCompletedChannel.asset");
+        var magicRequestChannel = AssetDatabase.LoadAssetAtPath<VoidEventChannelSO>("Assets/_Project/Resources/SO_MagicRequest.asset");
+        var addOneCellRequestChannel = AssetDatabase.LoadAssetAtPath<VoidEventChannelSO>("Assets/_Project/Resources/SO_AddOneCellRequest.asset");
 
         var soBoardCtrl = new SerializedObject(boardCtrl);
         soBoardCtrl.FindProperty("_boardView").objectReferenceValue = boardView;
         soBoardCtrl.FindProperty("_tileSelectedChannel").objectReferenceValue = tileSelectedChannel;
         soBoardCtrl.FindProperty("_boardClearedChannel").objectReferenceValue = boardClearedChannel;
         soBoardCtrl.FindProperty("_undoRequestChannel").objectReferenceValue = undoRequestChannel;
+        soBoardCtrl.FindProperty("_shuffleRequestChannel").objectReferenceValue = shuffleCompletedChannel;
+        soBoardCtrl.FindProperty("_magicRequestChannel").objectReferenceValue = magicRequestChannel;
+        soBoardCtrl.FindProperty("_tilesMatchedChannel").objectReferenceValue = tileMatchedChannel;
         soBoardCtrl.ApplyModifiedProperties();
 
         var soStackCtrl = new SerializedObject(stackCtrl);
@@ -147,6 +163,8 @@ public class InGameSceneSetup : EditorWindow
         soStackCtrl.FindProperty("_tileSelectedChannel").objectReferenceValue = tileSelectedChannel;
         soStackCtrl.FindProperty("_tilesMatchedChannel").objectReferenceValue = tileMatchedChannel;
         soStackCtrl.FindProperty("_stackFullChannel").objectReferenceValue = stackFullChannel;
+        soStackCtrl.FindProperty("_undoRequestChannel").objectReferenceValue = undoRequestChannel;
+        soStackCtrl.FindProperty("_addOneCellRequestChannel").objectReferenceValue = addOneCellRequestChannel;
         soStackCtrl.ApplyModifiedProperties();
         
         var soAudioCtrl = new SerializedObject(audioCtrl);
@@ -233,6 +251,8 @@ public class InGameSceneSetup : EditorWindow
         soPowerUpCtrl.FindProperty("_spendCoinsRequestChannel").objectReferenceValue = powerUpUsedChannel;
         soPowerUpCtrl.FindProperty("_undoRequestChannel").objectReferenceValue = undoRequestChannel;
         soPowerUpCtrl.FindProperty("_shuffleRequestChannel").objectReferenceValue = shuffleCompletedChannel;
+        soPowerUpCtrl.FindProperty("_magicRequestChannel").objectReferenceValue = magicRequestChannel;
+        soPowerUpCtrl.FindProperty("_addOneCellRequestChannel").objectReferenceValue = addOneCellRequestChannel;
         soPowerUpCtrl.ApplyModifiedProperties();
 
         var soHeartsCtrl = new SerializedObject(heartsCtrl);
