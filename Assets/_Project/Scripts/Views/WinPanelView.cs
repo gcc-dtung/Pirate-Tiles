@@ -17,6 +17,10 @@ public class WinPanelView : MonoBehaviour
         {
             _homeButton.onClick.AddListener(OnHomeClicked);
         }
+        if (_nextButton != null)
+        {
+            _nextButton.onClick.AddListener(OnNextClicked);
+        }
     }
 
     private void OnDisable()
@@ -24,6 +28,10 @@ public class WinPanelView : MonoBehaviour
         if (_homeButton != null)
         {
             _homeButton.onClick.RemoveListener(OnHomeClicked);
+        }
+        if (_nextButton != null)
+        {
+            _nextButton.onClick.RemoveListener(OnNextClicked);
         }
     }
 
@@ -57,6 +65,22 @@ public class WinPanelView : MonoBehaviour
         EventBus<SceneLoadRequestedEvent>.Raise(new SceneLoadRequestedEvent
         {
             SceneName = SceneNames.Map,
+            UseLoadingScreen = true
+        });
+    }
+
+    private void OnNextClicked()
+    {
+        var save = SaveService.Instance;
+        if (save != null)
+        {
+            int currentLevel = save.GetInt(SaveKeys.SelectedLevelIndex, 1);
+            save.SetInt(SaveKeys.SelectedLevelIndex, currentLevel + 1);
+        }
+
+        EventBus<SceneLoadRequestedEvent>.Raise(new SceneLoadRequestedEvent
+        {
+            SceneName = SceneNames.InGame,
             UseLoadingScreen = true
         });
     }

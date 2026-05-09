@@ -14,8 +14,11 @@ public class PowerUpController : MonoBehaviour
 
     private PowerUpModel _powerUpModel;
     private PowerType _pendingPurchaseType;
+    private GamePhase _currentPhase = GamePhase.None;
+
     private EventBinding<AddOneCellUsedEvent> _addOneCellBinding;
     private EventBinding<StackUpdatedEvent> _stackUpdatedBinding;
+    private EventBinding<GamePhaseChangedEvent> _phaseChangedBinding;
 
     private void Start()
     {
@@ -47,6 +50,9 @@ public class PowerUpController : MonoBehaviour
         _stackUpdatedBinding = new EventBinding<StackUpdatedEvent>(OnStackUpdated);
         EventBus<StackUpdatedEvent>.Register(_stackUpdatedBinding);
 
+        _phaseChangedBinding = new EventBinding<GamePhaseChangedEvent>(OnPhaseChanged);
+        EventBus<GamePhaseChangedEvent>.Register(_phaseChangedBinding);
+
         if (_powerUpBarView != null)
         {
             _powerUpBarView.OnPowerUpClicked += HandlePowerUpClicked;
@@ -63,6 +69,7 @@ public class PowerUpController : MonoBehaviour
     {
         EventBus<AddOneCellUsedEvent>.Deregister(_addOneCellBinding);
         EventBus<StackUpdatedEvent>.Deregister(_stackUpdatedBinding);
+        EventBus<GamePhaseChangedEvent>.Deregister(_phaseChangedBinding);
 
         if (_powerUpBarView != null)
         {
@@ -78,6 +85,8 @@ public class PowerUpController : MonoBehaviour
 
     private void HandlePowerUpClicked(PowerType type)
     {
+        if (_currentPhase != GamePhase.Playing) return;
+
         int currentCount = _powerUpModel.GetCount(type);
         if (currentCount > 0)
         {
@@ -162,6 +171,11 @@ public class PowerUpController : MonoBehaviour
         _powerUpBarView.UpdatePowerUpCount(PowerType.Magic, _powerUpModel.GetCount(PowerType.Magic));
         _powerUpBarView.UpdatePowerUpCount(PowerType.Shuffle, _powerUpModel.GetCount(PowerType.Shuffle));
         _powerUpBarView.UpdatePowerUpCount(PowerType.AddOneCell, _powerUpModel.GetCount(PowerType.AddOneCell));
+    }
+
+    private void OnPhaseChanged(GamePhaseChangedEvent e)
+    {
+        _currentPhase = e.NewPhase;
     }
 
     private void OnAddOneCellUsed(AddOneCellUsedEvent e)

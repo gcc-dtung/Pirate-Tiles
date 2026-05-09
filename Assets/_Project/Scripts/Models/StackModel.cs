@@ -39,7 +39,7 @@ public class StackModel
 
     public void InsertTile(int index, TileModel tile)
     {
-        if (IsFull) return; // Tuỳ cách xử lý, có thể throw exception
+        // Bỏ check IsFull ở đây để Controller tự quyết định giới hạn (cho phép overflow 1 tile để hiện game over)
         
         // Đảm bảo index hợp lệ
         if (index < 0) index = 0;

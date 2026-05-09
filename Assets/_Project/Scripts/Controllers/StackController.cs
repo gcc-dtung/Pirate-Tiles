@@ -53,7 +53,11 @@ public class StackController : MonoBehaviour
 
     private void OnTileSelected(TileSelectedEventData data)
     {
-        if (_stackModel == null || _stackModel.IsFull) return;
+        if (_stackModel == null) return;
+        
+        // Cho phép nhận thêm tối đa 1 tile khi đã đầy (overflow) để tránh hiện tượng tile bị kẹt trên bàn (ghost tile)
+        // và để người chơi thấy rõ tile gây thua cuộc di chuyển vào khay.
+        if (_stackModel.Count > _stackModel.MaxSize) return;
 
         CardView cardView = data.CardView;
         if (cardView == null) return;

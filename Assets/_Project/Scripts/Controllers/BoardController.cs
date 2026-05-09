@@ -13,13 +13,18 @@ public class BoardController : MonoBehaviour
     [SerializeField] private VoidEventChannelSO _tilesMatchedChannel;
 
     private BoardModel _boardModel;
+    private StackModel _stackModel;
     private TileDatabaseSO _tileDatabase;
+    private GamePhase _currentPhase = GamePhase.None;
+
     private EventBinding<BoardModelUpdatedEvent> _boardModelUpdatedBinding;
     private EventBinding<UndoPerformedEvent> _undoBinding;
+    private EventBinding<GamePhaseChangedEvent> _phaseChangedBinding;
 
-    public void Initialize(BoardModel boardModel, TileDatabaseSO database)
+    public void Initialize(BoardModel boardModel, StackModel stackModel, TileDatabaseSO database)
     {
         _boardModel = boardModel;
+        _stackModel = stackModel;
         _tileDatabase = database;
         
         _boardView.SpawnCards(_boardModel.Tiles, _tileDatabase);
@@ -45,6 +50,9 @@ public class BoardController : MonoBehaviour
         if (_undoRequestChannel != null) _undoRequestChannel.AddListener(OnUndoRequest);
         if (_shuffleRequestChannel != null) _shuffleRequestChannel.AddListener(OnShuffleRequest);
         if (_magicRequestChannel != null) _magicRequestChannel.AddListener(OnMagicRequest);
+
+        _phaseChangedBinding = new EventBinding<GamePhaseChangedEvent>(OnPhaseChanged);
+        EventBus<GamePhaseChangedEvent>.Register(_phaseChangedBinding);
     }
 
     private void OnDisable()
@@ -55,6 +63,8 @@ public class BoardController : MonoBehaviour
         if (_undoRequestChannel != null) _undoRequestChannel.RemoveListener(OnUndoRequest);
         if (_shuffleRequestChannel != null) _shuffleRequestChannel.RemoveListener(OnShuffleRequest);
         if (_magicRequestChannel != null) _magicRequestChannel.RemoveListener(OnMagicRequest);
+
+        EventBus<GamePhaseChangedEvent>.Deregister(_phaseChangedBinding);
         if (_boardModel != null)
         {
             foreach (var tile in _boardModel.Tiles)
@@ -71,9 +81,15 @@ public class BoardController : MonoBehaviour
     private void HandleCardClicked(CardView cardView)
     {
         if (cardView == null) return;
+        if (_currentPhase != GamePhase.Playing) return;
         
+        // Nếu stack đã quá giới hạn (đang chờ xử lý game over), không cho click thêm nữa
+        if (_stackModel != null && _stackModel.Count > _stackModel.MaxSize) return;
+        
+        cardView.SetSelectable(false, false);
+        cardView.OnClicked -= HandleCardClicked;
+
         int tileId = cardView.TileId;
-        
         _boardModel.RemoveTile(tileId);
 
         _tileSelectedChannel.EventRaise(new TileSelectedEventData
@@ -83,13 +99,15 @@ public class BoardController : MonoBehaviour
             CardView = cardView
         });
 
-        cardView.SetSelectable(false, false);
-        cardView.OnClicked -= HandleCardClicked;
-
         if (_boardModel.IsCleared && _boardClearedChannel != null)
         {
             _boardClearedChannel.EventRaise();
         }
+    }
+
+    private void OnPhaseChanged(GamePhaseChangedEvent e)
+    {
+        _currentPhase = e.NewPhase;
     }
 
     private void OnBoardUpdated(BoardModelUpdatedEvent e)

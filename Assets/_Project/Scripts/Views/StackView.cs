@@ -4,6 +4,8 @@ using System.Collections.Generic;
 
 public class StackView : MonoBehaviour
 {
+    public bool IsExtraSlotUnlocked { get; private set; }
+
     [System.Serializable]
     public struct StackSlot
     {
@@ -30,6 +32,7 @@ public class StackView : MonoBehaviour
 
     public void InitializeSlots()
     {
+        IsExtraSlotUnlocked = false;
         if (_slots == null) return;
 
         for (int i = 0; i < _slots.Length; i++)
@@ -71,6 +74,7 @@ public class StackView : MonoBehaviour
     {
         if (_slots != null && _slots.Length > 7)
         {
+            IsExtraSlotUnlocked = true;
             var extraSlot = _slots[7];
             if (extraSlot.Background != null)
             {
@@ -98,21 +102,31 @@ public class StackView : MonoBehaviour
     }
 
     // 4.11 AnimateArrange
-    public Sequence AnimateArrange(IReadOnlyList<CardView> cardsInStack, float duration = 0.2f)
+    public Sequence AnimateArrange(IReadOnlyList<CardView> cardsInStack, float duration = 0.2f, CardView excludeCard = null)
     {
         var seq = Sequence.Create();
+        // Số slot hiển thị tối đa: 6 (index) nếu chưa unlock, 7 nếu đã unlock
+        int maxVisualIndex = IsExtraSlotUnlocked ? 7 : 6;
+
         for (int i = 0; i < cardsInStack.Count; i++)
         {
             var card = cardsInStack[i];
             if (card == null) continue;
+            // Bỏ qua card đang được animate riêng bằng AnimateMoveToStack
+            if (card == excludeCard) continue;
             
-            Vector3 targetPos = GetSlotPosition(i);
+            // Clamp để tile không bao giờ hiện ở ô bị khóa
+            int visualIndex = Mathf.Min(i, maxVisualIndex);
+            
+            Vector3 targetPos = GetSlotPosition(visualIndex);
             
             // Di chuyển đồng loạt các thẻ bài đến đúng vị trí slot của nó trong khay
             seq.Group(card.AnimateMoveToPosition(targetPos, duration));
         }
         return seq;
     }
+
+
 
     // 4.12 AnimateShakeFull
     public Sequence AnimateShakeFull(float duration = 0.4f)

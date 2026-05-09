@@ -1,5 +1,6 @@
 using UnityEngine;
 using System.Collections.Generic;
+using System.Linq;
 
 public class LevelController : MonoBehaviour
 {
@@ -27,10 +28,29 @@ public class LevelController : MonoBehaviour
             if (chapterIdx >= 0 && chapterIdx < _gameConfig.Chapters.Count)
             {
                 var chapter = _gameConfig.Chapters[chapterIdx];
-                int levelArrayIndex = levelIdx - 1; // Assuming levels are 1-indexed (Level 1 is at index 0)
-                if (levelArrayIndex >= 0 && levelArrayIndex < chapter.LevelNodes.Count)
+                // Tìm trong chapter hiện tại trước
+                _currentLevelConfig = chapter.LevelNodes
+                    .Select(n => n.LevelConfig)
+                    .FirstOrDefault(c => c != null && c.LevelIndex == levelIdx);
+            }
+
+            // Nếu không tìm thấy trong chapter hiện tại, tìm trong toàn bộ các chapter khác
+            if (_currentLevelConfig == null)
+            {
+                for (int i = 0; i < _gameConfig.Chapters.Count; i++)
                 {
-                    _currentLevelConfig = chapter.LevelNodes[levelArrayIndex].LevelConfig;
+                    var chapter = _gameConfig.Chapters[i];
+                    var config = chapter.LevelNodes
+                        .Select(n => n.LevelConfig)
+                        .FirstOrDefault(c => c != null && c.LevelIndex == levelIdx);
+                    
+                    if (config != null)
+                    {
+                        _currentLevelConfig = config;
+                        // Cập nhật lại ChapterIndex để đồng bộ dữ liệu
+                        SaveService.Instance?.SetInt(SaveKeys.SelectedChapterIndex, i);
+                        break;
+                    }
                 }
             }
         }
@@ -94,7 +114,7 @@ public class LevelController : MonoBehaviour
 
         boardModel.Initialize(tiles, overlapMap);
 
-        if (_boardController != null) _boardController.Initialize(boardModel, _tileDatabase);
+        if (_boardController != null) _boardController.Initialize(boardModel, stackModel, _tileDatabase);
         if (_stackController != null) _stackController.Initialize(stackModel);
         if (_timerController != null) _timerController.Initialize(levelModel);
     }

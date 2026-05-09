@@ -18,5 +18,5 @@ MonoBehaviour:
   <LevelNodes>k__BackingField:
   - LevelConfig: {fileID: 11400000, guid: 910df2aaef0edc8439079c45666ab249, type: 2}
     MapPosition: {x: -345, y: -113}
-  - LevelConfig: {fileID: 11400000, guid: a276ba1df7fe30a4498bbfb50176c323, type: 2}
+  - LevelConfig: {fileID: 11400000, guid: 4a94e1f1d87a5ec4fb6255949a771e56, type: 2}
     MapPosition: {x: -186, y: 37}
