@@ -11,6 +11,7 @@ public class LevelButtonView : MonoBehaviour
     [SerializeField] private Color _lockedColor = Color.gray;
     [SerializeField] private Color _unlockedColor = Color.white;
     [SerializeField] private Color _completedColor = Color.yellow;
+    [SerializeField] private bool _showLevelNumber = false;
     
     // Optional: Reference to specific icons for states
     [SerializeField] private Sprite _lockedSprite;
@@ -28,12 +29,13 @@ public class LevelButtonView : MonoBehaviour
         }
     }
 
-    public void Setup(int levelIndex, bool isUnlocked, bool isCompleted)
+    public void Setup(int levelIndex, bool isUnlocked, bool isCompleted, Sprite customIcon = null)
     {
         _levelIndex = levelIndex;
         if (_levelText != null)
         {
             _levelText.text = levelIndex.ToString();
+            _levelText.gameObject.SetActive(_showLevelNumber);
         }
 
         if (_button != null)
@@ -46,17 +48,20 @@ public class LevelButtonView : MonoBehaviour
             if (isCompleted)
             {
                 _iconImage.color = _completedColor;
-                if (_completedSprite != null) _iconImage.sprite = _completedSprite;
+                if (customIcon != null) _iconImage.sprite = customIcon;
+                else if (_completedSprite != null) _iconImage.sprite = _completedSprite;
             }
             else if (isUnlocked)
             {
                 _iconImage.color = _unlockedColor;
-                if (_unlockedSprite != null) _iconImage.sprite = _unlockedSprite;
+                if (customIcon != null) _iconImage.sprite = customIcon;
+                else if (_unlockedSprite != null) _iconImage.sprite = _unlockedSprite;
             }
             else
             {
                 _iconImage.color = _lockedColor;
-                if (_lockedSprite != null) _iconImage.sprite = _lockedSprite;
+                if (customIcon != null) _iconImage.sprite = customIcon;
+                else if (_lockedSprite != null) _iconImage.sprite = _lockedSprite;
             }
         }
     }

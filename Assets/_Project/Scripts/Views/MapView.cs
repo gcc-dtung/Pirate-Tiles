@@ -17,6 +17,7 @@ public class MapView : MonoBehaviour
     [Header("Levels")]
     [SerializeField] private LevelButtonView _levelButtonPrefab;
     [SerializeField] private Transform _levelContainer;
+    [SerializeField] private float _levelIconScale = 1f;
 
     public event Action OnNextChapterClicked;
     public event Action OnPrevChapterClicked;
@@ -67,6 +68,7 @@ public class MapView : MonoBehaviour
                 if (rect != null)
                 {
                     rect.anchoredPosition = nodeData.MapPosition;
+                    rect.localScale = Vector3.one * _levelIconScale;
                 }
 
                 int levelIndex = nodeData.LevelConfig != null ? nodeData.LevelConfig.LevelIndex : (chapterConfig.ChapterIndex * 12 + i + 1); // Fallback
@@ -74,7 +76,7 @@ public class MapView : MonoBehaviour
                 bool isUnlocked = levelIndex <= globalUnlockedLevel;
                 bool isCompleted = levelIndex < globalUnlockedLevel;
 
-                btn.Setup(levelIndex, isUnlocked, isCompleted);
+                btn.Setup(levelIndex, isUnlocked, isCompleted, nodeData.LevelIcon);
                 
                 btn.OnLevelClicked += (lvl) => OnLevelSelected?.Invoke(lvl);
                 

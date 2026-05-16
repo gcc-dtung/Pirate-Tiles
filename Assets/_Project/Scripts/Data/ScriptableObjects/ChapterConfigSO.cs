@@ -13,6 +13,7 @@ public class ChapterConfigSO : ScriptableObject
     {
         public LevelConfigSO LevelConfig;
         public Vector2 MapPosition; // Vị trí trên map background
+        public Sprite LevelIcon; // Icon riêng cho từng level
     }
     
     [field: SerializeField] public List<LevelNodeData> LevelNodes { get; private set; }
