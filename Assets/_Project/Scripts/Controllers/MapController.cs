@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -115,6 +116,22 @@ public class MapController : MonoBehaviour
         _heartsModel = new HeartsModel();
         _heartsModel.MaxHearts = _gameConfig != null ? _gameConfig.MaxHearts : 5;
         _heartsModel.CurrentHearts = save != null ? save.GetInt(SaveKeys.Hearts, _heartsModel.MaxHearts) : _heartsModel.MaxHearts;
+        
+        string lastHealStr = save != null ? save.GetString(SaveKeys.LastHealTime, "") : "";
+        if (!string.IsNullOrEmpty(lastHealStr) && long.TryParse(lastHealStr, out long binaryTime))
+        {
+            _heartsModel.LastHealTime = DateTime.FromBinary(binaryTime);
+        }
+        else
+        {
+            _heartsModel.LastHealTime = DateTime.Now;
+        }
+
+        if (_heartsModel.CalculateRegeneration(DateTime.Now))
+        {
+            save?.SetInt(SaveKeys.Hearts, _heartsModel.CurrentHearts);
+            save?.SetString(SaveKeys.LastHealTime, _heartsModel.LastHealTime.ToBinary().ToString());
+        }
 
         _coinsModel = new CoinsModel();
         _coinsModel.CurrentCoins = save != null ? save.GetInt(SaveKeys.Coins, _gameConfig != null ? _gameConfig.StartingCoins : 100) : 100;
@@ -150,6 +167,30 @@ public class MapController : MonoBehaviour
         }
 
         if (_collectionPanelView != null) _collectionPanelView.gameObject.SetActive(false);
+    }
+
+    private void Update()
+    {
+        if (_heartsModel == null) return;
+
+        if (_heartsModel.CalculateRegeneration(DateTime.Now))
+        {
+            SaveService.Instance?.SetInt(SaveKeys.Hearts, _heartsModel.CurrentHearts);
+            SaveService.Instance?.SetString(SaveKeys.LastHealTime, _heartsModel.LastHealTime.ToBinary().ToString());
+            if (_heartsView != null) _heartsView.UpdateHearts(_heartsModel.CurrentHearts, _heartsModel.MaxHearts);
+        }
+
+        if (_heartsModel.IsFull)
+        {
+            if (_heartsView != null) _heartsView.UpdateCountdown("FULL");
+        }
+        else
+        {
+            int secondsLeft = Mathf.CeilToInt(_heartsModel.TimeUntilNextHeal);
+            int m = secondsLeft / 60;
+            int s = secondsLeft % 60;
+            if (_heartsView != null) _heartsView.UpdateCountdown($"{m:00}:{s:00}");
+        }
     }
 
     private void LoadChapter(int index)
@@ -191,6 +232,12 @@ public class MapController : MonoBehaviour
     {
         if (levelIndex <= _chapterModel.UnlockedLevel)
         {
+            if (_heartsModel.CurrentHearts <= 0)
+            {
+                Debug.Log("Not enough hearts to play!");
+                return;
+            }
+
             SaveService.Instance?.SetInt(SaveKeys.SelectedLevelIndex, levelIndex);
             SaveService.Instance?.SetInt(SaveKeys.SelectedChapterIndex, _chapterModel.CurrentChapterIndex);
 

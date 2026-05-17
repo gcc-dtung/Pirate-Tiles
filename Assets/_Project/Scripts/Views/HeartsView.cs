@@ -8,7 +8,7 @@ public class HeartsView : MonoBehaviour
 
     public void UpdateHearts(int currentHearts, int maxHearts)
     {
-        _heartsCountText.text = $"{currentHearts}/{maxHearts}";
+        _heartsCountText.text = $"{currentHearts}";
     }
 
     public void UpdateCountdown(string timeString)

@@ -10,6 +10,7 @@ public class LosePanelView : MonoBehaviour
     [SerializeField] private Button _replayButton;
     [SerializeField] private Button _homeButton;
     [SerializeField] private Button _reviveButton;
+    [SerializeField] private VoidEventChannelSO _outOfHeartsChannel;
 
     public void Show()
     {
@@ -41,6 +42,13 @@ public class LosePanelView : MonoBehaviour
 
     private void OnReplayClicked()
     {
+        var save = SaveService.Instance;
+        if (save != null && save.GetInt(SaveKeys.Hearts, 5) <= 0)
+        {
+            if (_outOfHeartsChannel != null) _outOfHeartsChannel.EventRaise();
+            return;
+        }
+
         EventBus<SceneLoadRequestedEvent>.Raise(new SceneLoadRequestedEvent
         {
             SceneName = SceneManager.GetActiveScene().name,

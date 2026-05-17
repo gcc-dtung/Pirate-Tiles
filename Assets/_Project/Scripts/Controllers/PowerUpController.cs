@@ -27,12 +27,13 @@ public class PowerUpController : MonoBehaviour
 
     public void Initialize()
     {
+        var save = SaveService.Instance;
         _powerUpModel = new PowerUpModel();
         
-        _powerUpModel.AddPowerUp(PowerType.Undo, 1);
-        _powerUpModel.AddPowerUp(PowerType.Magic, 1);
-        _powerUpModel.AddPowerUp(PowerType.Shuffle, 1);
-        _powerUpModel.AddPowerUp(PowerType.AddOneCell, 1);
+        _powerUpModel.AddPowerUp(PowerType.Undo, save != null ? save.GetInt(SaveKeys.UndoPowerCount, 1) : 1);
+        _powerUpModel.AddPowerUp(PowerType.Magic, save != null ? save.GetInt(SaveKeys.MagicPowerCount, 1) : 1);
+        _powerUpModel.AddPowerUp(PowerType.Shuffle, save != null ? save.GetInt(SaveKeys.ShufflePowerCount, 1) : 1);
+        _powerUpModel.AddPowerUp(PowerType.AddOneCell, save != null ? save.GetInt(SaveKeys.AddOneStackPowerCount, 1) : 1);
 
         UpdateAllViews();
 
@@ -133,6 +134,7 @@ public class PowerUpController : MonoBehaviour
     public void AddPowerUp(PowerType type, int amount)
     {
         _powerUpModel.AddPowerUp(type, amount);
+        SavePowerUpCount(type);
         if (_powerUpBarView != null)
         {
             _powerUpBarView.UpdatePowerUpCount(type, _powerUpModel.GetCount(type));
@@ -142,6 +144,7 @@ public class PowerUpController : MonoBehaviour
     private void UsePowerUp(PowerType type)
     {
         _powerUpModel.UsePowerUp(type);
+        SavePowerUpCount(type);
         if (_powerUpBarView != null)
         {
             _powerUpBarView.UpdatePowerUpCount(type, _powerUpModel.GetCount(type));
@@ -191,6 +194,21 @@ public class PowerUpController : MonoBehaviour
         if (_powerUpBarView != null)
         {
             _powerUpBarView.SetButtonInteractable(PowerType.Undo, e.Count > 0);
+        }
+    }
+
+    private void SavePowerUpCount(PowerType type)
+    {
+        var save = SaveService.Instance;
+        if (save == null) return;
+        
+        int count = _powerUpModel.GetCount(type);
+        switch (type)
+        {
+            case PowerType.Undo: save.SetInt(SaveKeys.UndoPowerCount, count); break;
+            case PowerType.Magic: save.SetInt(SaveKeys.MagicPowerCount, count); break;
+            case PowerType.Shuffle: save.SetInt(SaveKeys.ShufflePowerCount, count); break;
+            case PowerType.AddOneCell: save.SetInt(SaveKeys.AddOneStackPowerCount, count); break;
         }
     }
 }

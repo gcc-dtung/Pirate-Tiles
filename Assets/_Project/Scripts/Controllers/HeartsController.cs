@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 
 public class HeartsController : MonoBehaviour
@@ -6,6 +7,7 @@ public class HeartsController : MonoBehaviour
     [SerializeField] private OutOfHeartPanelView _outOfHeartPanelView;
     
     [SerializeField] private VoidEventChannelSO _outOfHeartsChannel;
+    [SerializeField] private VoidEventChannelSO _gameLostChannel;
 
     private HeartsModel _heartsModel;
     
@@ -17,29 +19,48 @@ public class HeartsController : MonoBehaviour
     private void OnEnable()
     {
         if (_outOfHeartsChannel != null) _outOfHeartsChannel.AddListener(OnOutOfHearts);
+        if (_gameLostChannel != null) _gameLostChannel.AddListener(OnGameLost);
     }
 
     private void OnDisable()
     {
         if (_outOfHeartsChannel != null) _outOfHeartsChannel.RemoveListener(OnOutOfHearts);
+        if (_gameLostChannel != null) _gameLostChannel.RemoveListener(OnGameLost);
     }
 
     public void Initialize()
     {
+        var save = SaveService.Instance;
         _heartsModel = new HeartsModel();
         _heartsModel.MaxHearts = 5;
-        _heartsModel.CurrentHearts = 5;
+        _heartsModel.CurrentHearts = save != null ? save.GetInt(SaveKeys.Hearts, _heartsModel.MaxHearts) : _heartsModel.MaxHearts;
         
+        string lastHealStr = save != null ? save.GetString(SaveKeys.LastHealTime, "") : "";
+        if (!string.IsNullOrEmpty(lastHealStr) && long.TryParse(lastHealStr, out long binaryTime))
+        {
+            _heartsModel.LastHealTime = DateTime.FromBinary(binaryTime);
+        }
+        else
+        {
+            _heartsModel.LastHealTime = DateTime.Now;
+        }
+
+        if (_heartsModel.CalculateRegeneration(DateTime.Now))
+        {
+            save?.SetInt(SaveKeys.Hearts, _heartsModel.CurrentHearts);
+            save?.SetString(SaveKeys.LastHealTime, _heartsModel.LastHealTime.ToBinary().ToString());
+        }
+
         UpdateView();
     }
-
-
 
     public void ConsumeHeart()
     {
         if (_heartsModel.CurrentHearts > 0)
         {
             _heartsModel.ConsumeHeart();
+            SaveService.Instance?.SetInt(SaveKeys.Hearts, _heartsModel.CurrentHearts);
+            SaveService.Instance?.SetString(SaveKeys.LastHealTime, _heartsModel.LastHealTime.ToBinary().ToString());
             UpdateView();
         }
         else
@@ -59,15 +80,32 @@ public class HeartsController : MonoBehaviour
         }
     }
 
+    private void OnGameLost()
+    {
+        ConsumeHeart();
+    }
+
     private void Update()
     {
-        if (_heartsModel != null && !_heartsModel.IsFull)
+        if (_heartsModel == null) return;
+
+        if (_heartsModel.CalculateRegeneration(DateTime.Now))
         {
-            if (_heartsView != null) _heartsView.UpdateCountdown("05:00");
+            SaveService.Instance?.SetInt(SaveKeys.Hearts, _heartsModel.CurrentHearts);
+            SaveService.Instance?.SetString(SaveKeys.LastHealTime, _heartsModel.LastHealTime.ToBinary().ToString());
+            UpdateView();
         }
-        else if (_heartsModel != null)
+
+        if (_heartsModel.IsFull)
         {
-            if (_heartsView != null) _heartsView.UpdateCountdown("");
+            if (_heartsView != null) _heartsView.UpdateCountdown("FULL");
+        }
+        else
+        {
+            int secondsLeft = Mathf.CeilToInt(_heartsModel.TimeUntilNextHeal);
+            int m = secondsLeft / 60;
+            int s = secondsLeft % 60;
+            if (_heartsView != null) _heartsView.UpdateCountdown($"{m:00}:{s:00}");
         }
     }
 

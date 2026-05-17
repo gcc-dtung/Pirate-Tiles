@@ -2,6 +2,7 @@ public static class SaveKeys
 {
     public const string Coins = "Coins";
     public const string Hearts = "Hearts";
+    public const string LastHealTime = "LastHealTime";
     public const string TutorialCompleted = "TutorialCompleted";
     public const string UndoPowerCount = "UndoPowerCount";
     public const string ShufflePowerCount = "ShufflePowerCount";

@@ -547,6 +547,7 @@ MonoBehaviour:
   _heartsView: {fileID: 1495034067}
   _outOfHeartPanelView: {fileID: 1460900997}
   _outOfHeartsChannel: {fileID: 11400000, guid: 6d2851a0be81e664586f9376044bf1de, type: 2}
+  _gameLostChannel: {fileID: 11400000, guid: 69f3046271bee2240ae4c313a9423db4, type: 2}
 --- !u!4 &71952275
 Transform:
   m_ObjectHideFlags: 0
@@ -2600,6 +2601,7 @@ MonoBehaviour:
   _replayButton: {fileID: 65418041}
   _homeButton: {fileID: 2137008002}
   _reviveButton: {fileID: 1568411707}
+  _outOfHeartsChannel: {fileID: 11400000, guid: 6d2851a0be81e664586f9376044bf1de, type: 2}
 --- !u!225 &790740621
 CanvasGroup:
   m_ObjectHideFlags: 0
@@ -7569,6 +7571,7 @@ MonoBehaviour:
   _coinsText: {fileID: 1168173428}
   _nextButton: {fileID: 2058994267}
   _homeButton: {fileID: 437637117}
+  _outOfHeartsChannel: {fileID: 11400000, guid: 6d2851a0be81e664586f9376044bf1de, type: 2}
 --- !u!225 &1633284869
 CanvasGroup:
   m_ObjectHideFlags: 0

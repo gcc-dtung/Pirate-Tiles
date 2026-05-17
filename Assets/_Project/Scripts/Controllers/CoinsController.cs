@@ -26,8 +26,9 @@ public class CoinsController : MonoBehaviour
 
     public void Initialize()
     {
+        var save = SaveService.Instance;
         _coinsModel = new CoinsModel();
-        _coinsModel.CurrentCoins = 500;
+        _coinsModel.CurrentCoins = save != null ? save.GetInt(SaveKeys.Coins, 100) : 100;
         
         if (_coinsView != null) _coinsView.UpdateCoins(_coinsModel.CurrentCoins);
     }
@@ -36,6 +37,7 @@ public class CoinsController : MonoBehaviour
     public void AddCoins(int amount)
     {
         _coinsModel.AddCoins(amount);
+        SaveService.Instance?.SetInt(SaveKeys.Coins, _coinsModel.CurrentCoins);
         if (_coinsView != null) _coinsView.UpdateCoins(_coinsModel.CurrentCoins);
     }
 
@@ -44,6 +46,7 @@ public class CoinsController : MonoBehaviour
         int cost = 50;
         if (_coinsModel.ConsumeCoins(cost))
         {
+            SaveService.Instance?.SetInt(SaveKeys.Coins, _coinsModel.CurrentCoins);
             if (_coinsView != null) _coinsView.UpdateCoins(_coinsModel.CurrentCoins);
             if (_powerUpController != null)
             {

@@ -288,7 +288,7 @@ public class MapSceneSetup : EditorWindow
     {
         var panel = EnsureRectTransform("SettingPanel", parent);
         var group = EnsureComponent<CanvasGroup>(panel.gameObject);
-        SetAnchors(panel, new Vector2(0.5f, 0.5f), new Vector2(0.5f, 0.5f), new Vector2(0.5f, 0.5f), Vector2.zero, new Vector2(720f, 900f));
+        SetAnchors(panel, Vector2.zero, Vector2.one, new Vector2(0.5f, 0.5f), Vector2.zero, Vector2.zero);
 
         var bgImage = EnsureComponent<Image>(panel.gameObject);
         bgImage.color = new Color(0f, 0f, 0f, 0.75f);
@@ -325,7 +325,7 @@ public class MapSceneSetup : EditorWindow
     {
         var panel = EnsureRectTransform("ShopPanel", parent);
         var group = EnsureComponent<CanvasGroup>(panel.gameObject);
-        SetAnchors(panel, new Vector2(0.5f, 0.5f), new Vector2(0.5f, 0.5f), new Vector2(0.5f, 0.5f), Vector2.zero, new Vector2(800f, 1000f));
+        SetAnchors(panel, Vector2.zero, Vector2.one, new Vector2(0.5f, 0.5f), Vector2.zero, Vector2.zero);
 
         var bgImage = EnsureComponent<Image>(panel.gameObject);
         bgImage.color = new Color(0f, 0f, 0f, 0.75f);
@@ -380,7 +380,7 @@ public class MapSceneSetup : EditorWindow
     {
         var panel = EnsureRectTransform("CollectionPanel", parent);
         var group = EnsureComponent<CanvasGroup>(panel.gameObject);
-        SetAnchors(panel, new Vector2(0.5f, 0.5f), new Vector2(0.5f, 0.5f), new Vector2(0.5f, 0.5f), Vector2.zero, new Vector2(800f, 1000f));
+        SetAnchors(panel, Vector2.zero, Vector2.one, new Vector2(0.5f, 0.5f), Vector2.zero, Vector2.zero);
 
         var bgImage = EnsureComponent<Image>(panel.gameObject);
         bgImage.color = new Color(0f, 0f, 0f, 0.75f);

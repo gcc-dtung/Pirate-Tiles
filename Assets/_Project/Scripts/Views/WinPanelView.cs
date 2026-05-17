@@ -10,6 +10,7 @@ public class WinPanelView : MonoBehaviour
     [SerializeField] private TextMeshProUGUI _coinsText;
     [SerializeField] private Button _nextButton;
     [SerializeField] private Button _homeButton;
+    [SerializeField] private VoidEventChannelSO _outOfHeartsChannel;
 
     private void OnEnable()
     {
@@ -72,6 +73,12 @@ public class WinPanelView : MonoBehaviour
     private void OnNextClicked()
     {
         var save = SaveService.Instance;
+        if (save != null && save.GetInt(SaveKeys.Hearts, 5) <= 0)
+        {
+            if (_outOfHeartsChannel != null) _outOfHeartsChannel.EventRaise();
+            return;
+        }
+
         if (save != null)
         {
             int currentLevel = save.GetInt(SaveKeys.SelectedLevelIndex, 1);

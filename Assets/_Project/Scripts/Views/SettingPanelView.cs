@@ -22,6 +22,23 @@ public class SettingPanelView : MonoBehaviour
 
     private void Awake()
     {
+        var rect = GetComponent<RectTransform>();
+        if (rect != null)
+        {
+            rect.anchorMin = Vector2.zero;
+            rect.anchorMax = Vector2.one;
+            rect.sizeDelta = Vector2.zero;
+            rect.anchoredPosition = Vector2.zero;
+        }
+
+        var image = GetComponent<Image>();
+        if (image == null)
+        {
+            image = gameObject.AddComponent<Image>();
+            image.color = new Color(0, 0, 0, 0.75f);
+        }
+        image.raycastTarget = true;
+
         _musicToggle.onValueChanged.AddListener(isOn => OnMusicToggled?.Invoke(isOn));
         _sfxToggle.onValueChanged.AddListener(isOn => OnSfxToggled?.Invoke(isOn));
         
