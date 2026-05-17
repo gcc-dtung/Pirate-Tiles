@@ -16,75 +16,39 @@ MonoBehaviour:
   <TimeLimit>k__BackingField: 0
   <MaxStackSize>k__BackingField: 7
   <InitialTiles>k__BackingField:
-  - GridPosition: {x: -1.5, y: -1}
+  - GridPosition: {x: -1.5, y: 0}
     Size: {x: 1, y: 1}
     LayerIndex: 0
-    Type: 1
-  - GridPosition: {x: -0.5, y: -1}
+    Type: 13
+  - GridPosition: {x: -1.5, y: 2}
     Size: {x: 1, y: 1}
     LayerIndex: 0
-    Type: 2
-  - GridPosition: {x: 0.5, y: -1}
+    Type: 13
+  - GridPosition: {x: 0, y: 0}
     Size: {x: 1, y: 1}
     LayerIndex: 0
-    Type: 3
-  - GridPosition: {x: 1.5, y: -1}
+    Type: 13
+  - GridPosition: {x: 0, y: 2}
     Size: {x: 1, y: 1}
     LayerIndex: 0
-    Type: 4
-  - GridPosition: {x: -0.5, y: 0}
+    Type: 13
+  - GridPosition: {x: 1.5, y: 0}
     Size: {x: 1, y: 1}
     LayerIndex: 0
-    Type: 5
-  - GridPosition: {x: 0.5, y: 0}
+    Type: 7
+  - GridPosition: {x: 1.5, y: 2}
     Size: {x: 1, y: 1}
     LayerIndex: 0
-    Type: 6
-  - GridPosition: {x: -1.5, y: 1}
-    Size: {x: 1, y: 1}
-    LayerIndex: 0
-    Type: 1
-  - GridPosition: {x: -0.5, y: 1}
-    Size: {x: 1, y: 1}
-    LayerIndex: 0
-    Type: 2
-  - GridPosition: {x: 0.5, y: 1}
-    Size: {x: 1, y: 1}
-    LayerIndex: 0
-    Type: 3
-  - GridPosition: {x: 1.5, y: 1}
-    Size: {x: 1, y: 1}
-    LayerIndex: 0
-    Type: 4
-  - GridPosition: {x: -1, y: -0.5}
+    Type: 7
+  - GridPosition: {x: -0.75, y: -1}
     Size: {x: 1, y: 1}
     LayerIndex: 1
-    Type: 5
-  - GridPosition: {x: 0, y: -0.5}
+    Type: 7
+  - GridPosition: {x: -0.75, y: 1}
     Size: {x: 1, y: 1}
     LayerIndex: 1
-    Type: 6
-  - GridPosition: {x: 1, y: -0.5}
+    Type: 13
+  - GridPosition: {x: 0.75, y: -1}
     Size: {x: 1, y: 1}
     LayerIndex: 1
-    Type: 1
-  - GridPosition: {x: -1, y: 0.5}
-    Size: {x: 1, y: 1}
-    LayerIndex: 1
-    Type: 2
-  - GridPosition: {x: 0, y: 0.5}
-    Size: {x: 1, y: 1}
-    LayerIndex: 1
-    Type: 3
-  - GridPosition: {x: 1, y: 0.5}
-    Size: {x: 1, y: 1}
-    LayerIndex: 1
-    Type: 4
-  - GridPosition: {x: -0.5, y: 0}
-    Size: {x: 1, y: 1}
-    LayerIndex: 2
-    Type: 5
-  - GridPosition: {x: 0.5, y: 0}
-    Size: {x: 1, y: 1}
-    LayerIndex: 2
-    Type: 6
+    Type: 13

@@ -10,69 +10,69 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 5ff093f87cac5a845857d8fd684ff13e, type: 3}
-  m_Name: LevelConfig_02
+  m_Name: LevelConfig_05
   m_EditorClassIdentifier: Script::LevelConfigSO
-  <LevelIndex>k__BackingField: 2
+  <LevelIndex>k__BackingField: 5
   <TimeLimit>k__BackingField: 0
-  <MaxStackSize>k__BackingField: 7
+  <MaxStackSize>k__BackingField: 6
   <InitialTiles>k__BackingField:
-  - GridPosition: {x: -1.5, y: -1}
+  - GridPosition: {x: -3, y: 0}
+    Size: {x: 1, y: 1}
+    LayerIndex: 0
+    Type: 13
+  - GridPosition: {x: -3, y: 2}
     Size: {x: 1, y: 1}
     LayerIndex: 0
     Type: 4
-  - GridPosition: {x: -1.5, y: 1}
+  - GridPosition: {x: -1.5, y: 0}
     Size: {x: 1, y: 1}
     LayerIndex: 0
-    Type: 1
-  - GridPosition: {x: -1.5, y: 3}
+    Type: 4
+  - GridPosition: {x: -1.5, y: 2}
     Size: {x: 1, y: 1}
     LayerIndex: 0
     Type: 11
-  - GridPosition: {x: 0, y: -1}
-    Size: {x: 1, y: 1}
-    LayerIndex: 0
-    Type: 6
-  - GridPosition: {x: 0, y: 1}
-    Size: {x: 1, y: 1}
-    LayerIndex: 0
-    Type: 1
-  - GridPosition: {x: 0, y: 3}
-    Size: {x: 1, y: 1}
-    LayerIndex: 0
-    Type: 1
-  - GridPosition: {x: 1.5, y: -1}
+  - GridPosition: {x: 0, y: 0}
     Size: {x: 1, y: 1}
     LayerIndex: 0
     Type: 4
-  - GridPosition: {x: 1.5, y: 1}
+  - GridPosition: {x: 0, y: 2}
     Size: {x: 1, y: 1}
     LayerIndex: 0
     Type: 11
-  - GridPosition: {x: 1.5, y: 3}
+  - GridPosition: {x: 1.5, y: 0}
     Size: {x: 1, y: 1}
     LayerIndex: 0
-    Type: 6
-  - GridPosition: {x: -0.75, y: 0}
+    Type: 13
+  - GridPosition: {x: 1.5, y: 2}
+    Size: {x: 1, y: 1}
+    LayerIndex: 0
+    Type: 4
+  - GridPosition: {x: 3, y: 0}
+    Size: {x: 1, y: 1}
+    LayerIndex: 0
+    Type: 4
+  - GridPosition: {x: 3, y: 2}
+    Size: {x: 1, y: 1}
+    LayerIndex: 0
+    Type: 11
+  - GridPosition: {x: -2.25, y: -1}
     Size: {x: 1, y: 1}
     LayerIndex: 1
-    Type: 6
-  - GridPosition: {x: -0.75, y: 2}
+    Type: 4
+  - GridPosition: {x: -2.25, y: 1}
     Size: {x: 1, y: 1}
     LayerIndex: 1
     Type: 11
-  - GridPosition: {x: 0.75, y: 0}
+  - GridPosition: {x: -0.75, y: -1}
     Size: {x: 1, y: 1}
     LayerIndex: 1
-    Type: 4
-  - GridPosition: {x: 0.75, y: 2}
+    Type: 11
+  - GridPosition: {x: -0.75, y: 1}
     Size: {x: 1, y: 1}
     LayerIndex: 1
-    Type: 4
-  - GridPosition: {x: 0, y: -1}
+    Type: 11
+  - GridPosition: {x: 0.75, y: -1}
     Size: {x: 1, y: 1}
-    LayerIndex: 2
-    Type: 4
-  - GridPosition: {x: 0, y: 1}
-    Size: {x: 1, y: 1}
-    LayerIndex: 2
-    Type: 4
+    LayerIndex: 1
+    Type: 13

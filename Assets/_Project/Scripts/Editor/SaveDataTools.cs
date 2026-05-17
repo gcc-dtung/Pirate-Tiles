@@ -3,7 +3,7 @@ using UnityEngine;
 
 public class SaveDataTools
 {
-    [MenuItem("PirateTiles/Tools/Reset Unlocked Levels")]
+    [MenuItem("Pirate Tiles/Reset Unlocked Levels")]
     public static void ResetUnlockedLevels()
     {
         PlayerPrefs.SetInt(SaveKeys.UnlockLevel, 1);
@@ -11,7 +11,7 @@ public class SaveDataTools
         Debug.Log("Unlocked levels have been reset to 1.");
     }
 
-    [MenuItem("PirateTiles/Tools/Reset All Data")]
+    [MenuItem("Pirate Tiles/Reset All Data")]
     public static void ResetAllData()
     {
         PlayerPrefs.DeleteAll();
@@ -19,7 +19,7 @@ public class SaveDataTools
         Debug.Log("All PlayerPrefs data has been deleted.");
     }
     
-    [MenuItem("PirateTiles/Tools/Unlock All Levels")]
+    [MenuItem("Pirate Tiles/Unlock All Levels")]
     public static void UnlockAllLevels()
     {
         PlayerPrefs.SetInt(SaveKeys.UnlockLevel, 999);
