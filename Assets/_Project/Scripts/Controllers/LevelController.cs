@@ -67,6 +67,8 @@ public class LevelController : MonoBehaviour
         var stackModel = new StackModel(levelModel.MaxStackSize);
 
         List<TileModel> tiles = new List<TileModel>();
+        // Overlap map sẽ được tính chính xác trong BoardController 
+        // sau khi spawn CardView, dựa trên SpriteRenderer.bounds thực tế
         Dictionary<int, List<int>> overlapMap = new Dictionary<int, List<int>>();
         
         if (_currentLevelConfig.InitialTiles != null && _currentLevelConfig.InitialTiles.Count > 0)
@@ -78,30 +80,6 @@ public class LevelController : MonoBehaviour
                 var size = (tileData.Size.x > 0 && tileData.Size.y > 0) ? tileData.Size : Vector2.one;
                 var tile = new TileModel(idCounter++, tileData.Type, tileData.GridPosition, tileData.LayerIndex, size);
                 tiles.Add(tile);
-            }
-            
-            for (int i = 0; i < tiles.Count; i++)
-            {
-                var t1 = tiles[i];
-                List<int> covers = new List<int>();
-                for (int j = 0; j < tiles.Count; j++)
-                {
-                    var t2 = tiles[j];
-                    if (t1.Id != t2.Id && t2.LayerIndex > t1.LayerIndex)
-                    {
-                        // AABB overlap: t2 (layer cao hơn) có đè lên t1 không?
-                        // Hai hình chữ nhật overlap khi khoảng cách tâm < tổng nửa kích thước mỗi chiều
-                        float overlapX = (t1.Size.x + t2.Size.x) / 2f;
-                        float overlapY = (t1.Size.y + t2.Size.y) / 2f;
-                        bool overlaps = Mathf.Abs(t1.GridPosition.x - t2.GridPosition.x) < overlapX
-                                     && Mathf.Abs(t1.GridPosition.y - t2.GridPosition.y) < overlapY;
-                        if (overlaps)
-                        {
-                            covers.Add(t2.Id);
-                        }
-                    }
-                }
-                overlapMap[t1.Id] = covers;
             }
         }
         else 

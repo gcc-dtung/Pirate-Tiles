@@ -96,7 +96,38 @@ public class StackView : MonoBehaviour
     {
         if (_slots != null && index >= 0 && index < _slots.Length)
         {
-            return _slots[index].SlotTransform.position;
+            var slotData = _slots[index];
+            Transform slot = slotData.SlotTransform;
+            
+            // Dùng bounds.center của SpriteRenderer để lấy tâm chính xác (tránh lỗi do Pivot của Sprite)
+            Vector3 visualCenter = slot.position;
+            if (slotData.Background != null && slotData.Background.sprite != null)
+            {
+                visualCenter = slotData.Background.bounds.center;
+            }
+
+            Canvas canvas = slot.GetComponentInParent<Canvas>();
+            if (canvas != null && Camera.main != null)
+            {
+                // Unity xem ScreenSpaceCamera chưa gán camera giống hệt Overlay
+                bool isOverlay = canvas.renderMode == RenderMode.ScreenSpaceOverlay || 
+                                (canvas.renderMode == RenderMode.ScreenSpaceCamera && canvas.worldCamera == null);
+
+                if (isOverlay)
+                {
+                    // Với Overlay, bounds.center trả về tọa độ pixel trên màn hình
+                    Vector3 worldPos = Camera.main.ScreenToWorldPoint(new Vector3(visualCenter.x, visualCenter.y, Mathf.Abs(Camera.main.transform.position.z)));
+                    worldPos.z = 0;
+                    return worldPos;
+                }
+                else
+                {
+                    // Với WorldSpace/ScreenSpaceCamera, bounds.center ĐÃ LÀ tọa độ World Space
+                    return new Vector3(visualCenter.x, visualCenter.y, 0f);
+                }
+            }
+            
+            return new Vector3(visualCenter.x, visualCenter.y, 0f);
         }
         return Vector3.zero;
     }

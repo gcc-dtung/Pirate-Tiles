@@ -16,18 +16,22 @@ MonoBehaviour:
   - Type: 0
     Sprite: {fileID: 0}
   - Type: 1
-    Sprite: {fileID: 0}
+    Sprite: {fileID: 21300000, guid: 15ea0155d30e6694a92309d9eca95c7b, type: 3}
+  - Type: 6
+    Sprite: {fileID: 21300000, guid: 5bf93ead93ac2714f9c17426dffc56c5, type: 3}
+  - Type: 4
+    Sprite: {fileID: 21300000, guid: 7b2699dff47f12547884edf3ac91bc7d, type: 3}
+  - Type: 5
+    Sprite: {fileID: 21300000, guid: 6e9f98d9cf9af3c40b515cf153852ff6, type: 3}
+  - Type: 7
+    Sprite: {fileID: 21300000, guid: d84cb5ffb28e6a3489418895b92c8fda, type: 3}
+  - Type: 11
+    Sprite: {fileID: 21300000, guid: 1804a4e92c1c7864a9402bf863e8da7b, type: 3}
+  - Type: 13
+    Sprite: {fileID: 21300000, guid: 61ce49b167795a840aad4128ba5e397c, type: 3}
   - Type: 2
     Sprite: {fileID: 0}
   - Type: 3
-    Sprite: {fileID: 0}
-  - Type: 4
-    Sprite: {fileID: 0}
-  - Type: 5
-    Sprite: {fileID: 0}
-  - Type: 6
-    Sprite: {fileID: 0}
-  - Type: 7
     Sprite: {fileID: 0}
   - Type: 8
     Sprite: {fileID: 0}
@@ -35,11 +39,7 @@ MonoBehaviour:
     Sprite: {fileID: 0}
   - Type: 10
     Sprite: {fileID: 0}
-  - Type: 11
-    Sprite: {fileID: 0}
   - Type: 12
-    Sprite: {fileID: 0}
-  - Type: 13
     Sprite: {fileID: 0}
   - Type: 100
     Sprite: {fileID: 0}

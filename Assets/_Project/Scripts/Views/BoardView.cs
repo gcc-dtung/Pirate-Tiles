@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using PrimeTween;
 
@@ -111,5 +112,56 @@ public class BoardView : MonoBehaviour
     public Vector3 GetWorldPosition(Vector2 gridPosition)
     {
         return new Vector3(gridPosition.x * _spacingX, gridPosition.y * _spacingY, 0);
+    }
+
+    /// <summary>
+    /// Dùng SpriteRenderer.bounds thực tế để tính overlap map.
+    /// Chính xác hơn AABB math vì dựa vào kích thước render thực (bao gồm scale, sprite size, pivot).
+    /// Gọi sau SpawnCards() để đảm bảo CardView đã tồn tại.
+    /// </summary>
+    public Dictionary<int, List<int>> BuildOverlapMapFromBounds(IReadOnlyList<TileModel> tiles)
+    {
+        var overlapMap = new Dictionary<int, List<int>>();
+
+        // Tạo danh sách các tile trên board kèm theo bounds thực tế
+        var tileEntries = new List<(TileModel tile, Bounds bounds)>();
+        foreach (var tile in tiles)
+        {
+            if (!_cardViews.TryGetValue(tile.Id, out var view)) continue;
+            if (view == null) continue;
+
+            // Ưu tiên _backgroundRenderer vì nó đại diện cho vùng visual chính của tile
+            var sr = view.GetBackgroundRenderer();
+            if (sr == null) sr = view.GetComponentInChildren<SpriteRenderer>();
+            if (sr == null) continue;
+
+            tileEntries.Add((tile, sr.bounds));
+        }
+
+        // So sánh từng cặp tile
+        for (int i = 0; i < tileEntries.Count; i++)
+        {
+            var (t1, bounds1) = tileEntries[i];
+            var covers = new List<int>();
+
+            for (int j = 0; j < tileEntries.Count; j++)
+            {
+                if (i == j) continue;
+                var (t2, bounds2) = tileEntries[j];
+
+                // Chỉ tile ở layer cao hơn mới có thể đè lên tile ở layer thấp hơn
+                if (t2.LayerIndex <= t1.LayerIndex) continue;
+
+                // Dùng Bounds.Intersects của Unity — chính xác dựa trên kích thước render thực
+                if (bounds1.Intersects(bounds2))
+                {
+                    covers.Add(t2.Id);
+                }
+            }
+
+            overlapMap[t1.Id] = covers;
+        }
+
+        return overlapMap;
     }
 }

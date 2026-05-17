@@ -18,6 +18,9 @@ public class CardView : MonoBehaviour, IPointerClickHandler
 
     public event Action<CardView> OnClicked;
 
+    /// <summary>Trả về SpriteRenderer nền để tính bounds overlap.</summary>
+    public SpriteRenderer GetBackgroundRenderer() => _backgroundRenderer;
+
     private void Awake()
     {
         if (_vfxView == null)

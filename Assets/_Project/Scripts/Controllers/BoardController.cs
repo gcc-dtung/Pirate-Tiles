@@ -27,7 +27,17 @@ public class BoardController : MonoBehaviour
         _stackModel = stackModel;
         _tileDatabase = database;
         
+        // 1. Spawn cards trước để có SpriteRenderer thực tế
         _boardView.SpawnCards(_boardModel.Tiles, _tileDatabase);
+        
+        // 2. Tính overlap map dựa trên bounds thực tế của SpriteRenderer
+        var overlapMap = _boardView.BuildOverlapMapFromBounds(_boardModel.Tiles);
+        
+        // 3. Re-initialize BoardModel với overlap map chính xác
+        _boardModel.Initialize(new System.Collections.Generic.List<TileModel>(_boardModel.Tiles), overlapMap);
+        
+        // 4. Sync lại visual selectable sau khi đã có overlap map đúng
+        _boardView.SyncSelectable(_boardModel.Tiles);
         
         foreach (var tile in _boardModel.Tiles)
         {
@@ -162,7 +172,7 @@ public class BoardController : MonoBehaviour
                 if (cardView != null)
                 {
                     cardView.OnClicked -= HandleCardClicked;
-                    seq.Group(cardView.AnimateCollectSpecial());
+                    _ = seq.Group(cardView.AnimateCollectSpecial());
                 }
             }
             else if (tile.State == CardState.InStack)
