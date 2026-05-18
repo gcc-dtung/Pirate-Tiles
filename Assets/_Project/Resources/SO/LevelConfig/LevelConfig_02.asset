@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Script::LevelConfigSO
   <LevelIndex>k__BackingField: 2
   <TimeLimit>k__BackingField: 0
-  <MaxStackSize>k__BackingField: 7
+  <MaxStackSize>k__BackingField: 6
   <InitialTiles>k__BackingField:
   - GridPosition: {x: -1.5, y: -1}
     Size: {x: 1, y: 1}

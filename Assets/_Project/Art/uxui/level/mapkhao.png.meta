@@ -1,28 +1,31 @@
 fileFormatVersion: 2
-guid: 93099a60c65c4644dac0867b24861c28
+guid: 9e313059d47e3b4459e5f02402cbf819
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: -2914503216214332612
-    second: loading_0
+      213: 5717035854971049893
+    second: mapkhao_0
   - first:
-      213: -3243969905789220278
-    second: loading_1
+      213: 8361101729734920464
+    second: mapkhao_1
   - first:
-      213: -2240947139059371774
-    second: loading_2
+      213: 1679559882950755047
+    second: mapkhao_2
   - first:
-      213: -9038400482918282348
-    second: loading_3
+      213: 5427015766042793601
+    second: mapkhao_3
   - first:
-      213: 3541541065571182360
-    second: loading_4
+      213: -5157245641200749722
+    second: mapkhao_4
   - first:
-      213: -6469537607060608100
-    second: loading_5
+      213: -3562832119717416435
+    second: mapkhao_5
   - first:
-      213: -6746097347225962745
-    second: loading_6
+      213: 1567051993855579524
+    second: mapkhao_6
+  - first:
+      213: -6750842764237903252
+    second: mapkhao_7
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -55,7 +58,7 @@ TextureImporter:
   maxTextureSize: 2048
   textureSettings:
     serializedVersion: 2
-    filterMode: 0
+    filterMode: 1
     aniso: 1
     mipBias: 0
     wrapU: 1
@@ -64,7 +67,7 @@ TextureImporter:
   nPOTScale: 0
   lightmap: 0
   compressionQuality: 50
-  spriteMode: 1
+  spriteMode: 2
   spriteExtrude: 1
   spriteMeshType: 1
   alignment: 0
@@ -90,9 +93,9 @@ TextureImporter:
   platformSettings:
   - serializedVersion: 4
     buildTarget: DefaultTexturePlatform
-    maxTextureSize: 16384
+    maxTextureSize: 2048
     resizeAlgorithm: 0
-    textureFormat: 4
+    textureFormat: -1
     textureCompression: 1
     compressionQuality: 50
     crunchedCompression: 0
@@ -144,13 +147,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: loading_0
+      name: mapkhao_0
       rect:
         serializedVersion: 2
-        x: 12
-        y: 13
-        width: 23
-        height: 45
+        x: 295
+        y: 29
+        width: 1374
+        height: 864
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -159,20 +162,20 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: c3bafcc34ca9d87d0800000000000000
-      internalID: -2914503216214332612
+      spriteID: 5a798b7e1ddf65f40800000000000000
+      internalID: 5717035854971049893
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: loading_1
+      name: mapkhao_1
       rect:
         serializedVersion: 2
-        x: 41
-        y: 13
-        width: 25
-        height: 45
+        x: 1670
+        y: 495
+        width: 32
+        height: 7
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -181,20 +184,20 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: a4a4067de8a1bf2d0800000000000000
-      internalID: -3243969905789220278
+      spriteID: 01901c369b9980470800000000000000
+      internalID: 8361101729734920464
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: loading_2
+      name: mapkhao_2
       rect:
         serializedVersion: 2
-        x: 74
-        y: 13
+        x: 1703
+        y: 496
         width: 24
-        height: 45
+        height: 6
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -203,20 +206,20 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 20130f7337e86e0e0800000000000000
-      internalID: -2240947139059371774
+      spriteID: 7e2c64a90defe4710800000000000000
+      internalID: 1679559882950755047
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: loading_3
+      name: mapkhao_3
       rect:
         serializedVersion: 2
-        x: 106
-        y: 13
-        width: 25
-        height: 45
+        x: 1724
+        y: 496
+        width: 14
+        height: 6
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -225,20 +228,20 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 49bcfe5f5a6219280800000000000000
-      internalID: -9038400482918282348
+      spriteID: 186dc6de512a05b40800000000000000
+      internalID: 5427015766042793601
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: loading_4
+      name: mapkhao_4
       rect:
         serializedVersion: 2
-        x: 138
-        y: 13
-        width: 11
-        height: 45
+        x: 1738
+        y: 496
+        width: 17
+        height: 6
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -247,20 +250,20 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 81724d2d5d4162130800000000000000
-      internalID: 3541541065571182360
+      spriteID: 6633cc0e968cd68b0800000000000000
+      internalID: -5157245641200749722
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: loading_5
+      name: mapkhao_5
       rect:
         serializedVersion: 2
-        x: 157
-        y: 13
-        width: 25
-        height: 45
+        x: 1754
+        y: 495
+        width: 61
+        height: 7
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -269,20 +272,20 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: c9b2f1ec2d59736a0800000000000000
-      internalID: -6469537607060608100
+      spriteID: d0234e550174e8ec0800000000000000
+      internalID: -3562832119717416435
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: loading_6
+      name: mapkhao_6
       rect:
         serializedVersion: 2
-        x: 190
-        y: 13
-        width: 24
-        height: 45
+        x: 1814
+        y: 495
+        width: 71
+        height: 7
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -291,8 +294,30 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 707346e743c0162a0800000000000000
-      internalID: -6746097347225962745
+      spriteID: 485545e5c794fb510800000000000000
+      internalID: 1567051993855579524
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: mapkhao_7
+      rect:
+        serializedVersion: 2
+        x: 1885
+        y: 496
+        width: 35
+        height: 6
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c6a651ff5403052a0800000000000000
+      internalID: -6750842764237903252
       vertices: []
       indices: 
       edges: []
@@ -301,7 +326,7 @@ TextureImporter:
     customData: 
     physicsShape: []
     bones: []
-    spriteID: 5e97eb03825dee720800000000000000
+    spriteID: 
     internalID: 0
     vertices: []
     indices: 
@@ -311,13 +336,14 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      loading_0: -2914503216214332612
-      loading_1: -3243969905789220278
-      loading_2: -2240947139059371774
-      loading_3: -9038400482918282348
-      loading_4: 3541541065571182360
-      loading_5: -6469537607060608100
-      loading_6: -6746097347225962745
+      mapkhao_0: 5717035854971049893
+      mapkhao_1: 8361101729734920464
+      mapkhao_2: 1679559882950755047
+      mapkhao_3: 5427015766042793601
+      mapkhao_4: -5157245641200749722
+      mapkhao_5: -3562832119717416435
+      mapkhao_6: 1567051993855579524
+      mapkhao_7: -6750842764237903252
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

@@ -50,7 +50,7 @@ public class MapController : MonoBehaviour
             _settingPanelView.OnMusicToggled += HandleMusicToggled;
             _settingPanelView.OnSfxToggled += HandleSfxToggled;
             _settingPanelView.OnContinueClicked += HideSettings;
-            _settingPanelView.OnMapClicked += HideSettings; // Already on map
+            _settingPanelView.OnMapClicked += HandleQuitGame; // Already on map → quit
             // Note: Replay doesn't make sense on Map, we can ignore or hide it in the setup
         }
 
@@ -84,7 +84,7 @@ public class MapController : MonoBehaviour
             _settingPanelView.OnMusicToggled -= HandleMusicToggled;
             _settingPanelView.OnSfxToggled -= HandleSfxToggled;
             _settingPanelView.OnContinueClicked -= HideSettings;
-            _settingPanelView.OnMapClicked -= HideSettings;
+            _settingPanelView.OnMapClicked -= HandleQuitGame;
         }
 
         if (_shopPanelView != null)
@@ -277,6 +277,15 @@ public class MapController : MonoBehaviour
 
     private void ShowSettings() { if (_settingPanelView != null) _settingPanelView.Show(); }
     private void HideSettings() { if (_settingPanelView != null) _settingPanelView.Hide(); }
+    private void HandleQuitGame()
+    {
+        HideSettings();
+#if UNITY_EDITOR
+        UnityEditor.EditorApplication.isPlaying = false;
+#else
+        Application.Quit();
+#endif
+    }
     
     private void ShowShop() { if (_shopPanelView != null) _shopPanelView.Show(); }
     private void HideShop() { if (_shopPanelView != null) _shopPanelView.Hide(); }

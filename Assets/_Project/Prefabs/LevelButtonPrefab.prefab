@@ -139,7 +139,7 @@ MonoBehaviour:
   _iconImage: {fileID: 5261860908923032715}
   _lockedColor: {r: 0.5, g: 0.5, b: 0.5, a: 1}
   _unlockedColor: {r: 1, g: 1, b: 1, a: 1}
-  _completedColor: {r: 1, g: 0.92156863, b: 0.015686275, a: 1}
+  _completedColor: {r: 1, g: 1, b: 1, a: 1}
   _showLevelNumber: 0
   _lockedSprite: {fileID: 0}
   _unlockedSprite: {fileID: 0}

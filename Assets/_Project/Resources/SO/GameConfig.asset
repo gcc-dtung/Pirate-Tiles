@@ -21,5 +21,5 @@ MonoBehaviour:
   <AddCellCost>k__BackingField: 30
   <Chapters>k__BackingField:
   - {fileID: 11400000, guid: e2a21b3566e8f2b4380b816c357a11ad, type: 2}
-  <ComingSoonBackground>k__BackingField: {fileID: 4804446361586417100, guid: 23415ffb310dc9f468f57320c1d07ec1, type: 3}
+  <ComingSoonBackground>k__BackingField: {fileID: 5717035854971049893, guid: 9e313059d47e3b4459e5f02402cbf819, type: 3}
   <LevelsPerChapter>k__BackingField: 10

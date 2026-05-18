@@ -17,32 +17,32 @@ MonoBehaviour:
   <MapBackground>k__BackingField: {fileID: 2316549141666047741, guid: eae26f24d8719f94ab123e2ae9ed22db, type: 3}
   <LevelNodes>k__BackingField:
   - LevelConfig: {fileID: 11400000, guid: 741b10ff51613ec4b9b584bc956e131f, type: 2}
-    MapPosition: {x: -709, y: 273}
+    MapPosition: {x: -329, y: 130}
     LevelIcon: {fileID: 21300000, guid: f748ba789fe3c324b80d448e8bfc9d82, type: 3}
   - LevelConfig: {fileID: 11400000, guid: 025facacb977da04eb43f58b2c0da872, type: 2}
-    MapPosition: {x: -519, y: -14}
+    MapPosition: {x: -242, y: 6}
     LevelIcon: {fileID: 21300000, guid: 379741221032ebe418830eff5df6c59f, type: 3}
   - LevelConfig: {fileID: 11400000, guid: 910df2aaef0edc8439079c45666ab249, type: 2}
-    MapPosition: {x: -528, y: -320}
+    MapPosition: {x: -253, y: -136}
     LevelIcon: {fileID: 21300000, guid: d4ead929dcfa86c4fa87da5e946870cd, type: 3}
   - LevelConfig: {fileID: 11400000, guid: 4a94e1f1d87a5ec4fb6255949a771e56, type: 2}
-    MapPosition: {x: -234, y: -442}
+    MapPosition: {x: -115, y: -194}
     LevelIcon: {fileID: 21300000, guid: bc3785f60ec287d4bb4a709292aa81ce, type: 3}
   - LevelConfig: {fileID: 11400000, guid: aedab4cf8ac6f5c47890cfafc79ae609, type: 2}
-    MapPosition: {x: -148, y: -65}
+    MapPosition: {x: -77, y: -14}
     LevelIcon: {fileID: 21300000, guid: 378ba9a953a9a2b47b19b64ce8f2fc38, type: 3}
   - LevelConfig: {fileID: 11400000, guid: 3f65a3c3d3fede24f991a107589c7fd9, type: 2}
-    MapPosition: {x: -13, y: 284}
+    MapPosition: {x: -13, y: 133}
     LevelIcon: {fileID: 21300000, guid: e621ddc54d7ef1049a8ee3f5c2f56a12, type: 3}
   - LevelConfig: {fileID: 11400000, guid: cf10a2f2f2f37a44497b2cbe62538f29, type: 2}
-    MapPosition: {x: 319, y: 130}
+    MapPosition: {x: 134, y: 69}
     LevelIcon: {fileID: 21300000, guid: 5a9cee7af5ae6f745947b828715d897e, type: 3}
   - LevelConfig: {fileID: 11400000, guid: 7443ecad01cbb5e4185cfeaddeae9a77, type: 2}
-    MapPosition: {x: 351, y: -206}
+    MapPosition: {x: 143, y: -80}
     LevelIcon: {fileID: 21300000, guid: d5da304dbe445654591ea9c1f19ce1cf, type: 3}
   - LevelConfig: {fileID: 11400000, guid: 188add6041c426d4ba7d682bc718313e, type: 2}
-    MapPosition: {x: 529, y: -495}
+    MapPosition: {x: 230, y: -213}
     LevelIcon: {fileID: 21300000, guid: 57499e6ea6441ad468212b4ee2cee67e, type: 3}
   - LevelConfig: {fileID: 11400000, guid: 482905682c84ac34194baf23862de5cc, type: 2}
-    MapPosition: {x: 921, y: -174}
+    MapPosition: {x: 399, y: -71}
     LevelIcon: {fileID: 21300000, guid: 2829708d3fb7c14498e90fb8b01a1d01, type: 3}

@@ -17,6 +17,7 @@ public class GameController : MonoBehaviour
     [Header("Views")]
     [SerializeField] private WinPanelView _winPanelView;
     [SerializeField] private LosePanelView _losePanelView;
+    [SerializeField] private SettingPanelView _settingPanelView;
 
     private GameStateModel _gameState;
     private bool _isBoardCleared = false;
@@ -40,6 +41,14 @@ public class GameController : MonoBehaviour
         if (_gameWonChannel != null) _gameWonChannel.AddListener(OnGameWonEventRaised);
         if (_gameLostChannel != null) _gameLostChannel.AddListener(OnGameLostEventRaised);
         if (_boardClearedChannel != null) _boardClearedChannel.AddListener(OnBoardCleared);
+
+        if (_settingPanelView != null)
+        {
+            _settingPanelView.OnContinueClicked += HandleSettingContinue;
+            _settingPanelView.OnMapClicked    += HandleGoToMap;
+            _settingPanelView.OnMusicToggled  += HandleMusicToggled;
+            _settingPanelView.OnSfxToggled    += HandleSfxToggled;
+        }
     }
 
     private void OnDisable()
@@ -49,6 +58,14 @@ public class GameController : MonoBehaviour
         if (_gameWonChannel != null) _gameWonChannel.RemoveListener(OnGameWonEventRaised);
         if (_gameLostChannel != null) _gameLostChannel.RemoveListener(OnGameLostEventRaised);
         if (_boardClearedChannel != null) _boardClearedChannel.RemoveListener(OnBoardCleared);
+
+        if (_settingPanelView != null)
+        {
+            _settingPanelView.OnContinueClicked -= HandleSettingContinue;
+            _settingPanelView.OnMapClicked    -= HandleGoToMap;
+            _settingPanelView.OnMusicToggled  -= HandleMusicToggled;
+            _settingPanelView.OnSfxToggled    -= HandleSfxToggled;
+        }
     }
 
     private void SetPhase(GamePhase newPhase)
@@ -131,5 +148,54 @@ public class GameController : MonoBehaviour
     private void OnGameLostEventRaised()
     {
         if (_losePanelView != null) _losePanelView.Show();
+    }
+
+    // ── Setting Panel ──────────────────────────────────────
+    public void OpenSettingPanel()
+    {
+        if (_settingPanelView == null) return;
+
+        var save = SaveService.Instance;
+        bool musicOn = save == null || save.GetBool(SaveKeys.MusicVolume, true);
+        bool sfxOn   = save == null || save.GetBool(SaveKeys.SoundVolume, true);
+        _settingPanelView.SetInitialValues(musicOn, sfxOn);
+        _settingPanelView.Show();
+    }
+
+    private void HandleSettingContinue()
+    {
+        _settingPanelView.Hide();
+    }
+
+    private void HandleGoToMap()
+    {
+        EventBus<SceneLoadRequestedEvent>.Raise(new SceneLoadRequestedEvent
+        {
+            SceneName = SceneNames.Map,
+            UseLoadingScreen = true
+        });
+    }
+
+    private void HandleMusicToggled(bool isOn)
+    {
+        SaveService.Instance?.SetBool(SaveKeys.MusicVolume, isOn);
+        RaiseAudioSettingChanged();
+    }
+
+    private void HandleSfxToggled(bool isOn)
+    {
+        SaveService.Instance?.SetBool(SaveKeys.SoundVolume, isOn);
+        RaiseAudioSettingChanged();
+    }
+
+    private void RaiseAudioSettingChanged()
+    {
+        bool musicEnabled = SaveService.Instance == null || SaveService.Instance.GetBool(SaveKeys.MusicVolume, true);
+        bool sfxEnabled   = SaveService.Instance == null || SaveService.Instance.GetBool(SaveKeys.SoundVolume, true);
+        EventBus<AudioSettingChangedEvent>.Raise(new AudioSettingChangedEvent
+        {
+            IsMusicEnabled = musicEnabled,
+            IsSfxEnabled   = sfxEnabled
+        });
     }
 }

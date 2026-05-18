@@ -1,10 +1,19 @@
 fileFormatVersion: 2
-guid: a315c59d0b220f840aeaf4a9080b8b48
+guid: 6e88cddd854e9494e937efd0fb327d1c
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: -4360530552843628718
-    second: ship_0
+      213: -1077332961325380665
+    second: off tick_0
+  - first:
+      213: 2936925475932252876
+    second: off tick_1
+  - first:
+      213: 9001839234696723345
+    second: off tick_2
+  - first:
+      213: -8120345941879942362
+    second: off tick_3
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -75,7 +84,7 @@ TextureImporter:
     maxTextureSize: 16384
     resizeAlgorithm: 0
     textureFormat: 4
-    textureCompression: 1
+    textureCompression: 0
     compressionQuality: 50
     crunchedCompression: 0
     allowsAlphaSplitting: 0
@@ -126,13 +135,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: ship_0
+      name: off tick_0
       rect:
         serializedVersion: 2
-        x: 71
-        y: 8
-        width: 140
-        height: 152
+        x: 47
+        y: 18
+        width: 20
+        height: 38
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -141,8 +150,74 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 25f8485b0984c73c0800000000000000
-      internalID: -4360530552843628718
+      spriteID: 7cb816f216b8c01f0800000000000000
+      internalID: -1077332961325380665
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: off tick_1
+      rect:
+        serializedVersion: 2
+        x: 74
+        y: 18
+        width: 19
+        height: 38
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ccaacbce82e02c820800000000000000
+      internalID: 2936925475932252876
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: off tick_2
+      rect:
+        serializedVersion: 2
+        x: 98
+        y: 18
+        width: 19
+        height: 38
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 19bb5451715fcec70800000000000000
+      internalID: 9001839234696723345
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: off tick_3
+      rect:
+        serializedVersion: 2
+        x: 131
+        y: 14
+        width: 54
+        height: 49
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 62316f8a36cbe4f80800000000000000
+      internalID: -8120345941879942362
       vertices: []
       indices: 
       edges: []
@@ -161,7 +236,10 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      ship_0: -4360530552843628718
+      off tick_0: -1077332961325380665
+      off tick_1: 2936925475932252876
+      off tick_2: 9001839234696723345
+      off tick_3: -8120345941879942362
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

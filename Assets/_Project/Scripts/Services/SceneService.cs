@@ -4,9 +4,8 @@ using UnityEngine.SceneManagement;
 public class SceneService : MonoBehaviour
 {
     public static SceneService Instance { get; private set; }
-
-    [Header("Loading UI")]
-    [SerializeField] private GameObject _loadingScreen;
+    
+    public static string TargetSceneToLoad { get; private set; }
 
     private EventBinding<SceneLoadRequestedEvent> _sceneLoadBinding;
 
@@ -37,65 +36,11 @@ public class SceneService : MonoBehaviour
     {
         if (data.UseLoadingScreen)
         {
-            TryResolveLoadingScreen();
-            _ = LoadSceneAsyncAwaitable(data.SceneName);
+            TargetSceneToLoad = data.SceneName;
+            SceneManager.LoadScene(SceneNames.Loading);
             return;
         }
 
         SceneManager.LoadScene(data.SceneName);
-    }
-
-    private async Awaitable LoadSceneAsyncAwaitable(string sceneName)
-    {
-        LoadingView loadingView = null;
-
-        if (_loadingScreen != null)
-        {
-            _loadingScreen.SetActive(true);
-            loadingView = _loadingScreen.GetComponent<LoadingView>();
-            if (loadingView != null)
-            {
-                loadingView.Show();
-            }
-        }
-
-        AsyncOperation asyncLoad = SceneManager.LoadSceneAsync(sceneName);
-        while (!asyncLoad.isDone)
-        {
-            if (loadingView != null)
-            {
-                loadingView.UpdateProgress(asyncLoad.progress);
-            }
-            await Awaitable.NextFrameAsync();
-        }
-
-        if (loadingView != null)
-        {
-            loadingView.UpdateProgress(1f);
-            await loadingView.HideAnimate();
-        }
-        else if (_loadingScreen != null)
-        {
-            _loadingScreen.SetActive(false);
-        }
-    }
-
-    private void TryResolveLoadingScreen()
-    {
-        if (_loadingScreen != null) return;
-
-        var roots = SceneManager.GetActiveScene().GetRootGameObjects();
-        foreach (var root in roots)
-        {
-            var children = root.GetComponentsInChildren<Transform>(true);
-            foreach (var child in children)
-            {
-                if (child.name == "LoadingScreen")
-                {
-                    _loadingScreen = child.gameObject;
-                    return;
-                }
-            }
-        }
     }
 }

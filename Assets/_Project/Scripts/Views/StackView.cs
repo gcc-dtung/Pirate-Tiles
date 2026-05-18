@@ -37,7 +37,7 @@ public class StackView : MonoBehaviour
 
         for (int i = 0; i < _slots.Length; i++)
         {
-            if (i < 7)
+            if (i < 6)
             {
                 if (_slots[i].Background != null)
                 {
@@ -72,10 +72,10 @@ public class StackView : MonoBehaviour
 
     public void UnlockExtraSlot()
     {
-        if (_slots != null && _slots.Length > 7)
+        if (_slots != null && _slots.Length > 6) // cần có ít nhất 7 slot (index 0–6)
         {
             IsExtraSlotUnlocked = true;
-            var extraSlot = _slots[7];
+            var extraSlot = _slots[6]; // Slot 7 (index 6) là slot bị khóa
             if (extraSlot.Background != null)
             {
                 if (_normalSlotSprite != null)
@@ -136,8 +136,8 @@ public class StackView : MonoBehaviour
     public Sequence AnimateArrange(IReadOnlyList<CardView> cardsInStack, float duration = 0.2f, CardView excludeCard = null)
     {
         var seq = Sequence.Create();
-        // Số slot hiển thị tối đa: 6 (index) nếu chưa unlock, 7 nếu đã unlock
-        int maxVisualIndex = IsExtraSlotUnlocked ? 7 : 6;
+        // Số slot hiển thị tối đa: index 5 (slot 6) nếu chưa unlock, index 6 (slot 7) nếu đã unlock
+        int maxVisualIndex = IsExtraSlotUnlocked ? 6 : 5;
 
         for (int i = 0; i < cardsInStack.Count; i++)
         {
