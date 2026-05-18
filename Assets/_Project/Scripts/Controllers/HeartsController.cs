@@ -8,6 +8,8 @@ public class HeartsController : MonoBehaviour
     
     [SerializeField] private VoidEventChannelSO _outOfHeartsChannel;
     [SerializeField] private VoidEventChannelSO _gameLostChannel;
+    
+    [SerializeField] private GameConfigSO _gameConfig;
 
     private HeartsModel _heartsModel;
     
@@ -32,7 +34,8 @@ public class HeartsController : MonoBehaviour
     {
         var save = SaveService.Instance;
         _heartsModel = new HeartsModel();
-        _heartsModel.MaxHearts = 5;
+        _heartsModel.MaxHearts = _gameConfig != null ? _gameConfig.MaxHearts : 5;
+        _heartsModel.HealTime = _gameConfig != null ? _gameConfig.HealTimeInSeconds : 10f;
         _heartsModel.CurrentHearts = save != null ? save.GetInt(SaveKeys.Hearts, _heartsModel.MaxHearts) : _heartsModel.MaxHearts;
         
         string lastHealStr = save != null ? save.GetString(SaveKeys.LastHealTime, "") : "";

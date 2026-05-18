@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Script::ChapterConfigSO
   <ChapterIndex>k__BackingField: 0
   <ChapterName>k__BackingField: Chapter 1
-  <MapBackground>k__BackingField: {fileID: 0}
+  <MapBackground>k__BackingField: {fileID: 2316549141666047741, guid: eae26f24d8719f94ab123e2ae9ed22db, type: 3}
   <LevelNodes>k__BackingField:
   - LevelConfig: {fileID: 11400000, guid: 741b10ff51613ec4b9b584bc956e131f, type: 2}
     MapPosition: {x: -709, y: 273}

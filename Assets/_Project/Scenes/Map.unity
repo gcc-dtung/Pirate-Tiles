@@ -447,7 +447,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 2316549141666047741, guid: eae26f24d8719f94ab123e2ae9ed22db, type: 3}
+  m_Sprite: {fileID: 4804446361586417100, guid: 23415ffb310dc9f468f57320c1d07ec1, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -1182,7 +1182,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Script::MapView
   _chapterTitleText: {fileID: 630664796}
-  _mapBackgroundImage: {fileID: 0}
+  _mapBackgroundImage: {fileID: 109933165}
   _leftArrowButton: {fileID: 830172824}
   _rightArrowButton: {fileID: 1603599442}
   _levelButtonPrefab: {fileID: 5310995348985629904, guid: fae91c1882c9d054b8b6a7cada29c2d3, type: 3}
@@ -3034,7 +3034,7 @@ AudioSource:
   serializedVersion: 4
   OutputAudioMixerGroup: {fileID: 0}
   m_audioClip: {fileID: 0}
-  m_Resource: {fileID: 0}
+  m_Resource: {fileID: 8300000, guid: 0ab8187a49207e1499a68e4427fd61cf, type: 3}
   m_PlayOnAwake: 1
   m_Volume: 1
   m_Pitch: 1

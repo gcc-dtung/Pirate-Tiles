@@ -157,7 +157,7 @@ public class BoardController : MonoBehaviour
 
     private async void OnMagicRequest()
     {
-        var targets = _boardModel.GetBestMagicTargets(3);
+        var targets = _boardModel.GetBestMagicTargets(3, _stackModel.Tiles);
         if (targets == null || targets.Count < 3) return;
 
         var seq = Sequence.Create();

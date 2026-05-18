@@ -18,5 +18,6 @@ public class GameConfigSO : ScriptableObject
 
     [field: Header("Chapter / Map")]
     [field: SerializeField] public System.Collections.Generic.List<ChapterConfigSO> Chapters { get; private set; }
+    [field: SerializeField] public Sprite ComingSoonBackground { get; private set; }
     [field: SerializeField] public int LevelsPerChapter { get; private set; } = 12;
 }

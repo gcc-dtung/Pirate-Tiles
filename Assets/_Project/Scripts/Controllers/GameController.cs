@@ -6,12 +6,10 @@ public class GameController : MonoBehaviour
     [SerializeField] private BoardController _boardController;
     [SerializeField] private StackController _stackController;
     [SerializeField] private PowerUpController _powerUpController;
-    [SerializeField] private TimerController _timerController;
 
     [Header("Event Channels (Cross-Layer)")]
     [SerializeField] private VoidEventChannelSO _tilesMatchedChannel;
     [SerializeField] private VoidEventChannelSO _stackFullChannel;
-    [SerializeField] private VoidEventChannelSO _timerExpiredChannel;
     [SerializeField] private VoidEventChannelSO _gameWonChannel;
     [SerializeField] private VoidEventChannelSO _gameLostChannel;
     [SerializeField] private VoidEventChannelSO _boardClearedChannel;
@@ -39,7 +37,6 @@ public class GameController : MonoBehaviour
     {
         if (_tilesMatchedChannel != null) _tilesMatchedChannel.AddListener(OnTilesMatched);
         if (_stackFullChannel != null) _stackFullChannel.AddListener(OnStackFull);
-        if (_timerExpiredChannel != null) _timerExpiredChannel.AddListener(OnTimerExpired);
         if (_gameWonChannel != null) _gameWonChannel.AddListener(OnGameWonEventRaised);
         if (_gameLostChannel != null) _gameLostChannel.AddListener(OnGameLostEventRaised);
         if (_boardClearedChannel != null) _boardClearedChannel.AddListener(OnBoardCleared);
@@ -49,7 +46,6 @@ public class GameController : MonoBehaviour
     {
         if (_tilesMatchedChannel != null) _tilesMatchedChannel.RemoveListener(OnTilesMatched);
         if (_stackFullChannel != null) _stackFullChannel.RemoveListener(OnStackFull);
-        if (_timerExpiredChannel != null) _timerExpiredChannel.RemoveListener(OnTimerExpired);
         if (_gameWonChannel != null) _gameWonChannel.RemoveListener(OnGameWonEventRaised);
         if (_gameLostChannel != null) _gameLostChannel.RemoveListener(OnGameLostEventRaised);
         if (_boardClearedChannel != null) _boardClearedChannel.RemoveListener(OnBoardCleared);
@@ -105,11 +101,6 @@ public class GameController : MonoBehaviour
     }
 
     private void OnStackFull()
-    {
-        HandleLose();
-    }
-
-    private void OnTimerExpired()
     {
         HandleLose();
     }

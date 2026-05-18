@@ -104,7 +104,8 @@ public class MapController : MonoBehaviour
         var save = SaveService.Instance;
         
         _chapterModel = new ChapterModel();
-        _chapterModel.TotalChapters = _gameConfig != null && _gameConfig.Chapters != null ? _gameConfig.Chapters.Count : 0;
+        int configChaptersCount = _gameConfig != null && _gameConfig.Chapters != null ? _gameConfig.Chapters.Count : 0;
+        _chapterModel.TotalChapters = configChaptersCount + 1; // +1 for "Coming Soon" chapter
         _chapterModel.CurrentChapterIndex = save != null ? save.GetInt(SaveKeys.CurrentChapter, 0) : 0;
         _chapterModel.UnlockedLevel = save != null ? save.GetInt(SaveKeys.UnlockLevel, 1) : 1;
 
@@ -115,6 +116,7 @@ public class MapController : MonoBehaviour
 
         _heartsModel = new HeartsModel();
         _heartsModel.MaxHearts = _gameConfig != null ? _gameConfig.MaxHearts : 5;
+        _heartsModel.HealTime = _gameConfig != null ? _gameConfig.HealTimeInSeconds : 10f;
         _heartsModel.CurrentHearts = save != null ? save.GetInt(SaveKeys.Hearts, _heartsModel.MaxHearts) : _heartsModel.MaxHearts;
         
         string lastHealStr = save != null ? save.GetString(SaveKeys.LastHealTime, "") : "";
@@ -195,16 +197,34 @@ public class MapController : MonoBehaviour
 
     private void LoadChapter(int index)
     {
-        if (_gameConfig == null || _gameConfig.Chapters == null || index < 0 || index >= _gameConfig.Chapters.Count)
+        if (_gameConfig == null || _gameConfig.Chapters == null)
             return;
 
-        var chapterConfig = _gameConfig.Chapters[index];
-        _chapterModel.LevelsInCurrentChapter = chapterConfig.LevelNodes != null ? chapterConfig.LevelNodes.Count : 0;
+        if (index < 0 || index >= _chapterModel.TotalChapters)
+            return;
 
-        if (_mapView != null)
+        if (index == _gameConfig.Chapters.Count)
         {
-            _mapView.SetArrowVisibility(_chapterModel.CanGoPrev, _chapterModel.CanGoNext);
-            _mapView.SetupChapter(chapterConfig, _chapterModel.UnlockedLevel);
+            // Coming Soon Chapter
+            _chapterModel.LevelsInCurrentChapter = 0;
+
+            if (_mapView != null)
+            {
+                _mapView.SetArrowVisibility(_chapterModel.CanGoPrev, _chapterModel.CanGoNext);
+                Sprite bg = _gameConfig.ComingSoonBackground;
+                _mapView.SetupComingSoonChapter(bg);
+            }
+        }
+        else
+        {
+            var chapterConfig = _gameConfig.Chapters[index];
+            _chapterModel.LevelsInCurrentChapter = chapterConfig.LevelNodes != null ? chapterConfig.LevelNodes.Count : 0;
+
+            if (_mapView != null)
+            {
+                _mapView.SetArrowVisibility(_chapterModel.CanGoPrev, _chapterModel.CanGoNext);
+                _mapView.SetupChapter(chapterConfig, _chapterModel.UnlockedLevel);
+            }
         }
     }
 

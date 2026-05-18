@@ -90,7 +90,7 @@ public class StartScreenController : MonoBehaviour
 
         if (!save.HasKey(SaveKeys.TutorialCompleted))
         {
-            save.SetBool(SaveKeys.TutorialCompleted, false);
+            save.SetBool(SaveKeys.TutorialCompleted, true); // Skip tutorial by default
         }
 
         if (!save.HasKey(SaveKeys.MusicVolume))

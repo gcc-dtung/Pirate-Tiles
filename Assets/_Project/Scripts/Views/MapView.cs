@@ -84,4 +84,24 @@ public class MapView : MonoBehaviour
             }
         }
     }
+
+    public void SetupComingSoonChapter(Sprite mapBackground)
+    {
+        if (_chapterTitleText != null)
+        {
+            _chapterTitleText.text = ""; // Ẩn text vì ảnh đã có sẵn chữ
+        }
+
+        if (_mapBackgroundImage != null && mapBackground != null)
+        {
+            _mapBackgroundImage.sprite = mapBackground;
+        }
+
+        // Clear old buttons
+        foreach(var b in _spawnedButtons) 
+        {
+            if (b != null) Destroy(b.gameObject);
+        }
+        _spawnedButtons.Clear();
+    }
 }

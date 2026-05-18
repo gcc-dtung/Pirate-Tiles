@@ -1,3 +1,4 @@
+#if UNITY_EDITOR
 using System;
 using TMPro;
 using UnityEditor;
@@ -309,3 +310,4 @@ public class StartScreenSceneSetup : EditorWindow
         }
     }
 }
+#endif

@@ -1,3 +1,4 @@
+#if UNITY_EDITOR
 using System;
 using UnityEditor;
 using UnityEngine;
@@ -103,9 +104,6 @@ public class InGameSceneSetup : EditorWindow
         }
         soStackView.ApplyModifiedProperties();
 
-        var timerCtrlObj = new GameObject("TimerController");
-        var timerCtrl = timerCtrlObj.AddComponent<TimerController>();
-
         var powerUpCtrlObj = new GameObject("PowerUpController");
         var powerUpCtrl = powerUpCtrlObj.AddComponent<PowerUpController>();
 
@@ -130,7 +128,6 @@ public class InGameSceneSetup : EditorWindow
         soLevel.FindProperty("_tileDatabase").objectReferenceValue = tileDatabase;
         soLevel.FindProperty("_boardController").objectReferenceValue = boardCtrl;
         soLevel.FindProperty("_stackController").objectReferenceValue = stackCtrl;
-        soLevel.FindProperty("_timerController").objectReferenceValue = timerCtrl;
         soLevel.ApplyModifiedProperties();
 
         // Load Channels
@@ -184,17 +181,6 @@ public class InGameSceneSetup : EditorWindow
 
         var topBarObj = new GameObject("TopBar", typeof(RectTransform));
         topBarObj.transform.SetParent(canvasObj.transform, false);
-        var heartsView = new GameObject("HeartsView").AddComponent<HeartsView>();
-        heartsView.transform.SetParent(topBarObj.transform, false);
-        var coinsView = new GameObject("CoinsView").AddComponent<CoinsView>();
-        coinsView.transform.SetParent(topBarObj.transform, false);
-        var timerView = new GameObject("TimerView").AddComponent<TimerView>();
-        timerView.transform.SetParent(topBarObj.transform, false);
-
-        var soTimerCtrl = new SerializedObject(timerCtrl);
-        soTimerCtrl.FindProperty("_timerView").objectReferenceValue = timerView;
-        soTimerCtrl.FindProperty("_timerExpiredChannel").objectReferenceValue = timerExpiredChannel;
-        soTimerCtrl.ApplyModifiedProperties();
 
         var powerUpBarObj = new GameObject("PowerUpBar", typeof(RectTransform));
         powerUpBarObj.transform.SetParent(canvasObj.transform, false);
@@ -234,10 +220,8 @@ public class InGameSceneSetup : EditorWindow
         soGameCtrl.FindProperty("_boardController").objectReferenceValue = boardCtrl;
         soGameCtrl.FindProperty("_stackController").objectReferenceValue = stackCtrl;
         soGameCtrl.FindProperty("_powerUpController").objectReferenceValue = powerUpCtrl;
-        soGameCtrl.FindProperty("_timerController").objectReferenceValue = timerCtrl;
         soGameCtrl.FindProperty("_tilesMatchedChannel").objectReferenceValue = tileMatchedChannel;
         soGameCtrl.FindProperty("_stackFullChannel").objectReferenceValue = stackFullChannel;
-        soGameCtrl.FindProperty("_timerExpiredChannel").objectReferenceValue = timerExpiredChannel;
         soGameCtrl.FindProperty("_gameWonChannel").objectReferenceValue = gameWonChannel;
         soGameCtrl.FindProperty("_gameLostChannel").objectReferenceValue = gameLostChannel;
         soGameCtrl.FindProperty("_boardClearedChannel").objectReferenceValue = boardClearedChannel;
@@ -256,13 +240,13 @@ public class InGameSceneSetup : EditorWindow
         soPowerUpCtrl.ApplyModifiedProperties();
 
         var soHeartsCtrl = new SerializedObject(heartsCtrl);
-        soHeartsCtrl.FindProperty("_heartsView").objectReferenceValue = heartsView;
+        // No HeartsView assigned
         soHeartsCtrl.FindProperty("_outOfHeartPanelView").objectReferenceValue = outOfHeartPanelView;
         soHeartsCtrl.FindProperty("_outOfHeartsChannel").objectReferenceValue = outOfHeartsChannel;
         soHeartsCtrl.ApplyModifiedProperties();
 
         var soCoinsCtrl = new SerializedObject(coinsCtrl);
-        soCoinsCtrl.FindProperty("_coinsView").objectReferenceValue = coinsView;
+        // No CoinsView assigned
         soCoinsCtrl.FindProperty("_powerUpController").objectReferenceValue = powerUpCtrl;
         soCoinsCtrl.FindProperty("_spendCoinsRequestChannel").objectReferenceValue = powerUpUsedChannel;
         soCoinsCtrl.ApplyModifiedProperties();
@@ -316,3 +300,4 @@ public class InGameSceneSetup : EditorWindow
         }
     }
 }
+#endif

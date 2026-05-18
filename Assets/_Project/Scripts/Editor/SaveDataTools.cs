@@ -1,3 +1,4 @@
+#if UNITY_EDITOR
 using UnityEditor;
 using UnityEngine;
 
@@ -27,3 +28,4 @@ public class SaveDataTools
         Debug.Log("All levels have been unlocked (set to 999).");
     }
 }
+#endif

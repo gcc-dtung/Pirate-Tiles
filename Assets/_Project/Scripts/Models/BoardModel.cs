@@ -187,13 +187,12 @@ public class BoardModel
         }
     }
 
-    public List<TileModel> GetBestMagicTargets(int count)
+    public List<TileModel> GetBestMagicTargets(int count, IReadOnlyList<TileModel> actualStackTiles)
     {
         var boardTiles = _tiles.Where(t => t.State == CardState.InBoard).ToList();
-        var stackTiles = _tiles.Where(t => t.State == CardState.InStack).ToList();
 
         // 1. Prioritize types that are ALREADY in the stack
-        var stackGroups = stackTiles.GroupBy(t => t.TileType).OrderByDescending(g => g.Count());
+        var stackGroups = actualStackTiles.GroupBy(t => t.TileType).OrderByDescending(g => g.Count());
         foreach (var group in stackGroups)
         {
             int neededFromBoard = count - group.Count();
@@ -203,7 +202,11 @@ public class BoardModel
             if (boardTilesOfType.Count >= neededFromBoard)
             {
                 var targets = new List<TileModel>();
-                targets.AddRange(group); // Add all from stack
+                foreach (var st in group)
+                {
+                    var boardTile = GetTileById(st.Id);
+                    if (boardTile != null) targets.Add(boardTile);
+                }
                 targets.AddRange(boardTilesOfType.Take(neededFromBoard)); // Add needed from board
                 return targets;
             }

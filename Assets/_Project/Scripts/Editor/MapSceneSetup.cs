@@ -1,3 +1,4 @@
+#if UNITY_EDITOR
 using System;
 using TMPro;
 using UnityEditor;
@@ -465,3 +466,4 @@ public class MapSceneSetup : EditorWindow
         }
     }
 }
+#endif

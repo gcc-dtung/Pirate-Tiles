@@ -11,7 +11,6 @@ public class LevelController : MonoBehaviour
     [Header("Controllers to Initialize")]
     [SerializeField] private BoardController _boardController;
     [SerializeField] private StackController _stackController;
-    [SerializeField] private TimerController _timerController;
 
     private void Start()
     {
@@ -94,6 +93,5 @@ public class LevelController : MonoBehaviour
 
         if (_boardController != null) _boardController.Initialize(boardModel, stackModel, _tileDatabase);
         if (_stackController != null) _stackController.Initialize(stackModel);
-        if (_timerController != null) _timerController.Initialize(levelModel);
     }
 }
